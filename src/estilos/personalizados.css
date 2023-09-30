@@ -1,0 +1,117 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+.Lato {
+  font-family: Lato;
+}
+.gradient {
+  background: rgb(205, 200, 200);
+  background: -moz-linear-gradient(
+    39deg,
+    rgba(205, 200, 200, 1) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    39deg,
+    rgba(205, 200, 200, 1) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background: linear-gradient(
+    39deg,
+    rgba(205, 200, 200, 1) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#cdc8c8",endColorstr="#ffffff",GradientType=1);
+}
+.hoverAnim {
+  position: relative;
+}
+.hoverAnim:after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #000000;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+.hoverAnim:hover:after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+.hoverEffect:hover {
+  animation: shake 0.5s;
+  animation-iteration-count: infinite;
+  cursor: pointer;
+}
+.noDeco {
+  text-decoration: none;
+}
+.muted {
+  color: gray;
+  text-decoration: none;
+}
+.spinner:hover {
+  animation: spin 0.5s linear;
+}
+@font-face {
+  font-family: "Lato";
+  src: url("../fuentes/lato-regular-webfont.eot");
+  src: url("../fuentes/lato-regular-webfont.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fuentes/lato-regular-webfont.woff2") format("woff2"),
+    url("../fuentes/lato-regular-webfont.woff") format("woff"),
+    url("../fuentes/lato-regular-webfont.ttf") format("truetype"),
+    url("../fuentes/lato-regular-webfont.svg#latoregular") format("svg");
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+  90% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}
