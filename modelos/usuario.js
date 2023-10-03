@@ -3,9 +3,14 @@ const mongoose = require("mongoose");
 const Esquema = mongoose.Schema;
 
 const EsquemaUsuario = new Esquema({
-  usuario: { type: String, required: true, maxLength: 30, unique: true },
+  apellido: { type: String, required: true },
+  cedula: { type: Number, required: true, unique: true },
   clave: { type: String, required: true },
-  esAdmin: { type: Boolean, required: true, default: true },
+  email: { type: String, required: true },
+  nombre: { type: String, required: true },
+  rol: { type: String, default: "PROMOTOR", required: true },
+  tlf: { type: String, required: true },
+  usuario: { type: String, required: true, unique: true },
 });
 
 module.exports = mongoose.model("Usuario", EsquemaUsuario);
