@@ -20,6 +20,13 @@ const EsquemaCC = new Esquema(
     redi: { type: String, required: true },
     situr: { type: String, required: true, unique: true },
     tipo: { type: String, required: true },
+    usuario: new Esquema({
+      apellido: { type: String },
+      cedula: { type: Number },
+      _id: { type: Esquema.Types.ObjectId },
+      nombre: { type: String },
+      rol: { type: String },
+    }),
   },
   opcionesDeEsquema
 );

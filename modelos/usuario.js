@@ -9,7 +9,7 @@ const opcionesDeEsquema = {
 
 const EsquemaUsuario = new Esquema(
   {
-    apellido: { type: String, required: true },
+    apellido: { type: String },
     cedula: { type: Number, required: true, unique: true },
     clave: { type: String, required: true },
     email: { type: String, required: true },
@@ -17,6 +17,15 @@ const EsquemaUsuario = new Esquema(
     rol: { type: String, required: true },
     tlf: { type: String, required: true },
     usuario: { type: String, required: true, unique: true },
+    cc: [
+      new Esquema({
+        _id: { type: Esquema.Types.ObjectId },
+        localidad: { type: String },
+        nombre: { type: String },
+        situr: { type: String },
+        tipo: { type: String },
+      }),
+    ],
   },
   opcionesDeEsquema
 );
