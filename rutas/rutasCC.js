@@ -1,36 +1,20 @@
 const express = require("express");
 const enrutador = express.Router();
 const controladorCC = require("../controladores/controladorCC");
-const passport = require("passport");
+const permisos = require("../config/permisos");
 
-enrutador.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  controladorCC.listarCC
-);
+enrutador.use(permisos.autenticarToken);
+enrutador.use(permisos.autorizarRol);
+//A partir de aca las rutas estan protegidas
 
-enrutador.post(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  controladorCC.nuevoCC
-);
+enrutador.delete("/:id", controladorCC.borrarCC);
 
-enrutador.get(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  controladorCC.buscarCC
-);
+enrutador.get("/", controladorCC.listarCC);
 
-enrutador.put(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  controladorCC.actualizarCC
-);
+enrutador.get("/:id", controladorCC.buscarCC);
 
-enrutador.delete(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  controladorCC.borrarCC
-); //??
+enrutador.post("/", controladorCC.nuevoCC);
+
+enrutador.put("/:id", controladorCC.actualizarCC);
 
 module.exports = enrutador;

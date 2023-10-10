@@ -1,34 +1,22 @@
 const express = require("express");
 const enrutador = express.Router();
 const controladorUsuario = require("../controladores/controladorUsuario");
-const passport = require("passport");
+const permisos = require("../config/permisos");
+
+enrutador.post("/ingresar", controladorUsuario.iniciarSesion);
+
+enrutador.use(permisos.autenticarToken);
+enrutador.use(permisos.autorizarRol);
+//A partir de aca las rutas estan protegidas
+
+enrutador.delete("/:id", controladorUsuario.borrarUsuario);
+
+enrutador.get("/", controladorUsuario.listarUsuarios);
+
+enrutador.get("/:id", controladorUsuario.buscarUsuario);
 
 enrutador.post("/registrar", controladorUsuario.registrarUsuario);
 
-enrutador.post("/ingresar", controladorUsuario.autenticarUsuario);
-
-enrutador.get(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  controladorUsuario.buscarUsuario
-); //protegida, solo debug, antes de cada controlador se autentica
-
-enrutador.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  controladorUsuario.listarUsuarios
-); //protegida, solo debug, antes de cada controlador se autentica
-
-enrutador.put(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  controladorUsuario.actualizarUsuario
-); //??
-
-enrutador.delete(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  controladorUsuario.borrarUsuario
-); //??
+enrutador.put("/:id", controladorUsuario.actualizarUsuario);
 
 module.exports = enrutador;

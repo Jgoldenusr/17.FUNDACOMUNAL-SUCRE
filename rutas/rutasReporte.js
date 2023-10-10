@@ -1,36 +1,48 @@
 const express = require("express");
 const enrutador = express.Router();
-const controladorReporte = require("../controladores/controladorReporte");
-const passport = require("passport");
+const controlador = require("../controladores/controladorReporte");
+const permisos = require("../config/permisos");
 
-enrutador.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  controladorReporte.listarReportes
-);
+enrutador.use(permisos.autenticarToken);
+enrutador.use(permisos.autorizarRol);
+//A partir de aca las rutas estan protegidas
 
-enrutador.post(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  controladorReporte.nuevoReporte
-);
+enrutador.delete("/:id", controlador.borrarReporte);
 
-enrutador.get(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  controladorReporte.buscarReporte
-);
+enrutador.get("/", controlador.listarReportes);
 
-enrutador.put(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  controladorReporte.actualizarReporte
-);
+enrutador.get("/:id", controlador.buscarReporte);
 
-enrutador.delete(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  controladorReporte.borrarReporte
-);
+enrutador.post("/casoadmin/", controlador.nuevoCasoAdmin);
+
+enrutador.post("/comunicaciones/", controlador.nuevoComunicaciones);
+
+enrutador.post("/formacion/", controlador.nuevoFormacion);
+
+enrutador.post("/incidencias/", controlador.nuevoIncidencias);
+
+enrutador.post("/fortalecimiento/", controlador.nuevoFortalecimiento);
+
+enrutador.post("/participacion/", controlador.nuevoParticipacion);
+
+enrutador.put("/casoadmin/:id", controlador.actualizarCasoAdmin);
+
+enrutador.put("/comunicaciones/:id", controlador.actualizarComunicaciones);
+
+enrutador.put("/formacion/:id", controlador.actualizarFormacion);
+
+enrutador.put("/fortalecimiento/:id", controlador.actualizarFortalecimiento);
+
+enrutador.put("/incidencias/:id", controlador.actualizarIncidencias);
+
+enrutador.put("/participacion/:id", controlador.actualizarParticipacion);
+
+/*
+
+enrutador.post("/interno/", controlador.nuevoInterno);
+
+enrutador.put("/interno/:id", controlador.actualizarInterno);
+
+*/
 
 module.exports = enrutador;
