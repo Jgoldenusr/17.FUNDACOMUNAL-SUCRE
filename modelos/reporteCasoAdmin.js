@@ -5,7 +5,7 @@ const Esquema = mongoose.Schema;
 
 const ReporteCasoAdmin = new Esquema({
   caso: { type: String, required: true },
-  tipo: { type: Number, required: true },
+  tipoCaso: { type: String, required: true },
 });
 
 module.exports = ReporteBase.discriminator(
