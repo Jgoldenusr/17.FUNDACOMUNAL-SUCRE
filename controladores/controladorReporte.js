@@ -225,13 +225,13 @@ exports.nuevoFormacion = [
     .isInt({ min: 0 })
     .withMessage("El campo 'hombres' no puede ser menor a 0")
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'hombres' debe ser menor que 999999999"),
+    .withMessage("El campo 'hombres' no debe exceder los 999999999"),
   body("mujeres")
     .trim()
     .isInt({ min: 0 })
     .withMessage("El campo 'mujeres' no puede ser menor a 0")
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'mujeres' debe ser menor que 999999999"),
+    .withMessage("El campo 'mujeres' no debe exceder los 999999999"),
   body("estrategia", "Estrategia invalida")
     .trim()
     .isIn([
@@ -328,13 +328,13 @@ exports.actualizarFormacion = [
     .isInt({ min: 0 })
     .withMessage("El campo 'hombres' no puede ser menor a 0")
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'hombres' debe ser menor que 999999999"),
+    .withMessage("El campo 'hombres' no debe exceder los 999999999"),
   body("mujeres")
     .trim()
     .isInt({ min: 0 })
     .withMessage("El campo 'mujeres' no puede ser menor a 0")
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'mujeres' debe ser menor que 999999999"),
+    .withMessage("El campo 'mujeres' no debe exceder los 999999999"),
   body("estrategia", "Estrategia invalida")
     .trim()
     .isIn([
@@ -870,6 +870,68 @@ exports.nuevoCasoAdmin = [
   }),
 ];
 
+exports.actualizarCasoAdmin = [
+  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
+  body("organosAdscritos")
+    .trim()
+    .escape()
+    .isLength({ min: 1 })
+    .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .isLength({ max: 30 })
+    .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
+    .toUpperCase(),
+  body("caso")
+    .trim()
+    .escape()
+    .isLength({ min: 1 })
+    .withMessage("El campo 'caso' no debe estar vacio")
+    .isLength({ max: 100 })
+    .withMessage("El campo 'caso' debe ser menor a 100 caracteres")
+    .toUpperCase(),
+  body("tipoCaso", "Tipo de caso administrativo invalido")
+    .trim()
+    .isIn(["CASO", "DENUNCIA", "ADMINISTRATIVO", "ASESORIA"]),
+  //Se ejecuta despues de validados los campos
+  asyncHandler(async function (req, res, next) {
+    //Los errores de la validacion se pasan a esta constante
+    const errores = validationResult(req);
+    //Esto es un objeto, mas no una instancia del modelo reporte
+    const nuevoReporte = {
+      cc: req.body.cc,
+      fecha: req.body.fecha || undefined,
+      organosAdscritos: req.body.organosAdscritos,
+      usuario: req.user._id,
+      caso: req.body.caso,
+      tipoCaso: req.body.tipoCaso,
+    };
+
+    if (!errores.isEmpty()) {
+      //Si hubieron errores
+      return res.status(400).json({
+        reporte: nuevoReporte,
+        error: {
+          array: errores.array(),
+          message: "Hubieron errores en el proceso de validacion",
+        },
+      });
+    } else {
+      //Si no hubieron errores
+      //Se actualiza el reporte
+      await ReporteCasoAdmin.findByIdAndUpdate(req.params.id, {
+        $set: nuevoReporte,
+      }).exec();
+      //Exito
+      return res.status(200).json({ id: req.params.id });
+    }
+  }),
+];
+
 exports.nuevoComunicaciones = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
   body("cc")
@@ -892,14 +954,14 @@ exports.nuevoComunicaciones = [
     .isInt({ min: 1 })
     .withMessage("El campo 'notas' debe ser mayor a 0")
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'notas' debe ser menor que 999999999"),
+    .withMessage("El campo 'notas' no debe exceder los 999999999"),
   body("resenas")
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
     .withMessage("El campo 'resenas' debe ser mayor a 0")
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'resenas' debe ser menor que 999999999"),
+    .withMessage("El campo 'resenas' no debe exceder los 999999999"),
   body("redes.*.publicaciones")
     .optional({ values: "falsy" })
     .trim()
@@ -968,14 +1030,14 @@ exports.actualizarComunicaciones = [
     .isInt({ min: 1 })
     .withMessage("El campo 'notas' debe ser mayor a 0")
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'notas' debe ser menor que 999999999"),
+    .withMessage("El campo 'notas' no debe exceder los 999999999"),
   body("resenas")
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
     .withMessage("El campo 'resenas' debe ser mayor a 0")
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'resenas' debe ser menor que 999999999"),
+    .withMessage("El campo 'resenas' no debe exceder los 999999999"),
   body("redes.*.publicaciones")
     .optional({ values: "falsy" })
     .trim()
