@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -6,9 +6,9 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import { AlertaError, Error404, Spinner } from "./modulos";
+import { ContextoAutenticado, AlertaError, Error404, Spinner } from "./modulos";
 
-function FormularioCC({ token }) {
+function FormularioCC() {
   const { id } = useParams();
   const formularioVacio = {
     tipo: "",
@@ -25,6 +25,7 @@ function FormularioCC({ token }) {
   const [cargando, setCargando] = useState(id ? true : false);
   const [subiendo, setSubiendo] = useState(false);
   const [formulario, setFormulario] = useState({ ...formularioVacio });
+  const { miToken } = useContext(ContextoAutenticado);
   const navegarHasta = useNavigate();
 
   useEffect(() => {
@@ -32,7 +33,7 @@ function FormularioCC({ token }) {
       const url = "http://localhost:4000/ccs/" + id;
       const peticion = {
         headers: new Headers({
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${miToken}`,
         }),
         mode: "cors",
       };
@@ -76,7 +77,7 @@ function FormularioCC({ token }) {
       body: JSON.stringify(formulario),
       headers: new Headers({
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${miToken}`,
       }),
       mode: "cors",
       method: id ? "PUT" : "POST",

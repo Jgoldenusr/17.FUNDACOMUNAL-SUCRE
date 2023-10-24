@@ -1,23 +1,24 @@
-import { React, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
-import { Error404, Spinner } from "./modulos";
+import { ContextoAutenticado, Error404, Spinner } from "./modulos";
 
-function MostrarCCS({ token }) {
+function MostrarCCS() {
   const [ccs, setCCS] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const { miToken } = useContext(ContextoAutenticado);
 
   useEffect(() => {
     async function realizarPeticion() {
       const url = "http://localhost:4000/ccs";
       const peticion = {
         headers: new Headers({
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${miToken}`,
         }),
         mode: "cors",
       };

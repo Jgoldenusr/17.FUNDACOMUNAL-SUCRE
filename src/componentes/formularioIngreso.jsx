@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -6,15 +6,16 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import { AlertaError } from "./modulos";
+import { ContextoAutenticado, AlertaError } from "./modulos";
 
-function FormularioIngreso({ guardarToken }) {
+function FormularioIngreso() {
   const [error, setError] = useState(null);
   const [cargando, setCargando] = useState(false);
   const [formulario, setFormulario] = useState({
     usuario: "",
     clave: "",
   });
+  const { guardarToken } = useContext(ContextoAutenticado);
   const navegarHasta = useNavigate();
 
   const actualizarFormulario = function (evento) {

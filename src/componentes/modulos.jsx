@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
@@ -18,6 +18,13 @@ import {
   faPeopleGroup,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
+
+const ContextoAutenticado = createContext({
+  miToken: null,
+  borrarToken: () => {},
+  buscarToken: () => {},
+  guardarToken: () => {},
+});
 
 function AlertaBorrar({ realizarPeticion, setBorrar }) {
   const [visible, setVisible] = useState(true);
@@ -79,7 +86,8 @@ function AlertaError({ error }) {
   );
 }
 
-function Cabecera({ borrarToken }) {
+function Cabecera() {
+  const { borrarToken } = useContext(ContextoAutenticado);
   /* jshint ignore:start */
   return (
     <Navbar expand="md" bg="light" className="Lato shadow p-3">
@@ -138,11 +146,11 @@ function Cabecera({ borrarToken }) {
   /* jshint ignore:end */
 }
 
-function Envoltorio({ borrarToken }) {
+function Envoltorio() {
   return (
     /* jshint ignore:start */
     <div>
-      <Cabecera borrarToken={borrarToken} />
+      <Cabecera />
       <Outlet />
     </div>
     /* jshint ignore:end */
@@ -184,4 +192,13 @@ function Spinner() {
   );
   /* jshint ignore:end */
 }
-export { AlertaError, AlertaBorrar, Cabecera, Envoltorio, Spinner, Error404 };
+
+export {
+  ContextoAutenticado,
+  AlertaError,
+  AlertaBorrar,
+  Cabecera,
+  Envoltorio,
+  Spinner,
+  Error404,
+};

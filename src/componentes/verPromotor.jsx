@@ -1,11 +1,11 @@
-import { React, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
-import { Error404, Spinner } from "./modulos";
+import { ContextoAutenticado, Error404, Spinner } from "./modulos";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
@@ -13,10 +13,11 @@ import {
   faPhone,
 } from "@fortawesome/free-solid-svg-icons";
 
-function VerPromotor({ token }) {
+function VerPromotor() {
   const [promotor, setPromotor] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const { miToken } = useContext(ContextoAutenticado);
   const { id } = useParams();
 
   useEffect(() => {
@@ -24,7 +25,7 @@ function VerPromotor({ token }) {
       const url = "http://localhost:4000/promotores/" + id;
       const peticion = {
         headers: new Headers({
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${miToken}`,
         }),
         mode: "cors",
       };

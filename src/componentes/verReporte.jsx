@@ -1,11 +1,11 @@
-import { React, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
-import { Error404, Spinner } from "./modulos";
+import { ContextoAutenticado, Error404, Spinner } from "./modulos";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarDay,
@@ -17,10 +17,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { DateTime } from "luxon";
 
-function VerReporte({ token }) {
+function VerReporte() {
   const [reporte, setReporte] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const { miToken } = useContext(ContextoAutenticado);
   const { id } = useParams();
 
   useEffect(() => {
@@ -28,7 +29,7 @@ function VerReporte({ token }) {
       const url = "http://localhost:4000/reportes/" + id;
       const peticion = {
         headers: new Headers({
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${miToken}`,
         }),
         mode: "cors",
       };

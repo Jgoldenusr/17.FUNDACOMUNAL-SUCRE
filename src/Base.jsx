@@ -1,115 +1,87 @@
 import "./estilos/personalizados.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Stack from "react-bootstrap/Stack";
-import FormularioCC from "./componentes/formularioCC";
-import FormularioIngreso from "./componentes/formularioIngreso";
-import FormularioPromotor from "./componentes/formularioPromotor";
-import FormularioRegistro from "./componentes/formularioRegistro";
-import FormularioReporte from "./componentes/formularioReporte";
+import FormCC from "./componentes/formularioCC";
+import FormIngreso from "./componentes/formularioIngreso";
+import FormPromotor from "./componentes/formularioPromotor";
+import FormRegistro from "./componentes/formularioRegistro";
+import FormReporte from "./componentes/formularioReporte";
 import MostrarCCS from "./componentes/mostrarCCS";
 import MostrarPromotores from "./componentes/mostrarPromotores";
 import MostrarReportes from "./componentes/mostrarReportes";
 import VerCC from "./componentes/verCC";
 import VerPromotor from "./componentes/verPromotor";
 import VerReporte from "./componentes/verReporte";
-import { Envoltorio, Error404 } from "./componentes/modulos";
+import {
+  ContextoAutenticado,
+  Envoltorio,
+  Error404,
+} from "./componentes/modulos";
 
-class Base extends Component {
-  constructor() {
-    super();
-    this.state = {
-      miToken: null,
-    };
+function Base() {
+  const [miToken, setMiToken] = useState(null);
 
-    this.borrarToken = this.borrarToken.bind(this);
-    this.buscarToken = this.buscarToken.bind(this);
-    this.guardarToken = this.guardarToken.bind(this);
-  }
-  componentDidMount() {
-    this.buscarToken();
-  }
+  useEffect(() => {
+    buscarToken();
+  }, []);
 
-  buscarToken() {
-    // ESTA FUNCION HAY QUE ARREGLARLA
+  const borrarToken = function () {
+    setMiToken(null);
+    localStorage.removeItem("miToken");
+  };
+
+  const buscarToken = function () {
     const tokenGuardado = localStorage.getItem("miToken");
     if (tokenGuardado) {
-      this.setState({ miToken: tokenGuardado });
+      setMiToken(tokenGuardado);
     }
-  }
-  borrarToken() {
-    this.setState({ miToken: null });
-    localStorage.removeItem("miToken");
-  }
+  };
 
-  guardarToken(token) {
-    this.setState({ miToken: token });
+  const guardarToken = function (token) {
+    setMiToken(token);
     localStorage.setItem("miToken", token);
-  }
+  };
 
-  render() {
-    const { miToken } = this.state;
-
-    /* jshint ignore:start */
-    return (
+  /* jshint ignore:start */
+  return (
+    <ContextoAutenticado.Provider
+      value={{ miToken, borrarToken, buscarToken, guardarToken }}
+    >
       <BrowserRouter>
         <Stack direction="vertical" className="Lato gradient min-vh-100">
           <Routes>
             {miToken ? (
-              <Route element={<Envoltorio borrarToken={this.borrarToken} />}>
-                <Route path="/" element={<MostrarReportes token={miToken} />} />
-                <Route path="ccs" element={<MostrarCCS token={miToken} />} />
-                <Route
-                  path="ccs/nuevo"
-                  element={<FormularioCC token={miToken} />}
-                />
-                <Route path="ccs/:id" element={<VerCC token={miToken} />} />
-                <Route
-                  path="ccs/:id/editar"
-                  element={<FormularioCC token={miToken} />}
-                />
-                <Route
-                  path="promotores"
-                  element={<MostrarPromotores token={miToken} />}
-                />
-                <Route
-                  path="promotores/nuevo"
-                  element={<FormularioPromotor token={miToken} />}
-                />
-                <Route
-                  path="promotores/:id"
-                  element={<VerPromotor token={miToken} />}
-                />
+              <Route element={<Envoltorio />}>
+                <Route path="/" element={<MostrarReportes />} />
+                <Route path="ccs" element={<MostrarCCS />} />
+                <Route path="ccs/nuevo" element={<FormCC />} />
+                <Route path="ccs/:id" element={<VerCC />} />
+                <Route path="ccs/:id/editar" element={<FormCC />} />
+                <Route path="promotores" element={<MostrarPromotores />} />
+                <Route path="promotores/nuevo" element={<FormPromotor />} />
+                <Route path="promotores/:id" element={<VerPromotor />} />
                 <Route
                   path="promotores/:id/editar"
-                  element={<FormularioPromotor token={miToken} />}
+                  element={<FormPromotor />}
                 />
-                <Route
-                  path="reportes/nuevo"
-                  element={<FormularioReporte token={miToken} />}
-                />
-                <Route path="/:id" element={<VerReporte token={miToken} />} />
-                <Route
-                  path="/:id/editar"
-                  element={<FormularioReporte token={miToken} />}
-                />
+                <Route path="reportes/nuevo" element={<FormReporte />} />
+                <Route path="/:id" element={<VerReporte />} />
+                <Route path="/:id/editar" element={<FormReporte />} />
                 <Route path="*" element={<Error404 />} />
               </Route>
             ) : (
               <Route path="*" element={<Error404 />} />
             )}
-            <Route
-              path="/"
-              element={<FormularioIngreso guardarToken={this.guardarToken} />}
-            />
-            <Route path="registrarse" element={<FormularioRegistro />} />
+            <Route path="/" element={<FormIngreso />} />
+            <Route path="registrarse" element={<FormRegistro />} />
           </Routes>
         </Stack>
       </BrowserRouter>
-    );
-    /* jshint ignore:end */
-  }
+    </ContextoAutenticado.Provider>
+  );
+  /* jshint ignore:end */
 }
 
 export default Base;

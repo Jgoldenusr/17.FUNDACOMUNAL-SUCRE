@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -6,9 +6,15 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import { AlertaBorrar, AlertaError, Error404, Spinner } from "./modulos";
+import {
+  ContextoAutenticado,
+  AlertaBorrar,
+  AlertaError,
+  Error404,
+  Spinner,
+} from "./modulos";
 
-function FormularioReporte({ token }) {
+function FormularioReporte() {
   const { id } = useParams();
   const formularioVacio = {
     fecha: "",
@@ -25,6 +31,7 @@ function FormularioReporte({ token }) {
   const [borrar, setBorrar] = useState(false);
   const [subiendo, setSubiendo] = useState(false);
   const [formulario, setFormulario] = useState({ ...formularioVacio });
+  const { miToken } = useContext(ContextoAutenticado);
   const navegarHasta = useNavigate();
 
   useEffect(() => {
@@ -32,7 +39,7 @@ function FormularioReporte({ token }) {
       const url = "http://localhost:4000/reportes/" + id;
       const peticion = {
         headers: new Headers({
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${miToken}`,
         }),
         mode: "cors",
       };
@@ -81,7 +88,7 @@ function FormularioReporte({ token }) {
       body: JSON.stringify(formulario),
       headers: new Headers({
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${miToken}`,
       }),
       mode: "cors",
       method: id ? "PUT" : "POST",
@@ -111,7 +118,7 @@ function FormularioReporte({ token }) {
     const peticion = {
       headers: new Headers({
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${miToken}`,
       }),
       mode: "cors",
       method: "DELETE",
