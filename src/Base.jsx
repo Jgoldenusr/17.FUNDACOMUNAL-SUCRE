@@ -70,10 +70,11 @@ function Base() {
                 <Route path="*" element={<Error404 />} />
               </Route>
             ) : (
-              <Route path="*" element={<Error404 />} />
+              <Route>
+                <Route path="registrarse" element={<FormularioRegistro />} />
+                <Route path="*" element={<FormularioIngreso />} />
+              </Route>
             )}
-            <Route path="/" element={<FormularioIngreso />} />
-            <Route path="registrarse" element={<FormularioRegistro />} />
           </Routes>
         </Stack>
       </BrowserRouter>
