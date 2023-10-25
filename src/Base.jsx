@@ -3,11 +3,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Stack from "react-bootstrap/Stack";
-import FormCC from "./componentes/formularioCC";
-import FormIngreso from "./componentes/formularioIngreso";
-import FormPromotor from "./componentes/formularioPromotor";
-import FormRegistro from "./componentes/formularioRegistro";
-import FormReporte from "./componentes/formularioReporte";
+import FormularioCC from "./componentes/formularioCC";
+import FormularioIngreso from "./componentes/formularioIngreso";
+import FormularioPromotor from "./componentes/formularioPromotor";
+import FormularioRegistro from "./componentes/formularioRegistro";
+import FormularioReporte from "./componentes/formularioReporte";
 import MostrarCCS from "./componentes/mostrarCCS";
 import MostrarPromotores from "./componentes/mostrarPromotores";
 import MostrarReportes from "./componentes/mostrarReportes";
@@ -53,29 +53,27 @@ function Base() {
         <Stack direction="vertical" className="Lato gradient min-vh-100">
           <Routes>
             {miToken ? (
+              /* prettier-ignore */
               <Route element={<Envoltorio />}>
                 <Route path="/" element={<MostrarReportes />} />
                 <Route path="ccs" element={<MostrarCCS />} />
-                <Route path="ccs/nuevo" element={<FormCC />} />
+                <Route path="ccs/nuevo" element={<FormularioCC />} />
                 <Route path="ccs/:id" element={<VerCC />} />
-                <Route path="ccs/:id/editar" element={<FormCC />} />
+                <Route path="ccs/:id/editar" element={<FormularioCC />} />
                 <Route path="promotores" element={<MostrarPromotores />} />
-                <Route path="promotores/nuevo" element={<FormPromotor />} />
+                <Route path="promotores/nuevo" element={<FormularioPromotor />}/>
                 <Route path="promotores/:id" element={<VerPromotor />} />
-                <Route
-                  path="promotores/:id/editar"
-                  element={<FormPromotor />}
-                />
-                <Route path="reportes/nuevo" element={<FormReporte />} />
+                <Route path="promotores/:id/editar" element={<FormularioPromotor />}/>
+                <Route path="reportes/nuevo" element={<FormularioReporte />} />
                 <Route path="/:id" element={<VerReporte />} />
-                <Route path="/:id/editar" element={<FormReporte />} />
+                <Route path="/:id/editar" element={<FormularioReporte />} />
                 <Route path="*" element={<Error404 />} />
               </Route>
             ) : (
               <Route path="*" element={<Error404 />} />
             )}
-            <Route path="/" element={<FormIngreso />} />
-            <Route path="registrarse" element={<FormRegistro />} />
+            <Route path="/" element={<FormularioIngreso />} />
+            <Route path="registrarse" element={<FormularioRegistro />} />
           </Routes>
         </Stack>
       </BrowserRouter>
