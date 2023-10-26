@@ -12,7 +12,10 @@ const Validar = require("../config/validadores");
 
 exports.listarReportes = asyncHandler(async function (req, res, next) {
   //Se buscan todos los reportes segun los mas recientes
-  const listaDeReportes = await Reporte.find({}).sort({ fecha: "-1" }).exec();
+  const listaDeReportes = await Reporte.find({})
+    .populate("cc", "nombre")
+    .populate("usuario", "nombre apellido")
+    .exec();
   //Los resultados de la busqueda se meten en un arreglo
   if (listaDeReportes.length > 0) {
     //El arreglo no esta vacio
