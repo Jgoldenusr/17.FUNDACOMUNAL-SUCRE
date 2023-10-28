@@ -6,8 +6,10 @@ const permisos = require("../config/permisos");
 enrutador.post("/ingresar", controladorUsuario.iniciarSesion);
 
 enrutador.use(permisos.autenticarToken);
+
+enrutador.get("/yo/cc", controladorUsuario.buscarCCSAsociados);
+
 enrutador.use(permisos.autorizarRol);
-//A partir de aca las rutas estan protegidas
 
 enrutador.delete("/:id", controladorUsuario.borrarUsuario);
 
