@@ -160,21 +160,6 @@ exports.buscarUsuario = asyncHandler(async function (req, res, next) {
   }
 });
 
-exports.buscarCCSAsociados = asyncHandler(async function (req, res, next) {
-  //Se busca el usuario (por el parametro pasado por url)
-  const usr = await Usuario.findById(req.user._id, "cc").exec();
-  //La funcion anterior no falla cuando no encuentra nada, sino que regresa null
-  if (usr === null) {
-    //Si el usuario es nulo
-    return res
-      .status(404)
-      .json({ error: { message: "No se encontro el usuario" } });
-  } else {
-    //Si no es nulo
-    return res.status(200).json(usr);
-  }
-});
-
 exports.iniciarSesion = asyncHandler(async function (req, res, next) {
   //Se extrae el usuario y la clave del post
   const { usuario, clave } = req.body;
@@ -208,10 +193,11 @@ exports.iniciarSesion = asyncHandler(async function (req, res, next) {
           expiresIn: "12h",
         }
       );
-      //Si todo tuvo exito, se regresa el token junto con el usuario (menos la clave)
+      //Si todo tuvo exito
       usr.clave = undefined;
       return res.status(200).json({
         token,
+        usuario,
       });
     }
   }

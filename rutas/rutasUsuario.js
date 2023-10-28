@@ -7,8 +7,6 @@ enrutador.post("/ingresar", controladorUsuario.iniciarSesion);
 
 enrutador.use(permisos.autenticarToken);
 
-enrutador.get("/yo/cc", controladorUsuario.buscarCCSAsociados);
-
 enrutador.use(permisos.autorizarRol);
 
 enrutador.delete("/:id", controladorUsuario.borrarUsuario);
