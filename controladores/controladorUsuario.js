@@ -197,7 +197,7 @@ exports.iniciarSesion = asyncHandler(async function (req, res, next) {
       usr.clave = undefined;
       return res.status(200).json({
         token,
-        usuario,
+        usuario: usr,
       });
     }
   }
