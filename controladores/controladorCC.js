@@ -7,7 +7,7 @@ const Validar = require("../config/validadores");
 exports.actualizarCC =
   //Se validan los campos
   [
-    body("cedula").custom(Validar.cedulaExiste),
+    body("usuario.cedula").custom(Validar.cedulaExiste),
     body("comuna")
       .optional({ values: "falsy" })
       .trim()
@@ -111,7 +111,7 @@ exports.actualizarCC =
         //Se busca el CC que se va a editar
         const miCC = await CC.findById(req.params.id).exec();
         //Este if se ejecuta si se va a cambiar el usuario asociado
-        if (miCC.usuario.cedula != req.body.cedula) {
+        if (miCC.usuario.cedula != req.body.usuario.cedula) {
           //Se busca el usuario viejo
           const usuarioViejo = await Usuario.findOne({
             cedula: miCC.usuario.cedula,
@@ -123,7 +123,7 @@ exports.actualizarCC =
         }
         //Se busca el usuario asociado
         const usuarioAsociado = await Usuario.findOne({
-          cedula: req.body.cedula,
+          cedula: req.body.usuario.cedula,
         }).exec();
         //Se actualiza el usuario asociado con los datos del nuevo CC
         usuarioAsociado.cc.pull({ _id: req.params.id });
@@ -173,7 +173,7 @@ exports.listarCC = asyncHandler(async function (req, res, next) {
 exports.nuevoCC =
   //Se validan los campos
   [
-    body("cedula").custom(Validar.cedulaExiste),
+    body("usuario.cedula").custom(Validar.cedulaExiste),
     body("comuna")
       .optional({ values: "falsy" })
       .trim()
@@ -274,7 +274,7 @@ exports.nuevoCC =
       } else {
         //Si no hubieron errores se busca el usuario asociado (por su cedula)
         const usuarioAsociado = await Usuario.findOne({
-          cedula: req.body.cedula,
+          cedula: req.body.usuario.cedula,
         }).exec();
         //Se incluye este usuario en el objeto del nuevo CC
         nuevoCC.usuario = usuarioAsociado;

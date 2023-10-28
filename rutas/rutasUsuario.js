@@ -15,7 +15,7 @@ enrutador.get("/", controladorUsuario.listarUsuarios);
 
 enrutador.get("/:id", controladorUsuario.buscarUsuario);
 
-enrutador.post("/registrar", controladorUsuario.registrarUsuario);
+enrutador.post("/", controladorUsuario.registrarUsuario);
 
 enrutador.put("/:id", controladorUsuario.actualizarUsuario);
 

@@ -147,7 +147,7 @@ exports.borrarUsuario = asyncHandler(async function (req, res, next) {
 
 exports.buscarUsuario = asyncHandler(async function (req, res, next) {
   //Se busca el usuario (por el parametro pasado por url)
-  const usr = await Usuario.findById(req.params.id).exec();
+  const usr = await Usuario.findById(req.params.id, "-clave").exec();
   //La funcion anterior no falla cuando no encuentra nada, sino que regresa null
   if (usr === null) {
     //Si el usuario es nulo
