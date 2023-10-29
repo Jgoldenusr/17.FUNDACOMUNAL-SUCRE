@@ -223,13 +223,13 @@ exports.nuevoFormacion = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("hombres")
+  body("beneficiados.hombres")
     .trim()
     .isInt({ min: 0 })
     .withMessage("El campo 'hombres' no puede ser menor a 0")
     .isInt({ max: 999999999 })
     .withMessage("El campo 'hombres' no debe exceder los 999999999"),
-  body("mujeres")
+  body("beneficiados.mujeres")
     .trim()
     .isInt({ min: 0 })
     .withMessage("El campo 'mujeres' no puede ser menor a 0")
@@ -282,8 +282,8 @@ exports.nuevoFormacion = [
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
       beneficiados: {
-        hombres: req.body.hombres,
-        mujeres: req.body.mujeres,
+        hombres: req.body.beneficiados.hombres,
+        mujeres: req.body.beneficiados.mujeres,
       },
       estrategia: req.body.estrategia,
       modalidad: req.body.modalidad,
@@ -326,13 +326,13 @@ exports.actualizarFormacion = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("hombres")
+  body("beneficiados.hombres")
     .trim()
     .isInt({ min: 0 })
     .withMessage("El campo 'hombres' no puede ser menor a 0")
     .isInt({ max: 999999999 })
     .withMessage("El campo 'hombres' no debe exceder los 999999999"),
-  body("mujeres")
+  body("beneficiados.mujeres")
     .trim()
     .isInt({ min: 0 })
     .withMessage("El campo 'mujeres' no puede ser menor a 0")
@@ -385,8 +385,8 @@ exports.actualizarFormacion = [
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
       beneficiados: {
-        hombres: req.body.hombres,
-        mujeres: req.body.mujeres,
+        hombres: req.body.beneficiados.hombres,
+        mujeres: req.body.beneficiados.mujeres,
       },
       estrategia: req.body.estrategia,
       modalidad: req.body.modalidad,
@@ -487,7 +487,7 @@ exports.nuevoFortalecimiento = [
       "GRUPO DE INTERCAMBIO SOLIDARIO",
       "COOPERATIVAS",
     ]),
-  body("proyectoCFG", "Tipo de proyecto CFG invalido")
+  body("proyectoCFG.tipo", "Tipo de proyecto CFG invalido")
     .optional({ values: "falsy" })
     .trim()
     .isIn([
@@ -507,7 +507,7 @@ exports.nuevoFortalecimiento = [
       "VIALIDAD",
       "VIVIENDA",
     ]),
-  body("etapaCFG", "Etapa del proyecto CFG invalida")
+  body("proyectoCFG.etapa", "Etapa del proyecto CFG invalida")
     .optional({ values: "falsy" })
     .trim()
     .isIn(["ETAPA 1", "ETAPA 2", "ETAPA 3", "CULMINADO"]),
@@ -526,8 +526,8 @@ exports.nuevoFortalecimiento = [
       tipoActividad: req.body.tipoActividad,
       tipoOSP: req.body.tipoOSP,
       proyectoCFG: {
-        etapa: req.body.etapa,
-        tipo: req.body.tipo,
+        etapa: req.body.proyectoCFG.etapa,
+        tipo: req.body.proyectoCFG.tipo,
       },
     };
 
@@ -622,7 +622,7 @@ exports.actualizarFortalecimiento = [
       "GRUPO DE INTERCAMBIO SOLIDARIO",
       "COOPERATIVAS",
     ]),
-  body("proyectoCFG", "Tipo de proyecto CFG invalido")
+  body("proyectoCFG.tipo", "Tipo de proyecto CFG invalido")
     .optional({ values: "falsy" })
     .trim()
     .isIn([
@@ -642,7 +642,7 @@ exports.actualizarFortalecimiento = [
       "VIALIDAD",
       "VIVIENDA",
     ]),
-  body("etapaCFG", "Etapa del proyecto CFG invalida")
+  body("proyectoCFG.etapa", "Etapa del proyecto CFG invalida")
     .optional({ values: "falsy" })
     .trim()
     .isIn(["ETAPA 1", "ETAPA 2", "ETAPA 3", "CULMINADO"]),
@@ -661,8 +661,8 @@ exports.actualizarFortalecimiento = [
       tipoActividad: req.body.tipoActividad,
       tipoOSP: req.body.tipoOSP,
       proyectoCFG: {
-        etapa: req.body.etapa,
-        tipo: req.body.tipo,
+        etapa: req.body.proyectoCFG.etapa,
+        tipo: req.body.proyectoCFG.tipo,
       },
     };
 
@@ -951,14 +951,14 @@ exports.nuevoComunicaciones = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("notas")
+  body("prensa.notas")
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
     .withMessage("El campo 'notas' debe ser mayor a 0")
     .isInt({ max: 999999999 })
     .withMessage("El campo 'notas' no debe exceder los 999999999"),
-  body("resenas")
+  body("prensa.resenas")
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
@@ -988,7 +988,10 @@ exports.nuevoComunicaciones = [
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
-      prensa: { notas: req.body.notas, resenas: req.body.resenas },
+      prensa: {
+        notas: req.body.prensa.notas,
+        resenas: req.body.prensa.resenas,
+      },
       redes: [...req.body.redes],
     };
 
@@ -1027,14 +1030,14 @@ exports.actualizarComunicaciones = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("notas")
+  body("prensa.notas")
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
     .withMessage("El campo 'notas' debe ser mayor a 0")
     .isInt({ max: 999999999 })
     .withMessage("El campo 'notas' no debe exceder los 999999999"),
-  body("resenas")
+  body("prensa.resenas")
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
@@ -1064,7 +1067,10 @@ exports.actualizarComunicaciones = [
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
-      prensa: { notas: req.body.notas, resenas: req.body.resenas },
+      prensa: {
+        notas: req.body.prensa.notas,
+        resenas: req.body.prensa.resenas,
+      },
       redes: [...req.body.redes],
     };
 
