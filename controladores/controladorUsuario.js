@@ -194,10 +194,14 @@ exports.iniciarSesion = asyncHandler(async function (req, res, next) {
         }
       );
       //Si todo tuvo exito
-      usr.clave = undefined;
       return res.status(200).json({
+        apellido: usr.apellido,
+        cc: usr.cc,
+        cedula: usr.cedula,
+        id: usr._id,
+        nombre: usr.nombre,
+        rol: usr.rol,
         token,
-        usuario: usr,
       });
     }
   }
