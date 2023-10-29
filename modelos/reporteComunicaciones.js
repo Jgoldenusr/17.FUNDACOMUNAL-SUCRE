@@ -23,6 +23,6 @@ const ReporteComunicaciones = new Esquema({
 });
 
 module.exports = ReporteBase.discriminator(
-  "COMUNICACIONES",
+  "comunicaciones",
   ReporteComunicaciones
 );

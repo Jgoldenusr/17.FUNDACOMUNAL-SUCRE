@@ -8,7 +8,4 @@ const ReporteCasoAdmin = new Esquema({
   tipoCaso: { type: String, required: true },
 });
 
-module.exports = ReporteBase.discriminator(
-  "CASO ADMINISTRATIVO",
-  ReporteCasoAdmin
-);
+module.exports = ReporteBase.discriminator("casoadmin", ReporteCasoAdmin);

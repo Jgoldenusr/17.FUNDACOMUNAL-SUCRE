@@ -18,6 +18,6 @@ const ReporteFortalecimiento = new Esquema({
 });
 
 module.exports = ReporteBase.discriminator(
-  "FORTALECIMIENTO",
+  "fortalecimiento",
   ReporteFortalecimiento
 );

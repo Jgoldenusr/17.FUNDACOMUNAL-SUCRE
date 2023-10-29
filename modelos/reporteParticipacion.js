@@ -9,6 +9,6 @@ const ReporteParticipacion = new Esquema({
 });
 
 module.exports = ReporteBase.discriminator(
-  "PARTICIPACION",
+  "participacion",
   ReporteParticipacion
 );

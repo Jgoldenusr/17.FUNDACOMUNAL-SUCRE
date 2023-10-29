@@ -17,4 +17,4 @@ const ReporteFormacion = new Esquema({
   verificacion: { type: String, required: true },
 });
 
-module.exports = ReporteBase.discriminator("FORMACION", ReporteFormacion);
+module.exports = ReporteBase.discriminator("formacion", ReporteFormacion);

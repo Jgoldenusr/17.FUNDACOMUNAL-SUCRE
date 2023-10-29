@@ -8,4 +8,4 @@ const ReporteIncidencias = new Esquema({
   tipoIncidencia: { type: String, required: true },
 });
 
-module.exports = ReporteBase.discriminator("INCIDENCIAS", ReporteIncidencias);
+module.exports = ReporteBase.discriminator("incidencias", ReporteIncidencias);

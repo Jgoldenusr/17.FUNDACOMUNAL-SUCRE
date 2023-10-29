@@ -11,4 +11,4 @@ const ReporteInterno = new Esquema({
   fechaVencimiento: { type: Date, default: Date.now() },
 });
 
-module.exports = ReporteBase.discriminator("INTERNO", ReporteInterno);
+module.exports = ReporteBase.discriminator("interno", ReporteInterno);
