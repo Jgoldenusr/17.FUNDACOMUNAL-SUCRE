@@ -27,12 +27,18 @@ exports.listarReportes = asyncHandler(async function (req, res, next) {
 });
 
 exports.buscarReporte = asyncHandler(async function (req, res, next) {
-  //Se busca el reporte (por el parametro pasado por url)
-  const nuevoReporte = await Reporte.findById(req.params.id)
-    .populate("cc")
-    .populate("usuario")
-    .exec();
-  //La funcion anterior no falla cuando no encuentra nada, sino que regresa null
+  const { poblar } = req.query; //se extraen los parametros de la consulta
+  let nuevoReporte;
+  //Se realiza la consulta en funcion de los parametros
+  if (poblar) {
+    nuevoReporte = await Reporte.findById(req.params.id)
+      .populate("cc")
+      .populate("usuario")
+      .exec();
+  } else {
+    nuevoReporte = await Reporte.findById(req.params.id).exec();
+  }
+  //La funcion findByID no falla cuando no encuentra nada, sino que regresa null
   if (nuevoReporte === null) {
     //Se verifica si 'nuevoReporte' es nulo
     return res
