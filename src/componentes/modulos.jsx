@@ -8,22 +8,27 @@ import Container from "react-bootstrap/Container";
 import Dropdown from "react-bootstrap/Dropdown";
 import Modal from "react-bootstrap/Modal";
 import Navbar from "react-bootstrap/Navbar";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Popover from "react-bootstrap/Popover";
 import Row from "react-bootstrap/Row";
+import Stack from "react-bootstrap/Stack";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faExclamationTriangle,
+  faEye,
   faDoorOpen,
   faFileCirclePlus,
   faFileLines,
+  faPencil,
   faPeopleGroup,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 
 const ContextoAutenticado = createContext({
-  miToken: null,
-  borrarToken: () => {},
-  buscarToken: () => {},
-  guardarToken: () => {},
+  miUsuario: null,
+  borrarUsuario: () => {},
+  buscarUsuario: () => {},
+  guardarUsuario: () => {},
 });
 
 function AlertaBorrar({ realizarPeticion, setBorrar }) {
@@ -87,7 +92,7 @@ function AlertaError({ error }) {
 }
 
 function Cabecera() {
-  const { borrarToken } = useContext(ContextoAutenticado);
+  const { borrarUsuario } = useContext(ContextoAutenticado);
   /* jshint ignore:start */
   return (
     <Navbar expand="md" bg="light" className="Lato shadow p-3">
@@ -110,8 +115,8 @@ function Cabecera() {
             <Link to="ccs/nuevo" replace={true} className="noDeco">
               <Dropdown.Item as="button">Consejo Comunal</Dropdown.Item>
             </Link>
-            <Link to="promotores/nuevo" replace={true} className="noDeco">
-              <Dropdown.Item as="button">Promotor</Dropdown.Item>
+            <Link to="usuarios/nuevo" replace={true} className="noDeco">
+              <Dropdown.Item as="button">Usuario</Dropdown.Item>
             </Link>
             <Link to="reportes/nuevo" replace={true} className="noDeco">
               <Dropdown.Item as="button">Reporte</Dropdown.Item>
@@ -128,15 +133,15 @@ function Cabecera() {
             <Link to="ccs" replace={true} className="noDeco">
               <Dropdown.Item as="button">Consejo Comunales</Dropdown.Item>
             </Link>
-            <Link to="promotores" replace={true} className="noDeco">
-              <Dropdown.Item as="button">Promotores</Dropdown.Item>
+            <Link to="usuarios" replace={true} className="noDeco">
+              <Dropdown.Item as="button">Usuarios</Dropdown.Item>
             </Link>
-            <Link to="/" replace={true} className="noDeco">
+            <Link to="reportes" replace={true} className="noDeco">
               <Dropdown.Item as="button">Reportes</Dropdown.Item>
             </Link>
           </Dropdown.Menu>
         </Dropdown>
-        <Button variant="danger" onClick={borrarToken}>
+        <Button variant="danger" onClick={borrarUsuario}>
           <FontAwesomeIcon icon={faDoorOpen} />
           {" Salir"}
         </Button>
@@ -193,12 +198,39 @@ function Spinner() {
   /* jshint ignore:end */
 }
 
+function Overlay({ children, id, url }) {
+  /* jshint ignore:start */
+  return (
+    <OverlayTrigger
+      trigger="click"
+      placement="bottom"
+      rootClose
+      overlay={
+        <Popover id="popover-positioned-bottom">
+          <Stack direction="horizontal" className="p-3">
+            <Link to={id} className="noDeco">
+              <FontAwesomeIcon className="cursor iconBtn me-3" icon={faEye} />
+            </Link>
+            <Link to={`${id}/editar`} className="noDeco">
+              <FontAwesomeIcon className="cursor iconBtn" icon={faPencil} />
+            </Link>
+          </Stack>
+        </Popover>
+      }
+    >
+      {children}
+    </OverlayTrigger>
+  );
+  /* jshint ignore:end */
+}
+
 export {
   ContextoAutenticado,
   AlertaError,
   AlertaBorrar,
   Cabecera,
   Envoltorio,
-  Spinner,
   Error404,
+  Overlay,
+  Spinner,
 };

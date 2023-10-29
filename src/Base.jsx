@@ -5,14 +5,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Stack from "react-bootstrap/Stack";
 import FormularioCC from "./componentes/formularioCC";
 import FormularioIngreso from "./componentes/formularioIngreso";
-import FormularioPromotor from "./componentes/formularioPromotor";
-import FormularioRegistro from "./componentes/formularioRegistro";
 import FormularioReporte from "./componentes/formularioReporte";
+import FormularioUsuario from "./componentes/formularioUsuario";
 import MostrarCCS from "./componentes/mostrarCCS";
-import MostrarPromotores from "./componentes/mostrarPromotores";
+import MostrarUsuarios from "./componentes/mostrarUsuarios";
 import MostrarReportes from "./componentes/mostrarReportes";
 import VerCC from "./componentes/verCC";
-import VerPromotor from "./componentes/verPromotor";
+import VerUsuario from "./componentes/verUsuario";
 import VerReporte from "./componentes/verReporte";
 import {
   ContextoAutenticado,
@@ -21,57 +20,56 @@ import {
 } from "./componentes/modulos";
 
 function Base() {
-  const [miToken, setMiToken] = useState(null);
+  const [miUsuario, setMiUsuario] = useState(null);
 
   useEffect(() => {
-    buscarToken();
+    buscarUsuario();
   }, []);
 
-  const borrarToken = function () {
-    setMiToken(null);
-    localStorage.removeItem("miToken");
+  const borrarUsuario = function () {
+    setMiUsuario(null);
+    localStorage.removeItem("miUsuario");
   };
 
-  const buscarToken = function () {
-    const tokenGuardado = localStorage.getItem("miToken");
-    if (tokenGuardado) {
-      setMiToken(tokenGuardado);
+  const buscarUsuario = function () {
+    const usuarioGuardado = localStorage.getItem("miUsuario");
+    if (usuarioGuardado) {
+      setMiUsuario(JSON.parse(usuarioGuardado));
     }
   };
 
-  const guardarToken = function (token) {
-    setMiToken(token);
-    localStorage.setItem("miToken", token);
+  const guardarUsuario = function (usr) {
+    setMiUsuario(usr);
+    localStorage.setItem("miUsuario", JSON.stringify(usr));
   };
 
   /* jshint ignore:start */
   return (
     <ContextoAutenticado.Provider
-      value={{ miToken, borrarToken, buscarToken, guardarToken }}
+      value={{ miUsuario, borrarUsuario, buscarUsuario, guardarUsuario }}
     >
       <BrowserRouter>
         <Stack direction="vertical" className="Lato gradient min-vh-100">
           <Routes>
-            {miToken ? (
+            {miUsuario ? (
               /* prettier-ignore */
               <Route element={<Envoltorio />}>
-                <Route path="/" element={<MostrarReportes />} />
                 <Route path="ccs" element={<MostrarCCS />} />
                 <Route path="ccs/nuevo" element={<FormularioCC />} />
                 <Route path="ccs/:id" element={<VerCC />} />
                 <Route path="ccs/:id/editar" element={<FormularioCC />} />
-                <Route path="promotores" element={<MostrarPromotores />} />
-                <Route path="promotores/nuevo" element={<FormularioPromotor />}/>
-                <Route path="promotores/:id" element={<VerPromotor />} />
-                <Route path="promotores/:id/editar" element={<FormularioPromotor />}/>
+                <Route path="usuarios" element={<MostrarUsuarios />} />
+                <Route path="usuarios/nuevo" element={<FormularioUsuario />}/>
+                <Route path="usuarios/:id" element={<VerUsuario />} />
+                <Route path="usuarios/:id/editar" element={<FormularioUsuario />}/>
+                <Route path="/reportes" element={<MostrarReportes />} />
                 <Route path="reportes/nuevo" element={<FormularioReporte />} />
-                <Route path="/:id" element={<VerReporte />} />
-                <Route path="/:id/editar" element={<FormularioReporte />} />
+                <Route path="reportes/:id" element={<VerReporte />} /> 
+                <Route path="reportes/:id/editar" element={<FormularioReporte />} />
                 <Route path="*" element={<Error404 />} />
               </Route>
             ) : (
               <Route>
-                <Route path="registrarse" element={<FormularioRegistro />} />
                 <Route path="*" element={<FormularioIngreso />} />
               </Route>
             )}

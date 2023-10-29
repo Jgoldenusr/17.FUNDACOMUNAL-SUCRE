@@ -5,21 +5,21 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
-import { ContextoAutenticado, Error404, Spinner } from "./modulos";
+import { ContextoAutenticado, Error404, Overlay, Spinner } from "./modulos";
 import { DateTime } from "luxon";
 
 function MostrarReportes() {
   const [reportes, setReportes] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
-  const { miToken } = useContext(ContextoAutenticado);
+  const { miUsuario } = useContext(ContextoAutenticado);
 
   useEffect(() => {
     async function realizarPeticion() {
       const url = "http://localhost:4000/reportes";
       const peticion = {
         headers: new Headers({
-          Authorization: `Bearer ${miToken}`,
+          Authorization: `Bearer ${miUsuario.token}`,
         }),
         mode: "cors",
       };
@@ -54,13 +54,13 @@ function MostrarReportes() {
           reportes.map((reporte) => {
             return (
               <Col key={reporte._id}>
-                <Link to={`${reporte._id}`} className="noDeco">
-                  <Card className="text-center mb-3">
-                    <Card.Header>{reporte.tipo}</Card.Header>
+                <Overlay id={reporte._id}>
+                  <Card className="cursor text-center mb-3">
+                    <Card.Header>{reporte.tipo.toUpperCase()}</Card.Header>
                     <ListGroup variant="flush">
                       <ListGroup.Item className="text-truncate">
-                        {`${reporte.promotor.apellido} \
-                        ${reporte.promotor.nombre}`}
+                        {`${reporte.usuario.apellido} \
+                        ${reporte.usuario.nombre}`}
                       </ListGroup.Item>
                       <ListGroup.Item className="text-truncate">
                         {reporte.cc.nombre}
@@ -72,7 +72,7 @@ function MostrarReportes() {
                       )}
                     </Card.Footer>
                   </Card>
-                </Link>
+                </Overlay>
               </Col>
             );
           })}

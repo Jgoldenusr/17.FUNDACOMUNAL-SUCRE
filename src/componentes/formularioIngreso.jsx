@@ -15,7 +15,7 @@ function FormularioIngreso() {
     usuario: "",
     clave: "",
   });
-  const { guardarToken } = useContext(ContextoAutenticado);
+  const { guardarUsuario } = useContext(ContextoAutenticado);
   const navegarHasta = useNavigate();
 
   const actualizarFormulario = function (evento) {
@@ -41,7 +41,7 @@ function FormularioIngreso() {
       const respuesta = await fetch(url, peticion);
       if (respuesta.ok) {
         const recibido = await respuesta.json();
-        guardarToken(recibido.token);
+        guardarUsuario(recibido);
         navegarHasta("/", { replace: true });
       } else {
         const recibido = await respuesta.json();
@@ -99,14 +99,6 @@ function FormularioIngreso() {
                       >
                         Ingresar
                       </Button>
-                    </Col>
-                  </Row>
-                  <Row className="justify-content-center">
-                    <Col xs={"auto"}>
-                      <p>
-                        ¿No tiene cuenta?{" "}
-                        <Link to="/registrarse">Registrese</Link>
-                      </p>
                     </Col>
                   </Row>
                 </Container>

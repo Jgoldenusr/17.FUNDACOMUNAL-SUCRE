@@ -8,24 +8,27 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import { ContextoAutenticado, AlertaError, Error404, Spinner } from "./modulos";
 
+const formularioVacio = {
+  usuario: { cedula: "" },
+  comuna: "",
+  estados: "",
+  localidad: "",
+  municipios: "",
+  nombre: "",
+  parroquias: "",
+  redi: "ORIENTAL",
+  situr: "",
+  tipo: "URBANO",
+};
+
 function FormularioCC() {
   const { id } = useParams();
-  const formularioVacio = {
-    tipo: "",
-    redi: "",
-    estados: "",
-    municipios: "",
-    parroquias: "",
-    localidad: "",
-    nombre: "",
-    situr: "",
-  };
   const [error, setError] = useState(null);
   const [errorDeValidacion, setErrorDeValidacion] = useState(null);
   const [cargando, setCargando] = useState(id ? true : false);
   const [subiendo, setSubiendo] = useState(false);
   const [formulario, setFormulario] = useState({ ...formularioVacio });
-  const { miToken } = useContext(ContextoAutenticado);
+  const { miUsuario } = useContext(ContextoAutenticado);
   const navegarHasta = useNavigate();
 
   useEffect(() => {
@@ -33,7 +36,7 @@ function FormularioCC() {
       const url = "http://localhost:4000/ccs/" + id;
       const peticion = {
         headers: new Headers({
-          Authorization: `Bearer ${miToken}`,
+          Authorization: `Bearer ${miUsuario.token}`,
         }),
         mode: "cors",
       };
@@ -59,11 +62,21 @@ function FormularioCC() {
       setFormulario({ ...formularioVacio });
     }
   }, [id]);
-
-  const actualizarFormulario = function (evento) {
-    setFormulario({ ...formulario, [evento.target.id]: evento.target.value });
+  const actualizarFormulario = function (propiedad) {
+    return function (evento) {
+      if (propiedad) {
+        setFormulario({
+          ...formulario,
+          [propiedad]: { [evento.target.id]: evento.target.value },
+        });
+      } else {
+        setFormulario({
+          ...formulario,
+          [evento.target.id]: evento.target.value,
+        });
+      }
+    };
   };
-
   const realizarPeticion = async function (evento) {
     evento.preventDefault();
     setSubiendo(true);
@@ -77,7 +90,7 @@ function FormularioCC() {
       body: JSON.stringify(formulario),
       headers: new Headers({
         "Content-Type": "application/json",
-        Authorization: `Bearer ${miToken}`,
+        Authorization: `Bearer ${miUsuario.token}`,
       }),
       mode: "cors",
       method: id ? "PUT" : "POST",
@@ -87,7 +100,7 @@ function FormularioCC() {
       const respuesta = await fetch(url, peticion);
       if (respuesta.ok) {
         const recibido = await respuesta.json();
-        navegarHasta(`/ccs/${recibido._id}`, { replace: true });
+        navegarHasta(`/ccs/${recibido.id}`, { replace: true });
       } else {
         const recibido = await respuesta.json();
         setErrorDeValidacion(recibido.error);
@@ -124,13 +137,12 @@ function FormularioCC() {
                         size="sm"
                         id="tipo"
                         value={formulario.tipo}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario()}
                       >
-                        <option>Seleccione un tipo</option>
+                        <option value="URBANO">URBANO</option>
                         <option value="INDIGENA">INDIGENA</option>
                         <option value="MIXTO">MIXTO</option>
                         <option value="RURAL">RURAL</option>
-                        <option value="URBANO">URBANO</option>
                       </Form.Select>
                     </Col>
                   </Row>
@@ -141,9 +153,9 @@ function FormularioCC() {
                         size="sm"
                         id="redi"
                         value={formulario.redi}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario()}
                       >
-                        <option>Seleccione un redi</option>
+                        <option value="ORIENTAL">ORIENTAL</option>
                         <option value="ANDES">ANDES</option>
                         <option value="CAPITAL">CAPITAL</option>
                         <option value="CENTRAL">CENTRAL</option>
@@ -151,7 +163,6 @@ function FormularioCC() {
                         <option value="INSULAR">INSULAR</option>
                         <option value="LLANOS">LLANOS</option>
                         <option value="OCCIDENTAL">OCCIDENTAL</option>
-                        <option value="ORIENTAL">ORIENTAL</option>
                       </Form.Select>
                     </Col>
                   </Row>
@@ -163,7 +174,7 @@ function FormularioCC() {
                         type="text"
                         id="estados"
                         value={formulario.estados}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario()}
                       />
                     </Col>
                   </Row>
@@ -175,7 +186,7 @@ function FormularioCC() {
                         type="text"
                         id="municipios"
                         value={formulario.municipios}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario()}
                       />
                     </Col>
                   </Row>
@@ -187,7 +198,7 @@ function FormularioCC() {
                         type="text"
                         id="parroquias"
                         value={formulario.parroquias}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario()}
                       />
                     </Col>
                   </Row>
@@ -199,7 +210,21 @@ function FormularioCC() {
                         type="text"
                         id="localidad"
                         value={formulario.localidad}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario()}
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="justify-content-center mb-3">
+                    <Col xs={12} md={10}>
+                      <Form.Label>
+                        Comuna donde se incluye el C.C (Opcional)
+                      </Form.Label>
+                      <Form.Control
+                        size="sm"
+                        type="text"
+                        id="comuna"
+                        value={formulario.comuna}
+                        onChange={actualizarFormulario()}
                       />
                     </Col>
                   </Row>
@@ -211,7 +236,7 @@ function FormularioCC() {
                         type="text"
                         id="nombre"
                         value={formulario.nombre}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario()}
                       />
                     </Col>
                   </Row>
@@ -223,7 +248,19 @@ function FormularioCC() {
                         type="text"
                         id="situr"
                         value={formulario.situr}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario()}
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="justify-content-center mb-3">
+                    <Col xs={12} md={10}>
+                      <Form.Label>Cedula del usuario asociado</Form.Label>
+                      <Form.Control
+                        size="sm"
+                        type="text"
+                        id="cedula"
+                        value={formulario.usuario.cedula}
+                        onChange={actualizarFormulario("usuario")}
                       />
                     </Col>
                   </Row>
