@@ -188,10 +188,7 @@ exports.iniciarSesion = asyncHandler(async function (req, res, next) {
       //El token contiene la id del usuario y su clave encriptada
       const token = jwt.sign(
         { _id: usr._id, clave: usr.clave },
-        process.env.CLAVE_SECRETA,
-        {
-          expiresIn: "12h",
-        }
+        process.env.CLAVE_SECRETA
       );
       //Si todo tuvo exito
       return res.status(200).json({
