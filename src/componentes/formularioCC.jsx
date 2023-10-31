@@ -11,14 +11,112 @@ import { ContextoAutenticado, AlertaError, Error404, Spinner } from "./modulos";
 const formularioVacio = {
   usuario: { cedula: "" },
   comuna: "",
-  estados: "",
+  estados: "SUCRE",
   localidad: "",
   municipios: "",
   nombre: "",
   parroquias: "",
   redi: "ORIENTAL",
   situr: "",
-  tipo: "URBANO",
+  tipo: "",
+};
+
+const Opciones = {
+  tipo: ["INDIGENA", "MIXTO", "RURAL", "URBANO"],
+  redi: [
+    "ANDES",
+    "CAPITAL",
+    "CENTRAL",
+    "GUAYANA",
+    "INSULAR",
+    "LLANOS",
+    "OCCIDENTAL",
+    "ORIENTAL",
+  ],
+  municipios: [
+    "ANDRES ELOY BLANCO",
+    "ANDRES MATA",
+    "ARISMENDI",
+    "BENITEZ",
+    "BERMUDEZ",
+    "BOLIVAR",
+    "CAJIGAL",
+    "CRUZ SALMERON ACOSTA",
+    "LIBERTADOR",
+    "MARIÑO",
+    "MEJIA",
+    "MONTES",
+    "RIBERO",
+    "SUCRE",
+    "VALDEZ",
+  ],
+  parroquias: {
+    ["ANDRES ELOY BLANCO"]: ["MARIÑO", "ROMULO GALLEGOS"],
+    ["ANDRES MATA"]: ["SAN JOSE DE AEROCUAR", "TAVERA ACOSTA"],
+    ["ARISMENDI"]: [
+      "RIO CARIBE",
+      "ANTONIO JOSE DE SUCRE",
+      "EL MORRO DE PUERTO SANTO",
+      "PUERTO SANTO",
+      "SAN JUAN DE LAS GALDONAS",
+    ],
+    ["BENITEZ"]: [
+      "EL PILAR",
+      "EL RINCON",
+      "GENERAL FRANCISCO ANTONIO VAZQUEZ",
+      "GUARAUNOS",
+      "TUNAPUICITO",
+      "UNION",
+    ],
+    ["BERMUDEZ"]: [
+      "SANTA CATALINA",
+      "SANTA ROSA",
+      "SANTA TERESA",
+      "BOLIVAR",
+      "MARACAPANA",
+    ],
+    ["BOLIVAR"]: ["MARIGUITAR"],
+    ["CAJIGAL"]: ["LIBERTAD", "EL PAUJIL", "YAGUARAPARO"],
+    ["CRUZ SALMERON ACOSTA"]: [
+      "CRUZ SALMERON ACOSTA",
+      "CHACOPATA",
+      "MANICUARE",
+    ],
+    ["LIBERTADOR"]: ["TUNAPUY", "CAMPO ELIAS"],
+    ["MARIÑO"]: [
+      "IRAPA",
+      "CAMPO CLARO",
+      "MARAVAL",
+      "SAN ANTONIO DE IRAPA",
+      "SORO",
+    ],
+    ["MEJIA"]: ["MEJIA"],
+    ["MONTES"]: [
+      "CUMANACOA",
+      "ARENAS",
+      "ARICAGUA",
+      "COCOLLAR",
+      "SAN FERNANDO",
+      "SAN LORENZO",
+    ],
+    ["RIBERO"]: [
+      "VILLA FRONTADO (MUELLE DE CARIACO)",
+      "CATUARO",
+      "RENDON",
+      "SAN CRUZ",
+      "SANTA MARIA",
+    ],
+    ["SUCRE"]: [
+      "ALTAGRACIA",
+      "SANTA INES",
+      "VALENTIN VALIENTE",
+      "AYACUCHO",
+      "SAN JUAN",
+      "RAUL LEONI",
+      "GRAN MARISCAL",
+    ],
+    ["VALDEZ"]: ["CRISTOBAL COLON", "BIDEAU", "PUNTA DE PIEDRAS", "GUIRIA"],
+  },
 };
 
 function FormularioCC() {
@@ -70,10 +168,18 @@ function FormularioCC() {
           [propiedad]: { [evento.target.id]: evento.target.value },
         });
       } else {
-        setFormulario({
-          ...formulario,
-          [evento.target.id]: evento.target.value,
-        });
+        if (evento.target.id === "municipios") {
+          setFormulario({
+            ...formulario,
+            parroquias: "",
+            [evento.target.id]: evento.target.value,
+          });
+        } else {
+          setFormulario({
+            ...formulario,
+            [evento.target.id]: evento.target.value,
+          });
+        }
       }
     };
   };
@@ -132,6 +238,20 @@ function FormularioCC() {
                 <Container fluid>
                   <Row className="justify-content-center mb-3">
                     <Col xs={12} md={10}>
+                      <Form.Label>Estado donde se ubica el C.C</Form.Label>
+                      <Form.Select
+                        disabled
+                        size="sm"
+                        id="estados"
+                        value={formulario.estados}
+                        onChange={actualizarFormulario()}
+                      >
+                        <option value="SUCRE">SUCRE</option>
+                      </Form.Select>
+                    </Col>
+                  </Row>
+                  <Row className="justify-content-center mb-3">
+                    <Col xs={12} md={10}>
                       <Form.Label>Tipo de consejo comunal</Form.Label>
                       <Form.Select
                         size="sm"
@@ -139,10 +259,12 @@ function FormularioCC() {
                         value={formulario.tipo}
                         onChange={actualizarFormulario()}
                       >
-                        <option value="URBANO">URBANO</option>
-                        <option value="INDIGENA">INDIGENA</option>
-                        <option value="MIXTO">MIXTO</option>
-                        <option value="RURAL">RURAL</option>
+                        <option value="">SELECCIONE UN TIPO</option>
+                        {Opciones.tipo.map((opcion) => (
+                          <option key={opcion} value={opcion}>
+                            {opcion}
+                          </option>
+                        ))}
                       </Form.Select>
                     </Col>
                   </Row>
@@ -150,56 +272,58 @@ function FormularioCC() {
                     <Col xs={12} md={10}>
                       <Form.Label>Redi del consejo comunal</Form.Label>
                       <Form.Select
+                        disabled
                         size="sm"
                         id="redi"
                         value={formulario.redi}
                         onChange={actualizarFormulario()}
                       >
-                        <option value="ORIENTAL">ORIENTAL</option>
-                        <option value="ANDES">ANDES</option>
-                        <option value="CAPITAL">CAPITAL</option>
-                        <option value="CENTRAL">CENTRAL</option>
-                        <option value="GUAYANA">GUAYANA</option>
-                        <option value="INSULAR">INSULAR</option>
-                        <option value="LLANOS">LLANOS</option>
-                        <option value="OCCIDENTAL">OCCIDENTAL</option>
+                        <option value="">SELECCIONE UN REDI</option>
+                        {Opciones.redi.map((opcion) => (
+                          <option key={opcion} value={opcion}>
+                            {opcion}
+                          </option>
+                        ))}
                       </Form.Select>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
                     <Col xs={12} md={10}>
-                      <Form.Label>Estado donde se ubica el C.C</Form.Label>
-                      <Form.Control
-                        size="sm"
-                        type="text"
-                        id="estados"
-                        value={formulario.estados}
-                        onChange={actualizarFormulario()}
-                      />
-                    </Col>
-                  </Row>
-                  <Row className="justify-content-center mb-3">
-                    <Col xs={12} md={10}>
                       <Form.Label>Municipio donde se ubica el C.C</Form.Label>
-                      <Form.Control
+                      <Form.Select
                         size="sm"
-                        type="text"
                         id="municipios"
                         value={formulario.municipios}
                         onChange={actualizarFormulario()}
-                      />
+                      >
+                        <option value="">SELECCIONE UN MUNICIPIO</option>
+                        {Opciones.municipios.map((opcion) => (
+                          <option key={opcion} value={opcion}>
+                            {opcion}
+                          </option>
+                        ))}
+                      </Form.Select>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
                     <Col xs={12} md={10}>
                       <Form.Label>Parroquia donde se ubica el C.C</Form.Label>
-                      <Form.Control
+                      <Form.Select
                         size="sm"
-                        type="text"
                         id="parroquias"
                         value={formulario.parroquias}
                         onChange={actualizarFormulario()}
-                      />
+                      >
+                        <option value="">SELECCIONE UNA PARROQUIA</option>
+                        {formulario.municipios &&
+                          Opciones.parroquias[`${formulario.municipios}`].map(
+                            (opcion) => (
+                              <option key={opcion} value={opcion}>
+                                {opcion}
+                              </option>
+                            )
+                          )}
+                      </Form.Select>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
