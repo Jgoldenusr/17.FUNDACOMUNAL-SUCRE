@@ -101,11 +101,11 @@ function VerCC() {
                 <FontAwesomeIcon icon={faLocation} className="me-2" />
                 {`LOCALIDAD: ${cc.localidad}`}
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item variant={cc.estaRenovado ? "success" : "danger"}>
                 <FontAwesomeIcon icon={faListCheck} className="me-2" />
                 {`RENOVADO: ${cc.estaRenovado ? "SI" : "NO"}`}
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item variant={cc.estaVigente ? "success" : "danger"}>
                 <FontAwesomeIcon icon={faCalendarCheck} className="me-2" />
                 {`VIGENTE: ${cc.estaVigente ? "SI" : "NO"}`}
               </ListGroup.Item>
