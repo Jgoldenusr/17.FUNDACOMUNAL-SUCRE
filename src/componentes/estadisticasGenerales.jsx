@@ -3,6 +3,7 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
+import Stack from "react-bootstrap/Stack";
 import {
   ContextoAutenticado,
   Error404,
@@ -11,6 +12,8 @@ import {
   GraficoDePastel,
   Spinner,
 } from "./modulos";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLocation, faPeopleRoof } from "@fortawesome/free-solid-svg-icons";
 
 function EstadisticasGenerales() {
   const [dataCCS, setDataCCS] = useState([]);
@@ -110,6 +113,56 @@ function EstadisticasGenerales() {
     <Error404 error={error} />
   ) : (
     <Container fluid className="p-5">
+      <Row className="justify-content-center">
+        <Col xs={3}>
+          <Card
+            border="danger"
+            bg="danger"
+            text="light"
+            className="text-center mb-3"
+          >
+            <Card.Body>
+              <Stack direction="horizontal" gap={3}>
+                <FontAwesomeIcon className="me-auto fs-1" icon={faLocation} />
+                <div className="text-end">
+                  <div className="fs-4">
+                    <strong>
+                      {dataCCS.reduce((acc, item) => acc + item.ccs, 0)}
+                    </strong>
+                  </div>
+                  <div>
+                    <strong>Consejos comunales</strong>
+                  </div>
+                </div>
+              </Stack>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col xs={3}>
+          <Card
+            border="warning"
+            bg="warning"
+            text="light"
+            className="text-center mb-3"
+          >
+            <Card.Body>
+              <Stack direction="horizontal" gap={3}>
+                <FontAwesomeIcon className="me-auto fs-1" icon={faPeopleRoof} />
+                <div className="text-end">
+                  <div className="fs-4">
+                    <strong>
+                      {dataCCS.reduce((acc, item) => acc + item.comunas, 0)}
+                    </strong>
+                  </div>
+                  <div>
+                    <strong>Comunas registradas</strong>
+                  </div>
+                </div>
+              </Stack>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
       <Row className="justify-content-center">
         <Col xs={3}>
           <Card className="text-center mb-3">
