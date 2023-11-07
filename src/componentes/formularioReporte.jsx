@@ -753,7 +753,30 @@ function FormularioReporte() {
                       </Row>
                     </>
                   ) : tipo === "comunicaciones" ? (
-                    <></>
+                    <>
+                      <Row className="justify-content-center mb-3">
+                        <Col xs={6} md={5}>
+                          <Form.Label>Notas de prensa (opcional)</Form.Label>
+                          <Form.Control
+                            size="sm"
+                            type="text"
+                            id="notas"
+                            value={formulario.prensa.notas}
+                            onChange={actualizarFormulario("prensa")}
+                          />
+                        </Col>
+                        <Col xs={6} md={5}>
+                          <Form.Label>Reseñas de prensa (opcional)</Form.Label>
+                          <Form.Control
+                            size="sm"
+                            type="text"
+                            id="resenas"
+                            value={formulario.prensa.resenas}
+                            onChange={actualizarFormulario("prensa")}
+                          />
+                        </Col>
+                      </Row>
+                    </>
                   ) : (
                     ""
                   )}

@@ -294,9 +294,4 @@ function VerReporte() {
   /* jshint ignore:end */
 }
 
-//create a react bootstrap card with a list group
 export default VerReporte;
-
-/* 
-              
-*/
