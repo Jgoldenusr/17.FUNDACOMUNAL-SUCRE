@@ -4,11 +4,14 @@ const controlador = require("../controladores/controladorReporte");
 const permisos = require("../config/permisos");
 
 enrutador.use(permisos.autenticarToken);
+
 enrutador.use(permisos.autorizarRol);
 
 enrutador.delete("/:id", controlador.borrarReporte);
 
 enrutador.get("/", controlador.listarReportes);
+
+enrutador.get("/estadisticas", controlador.estadisticas);
 
 enrutador.get("/:id", controlador.buscarReporte);
 

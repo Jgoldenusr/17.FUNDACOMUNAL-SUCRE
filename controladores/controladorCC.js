@@ -157,6 +157,42 @@ exports.buscarCC = asyncHandler(async function (req, res, next) {
   }
 });
 
+exports.estadisticas = asyncHandler(async function (req, res, next) {
+  const conteoCC = await CC.aggregate()
+    .group({
+      _id: "$municipios",
+      ccs: { $count: {} },
+      comunas: {
+        $addToSet: {
+          $cond: [{ $eq: ["$comuna", ""] }, "$$REMOVE", "$comuna"],
+        },
+      },
+      noRenovados: { $sum: { $cond: ["$estaRenovado", 0, 1] } },
+      noVigentes: { $sum: { $cond: ["$estaVigente", 0, 1] } },
+      renovados: { $sum: { $cond: ["$estaRenovado", 1, 0] } },
+      vigentes: { $sum: { $cond: ["$estaVigente", 1, 0] } },
+    })
+    .addFields({
+      comunas: {
+        $size: "$comunas",
+      },
+    })
+    .project({
+      _id: 0,
+      municipio: "$_id",
+      ccs: 1,
+      comunas: 1,
+      noRenovados: 1,
+      noVigentes: 1,
+      renovados: 1,
+      vigentes: 1,
+    })
+    .sort({ municipio: -1 })
+    .exec();
+
+  return res.status(200).json(conteoCC);
+});
+
 exports.listarCC = asyncHandler(async function (req, res, next) {
   //Busca todos los CC y los regresa en un arreglo
   const listaCC = await CC.find({}).exec();

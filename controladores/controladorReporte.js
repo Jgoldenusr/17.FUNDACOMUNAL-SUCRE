@@ -6,9 +6,64 @@ const ReporteComunicaciones = require("../modelos/reporteComunicaciones");
 const ReporteFormacion = require("../modelos/reporteFormacion");
 const ReporteFortalecimiento = require("../modelos/reporteFortalecimiento");
 const ReporteIncidencias = require("../modelos/reporteIncidencias");
-const ReporteInterno = require("../modelos/reporteInterno");
+//const ReporteInterno = require("../modelos/reporteInterno");
 const ReporteParticipacion = require("../modelos/reporteParticipacion");
 const Validar = require("../config/validadores");
+const mongoose = require("mongoose");
+
+exports.borrarReporte = asyncHandler(async function (req, res, next) {
+  await Reporte.findByIdAndRemove(req.params.id).exec();
+  return res.status(200).json(req.params.id);
+});
+
+exports.buscarReporte = asyncHandler(async function (req, res, next) {
+  const { poblar } = req.query; //se extraen los parametros de la consulta
+  //Se arma la consulta inicial
+  let consulta = Reporte.findById(req.params.id);
+  //Solo se poblaran los campos de la consulta en funcion de los parametros
+  if (poblar) {
+    consulta.populate("cc").populate("usuario");
+  }
+  const nuevoReporte = await consulta.exec();
+  //La funcion findByID no falla cuando no encuentra nada, sino que regresa null
+  if (nuevoReporte === null) {
+    //Se verifica si 'nuevoReporte' es nulo
+    return res
+      .status(404)
+      .json({ error: { message: "No se encontro el reporte" } });
+  } else {
+    //Si no es nulo, se envia una respuesta exitosa
+    return res.status(200).json(nuevoReporte);
+  }
+});
+
+exports.estadisticas = asyncHandler(async function (req, res, next) {
+  const { desde, hasta, idusr, idcc } = req.query; //se extraen los parametros de la CONSULTA
+  let parametros = {};
+  //Se va agregando los parametros de la agregacion si aplican
+  if (desde && hasta) {
+    parametros.fecha = { $gte: new Date(desde), $lte: new Date(hasta) };
+  }
+  if (idusr) {
+    parametros.usuario = { $eq: new mongoose.Types.ObjectId(idusr) };
+  }
+  if (idcc) {
+    parametros.cc = { $eq: new mongoose.Types.ObjectId(idcc) };
+  }
+  //se construye la consulta
+  const conteoReportes = await Reporte.aggregate()
+    .match(parametros)
+    .addFields({
+      fecha: {
+        $dateToString: { format: "%Y-%m-%d", date: "$fecha" },
+      },
+    })
+    .group({ _id: "$fecha", reportes: { $count: {} } })
+    .project({ _id: 0, fecha: "$_id", reportes: 1 })
+    .sort({ fecha: 1 })
+    .exec();
+  return res.status(200).json(conteoReportes);
+});
 
 exports.listarReportes = asyncHandler(async function (req, res, next) {
   //Se buscan todos los reportes segun los mas recientes
@@ -24,35 +79,6 @@ exports.listarReportes = asyncHandler(async function (req, res, next) {
     //El arreglo esta vacio
     return res.status(502).json({ error: { message: "Lista vacia" } });
   }
-});
-
-exports.buscarReporte = asyncHandler(async function (req, res, next) {
-  const { poblar } = req.query; //se extraen los parametros de la consulta
-  let nuevoReporte;
-  //Se realiza la consulta en funcion de los parametros
-  if (poblar) {
-    nuevoReporte = await Reporte.findById(req.params.id)
-      .populate("cc")
-      .populate("usuario")
-      .exec();
-  } else {
-    nuevoReporte = await Reporte.findById(req.params.id).exec();
-  }
-  //La funcion findByID no falla cuando no encuentra nada, sino que regresa null
-  if (nuevoReporte === null) {
-    //Se verifica si 'nuevoReporte' es nulo
-    return res
-      .status(404)
-      .json({ error: { message: "No se encontro el reporte" } });
-  } else {
-    //Si no es nulo, se envia una respuesta exitosa
-    return res.status(200).json(nuevoReporte);
-  }
-});
-
-exports.borrarReporte = asyncHandler(async function (req, res, next) {
-  await Reporte.findByIdAndRemove(req.params.id).exec();
-  return res.status(200).json(req.params.id);
 });
 
 exports.nuevoParticipacion = [
