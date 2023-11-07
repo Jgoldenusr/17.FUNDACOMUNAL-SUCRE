@@ -12,7 +12,12 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
+import { ResponsiveTimeRange } from "@nivo/calendar";
+import { ResponsiveBar } from "@nivo/bar";
+import { ResponsivePie } from "@nivo/pie";
+import { BasicTooltip } from "@nivo/tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { DateTime, Interval } from "luxon";
 import {
   faExclamationTriangle,
   faEye,
@@ -188,6 +193,192 @@ function Error404({ error }) {
   );
 }
 
+function GraficoDeBarras({ data }) {
+  const truncarTexto = ({ textAnchor, textBaseline, value, x, y }) => {
+    const MAX_LINE_LENGTH = 16;
+    const MAX_LINES = 3;
+    const LENGTH_OF_ELLIPSIS = 4;
+    const TRIM_LENGTH = MAX_LINE_LENGTH * MAX_LINES - LENGTH_OF_ELLIPSIS;
+    const trimWordsOverLength = new RegExp(`^(.{${TRIM_LENGTH}}[^\\w]*).*`);
+    const groupWordsByLength = new RegExp(
+      `([^\\s].{0,${MAX_LINE_LENGTH}}(?=[\\s\\W]|$))`,
+      "gm"
+    );
+    /* jshint ignore:start */
+    const splitValues = value
+      .replace(trimWordsOverLength, "$1...")
+      .match(groupWordsByLength)
+      .slice(0, 2)
+      .map((val, i) => (
+        <tspan
+          key={val}
+          dy={12 * i}
+          x={-10}
+          style={{ fontFamily: "sans-serif", fontSize: "11px" }}
+        >
+          {val}
+        </tspan>
+      ));
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text alignmentBaseline={textBaseline} textAnchor={textAnchor}>
+          {splitValues}
+        </text>
+      </g>
+    );
+    /* jshint ignore:end */
+  };
+  /* jshint ignore:start */
+  return (
+    <ResponsiveBar
+      data={data}
+      keys={["Vigentes", "No vigentes", "Renovados", "No renovados"]}
+      indexBy="municipio"
+      groupMode="grouped"
+      layout="horizontal"
+      margin={{ top: 0, right: 0, bottom: 80, left: 100 }}
+      labelSkipWidth={12}
+      labelSkipHeight={12}
+      enableGridX={true}
+      enableGridY={true}
+      axisLeft={{
+        renderTick: truncarTexto,
+      }}
+      legends={[
+        {
+          anchor: "bottom",
+          direction: "row",
+          translateX: 0,
+          translateY: 55,
+          itemsSpacing: 0,
+          itemWidth: 100,
+          itemHeight: 10,
+          itemTextColor: "#999",
+          itemDirection: "left-to-right",
+          itemOpacity: 1,
+          symbolSize: 20,
+          symbolShape: "circle",
+          effects: [
+            {
+              on: "hover",
+              style: {
+                itemTextColor: "#000",
+              },
+            },
+          ],
+        },
+      ]}
+    />
+  );
+  /* jshint ignore:end */
+}
+
+function GraficoDeCalor({ data }) {
+  let ahora = DateTime.now();
+  const diasDelTrimestre = function () {
+    const inicio = ahora.startOf("quarter");
+    const fin = ahora.endOf("quarter").plus({ days: 1 });
+    const intervaloFechas = Interval.fromDateTimes(inicio, fin);
+    const dias = Array.from(intervaloFechas.splitBy({ days: 1 }), (dt) =>
+      dt.start.toISODate()
+    );
+    return dias;
+  };
+
+  const fechas = diasDelTrimestre().map((dia) => {
+    const fechaEncontrada = data.find((otraFecha) => dia === otraFecha.day);
+    if (fechaEncontrada) {
+      return {
+        day: fechaEncontrada.day,
+        value: fechaEncontrada.value,
+      };
+    } else {
+      return {
+        day: dia,
+        value: 0,
+      };
+    }
+  });
+
+  const meses = [
+    "Ene",
+    "Feb",
+    "Mar",
+    "Abr",
+    "May",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dic",
+  ];
+
+  /* jshint ignore:start */
+  return (
+    <ResponsiveTimeRange
+      data={fechas}
+      margin={{ top: 35, right: 0, bottom: 0, left: 0 }}
+      monthLegend={(a, m, f) => `${meses[f.getMonth()]}`}
+      weekdayLegendOffset={0}
+      weekdayTicks={[]}
+      dayRadius={5}
+      daySpacing={5}
+      tooltip={({ day, value, color }) => (
+        <BasicTooltip
+          id={`${value} reportes el ${DateTime.fromISO(day).toLocaleString(
+            DateTime.DATE_MED
+          )}`}
+          color={color}
+          enableChip
+        />
+      )}
+    />
+  );
+  /* jshint ignore:end */
+}
+
+function GraficoDePastel({ data }) {
+  /* jshint ignore:start */
+  return (
+    <ResponsivePie
+      data={data}
+      margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+      innerRadius={0.5}
+      arcLinkLabelsThickness={2}
+      arcLinkLabelsColor={{ from: "color" }}
+      arcLabelsSkipAngle={10}
+      activeOuterRadiusOffset={10}
+      legends={[
+        {
+          anchor: "bottom",
+          direction: "row",
+          translateX: 0,
+          translateY: 55,
+          itemsSpacing: 0,
+          itemWidth: 100,
+          itemHeight: 10,
+          itemTextColor: "#999",
+          itemDirection: "left-to-right",
+          itemOpacity: 1,
+          symbolSize: 20,
+          symbolShape: "circle",
+          effects: [
+            {
+              on: "hover",
+              style: {
+                itemTextColor: "#000",
+              },
+            },
+          ],
+        },
+      ]}
+    />
+  );
+  /* jshint ignore:end */
+}
+
 function Spinner() {
   /* jshint ignore:start */
   return (
@@ -203,11 +394,11 @@ function Overlay({ children, id, url }) {
   return (
     <OverlayTrigger
       trigger="click"
-      placement="bottom"
+      placement="top"
       rootClose
       overlay={
-        <Popover id="popover-positioned-bottom">
-          <Stack direction="horizontal" className="p-3">
+        <Popover id="popover-positioned-top">
+          <Stack direction="horizontal" className="p-2">
             <Link to={id} className="noDeco">
               <FontAwesomeIcon className="cursor iconBtn me-3" icon={faEye} />
             </Link>
@@ -231,6 +422,9 @@ export {
   Cabecera,
   Envoltorio,
   Error404,
+  GraficoDeBarras,
+  GraficoDeCalor,
+  GraficoDePastel,
   Overlay,
   Spinner,
 };

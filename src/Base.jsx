@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Stack from "react-bootstrap/Stack";
+import EstadisticasGenerales from "./componentes/estadisticasGenerales";
 import FormularioCC from "./componentes/formularioCC";
 import FormularioIngreso from "./componentes/formularioIngreso";
 import FormularioReporte from "./componentes/formularioReporte";
@@ -54,6 +55,7 @@ function Base() {
             {miUsuario ? (
               /* prettier-ignore */
               <Route element={<Envoltorio />}>
+                <Route path="/" element={<EstadisticasGenerales />} />
                 <Route path="ccs" element={<MostrarCCS />} />
                 <Route path="ccs/nuevo" element={<FormularioCC />} />
                 <Route path="ccs/:id" element={<VerCC />} />
