@@ -7,18 +7,7 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import { ContextoAutenticado, AlertaError, Error404, Spinner } from "./modulos";
-
-const formularioVacio = {
-  apellido: "",
-  cedula: "",
-  clave: "",
-  clave2: "",
-  email: "",
-  nombre: "",
-  rol: "PROMOTOR",
-  tlf: "",
-  usuario: "",
-};
+import { formularioVacioUsuario } from "../config/plantillas";
 
 function FormularioUsuario() {
   const { id } = useParams();
@@ -26,7 +15,7 @@ function FormularioUsuario() {
   const [errorDeValidacion, setErrorDeValidacion] = useState(null);
   const [cargando, setCargando] = useState(id ? true : false);
   const [subiendo, setSubiendo] = useState(false);
-  const [formulario, setFormulario] = useState({ ...formularioVacio });
+  const [formulario, setFormulario] = useState({ ...formularioVacioUsuario });
   const { miUsuario } = useContext(ContextoAutenticado);
   const navegarHasta = useNavigate();
 
@@ -58,12 +47,14 @@ function FormularioUsuario() {
     if (id) {
       buscarUsuarioParaEditar();
     } else {
-      setFormulario({ ...formularioVacio });
+      setFormulario({ ...formularioVacioUsuario });
     }
   }, [id]);
 
-  const actualizarFormulario = function (evento) {
-    setFormulario({ ...formulario, [evento.target.id]: evento.target.value });
+  const actualizarFormulario = function (campo) {
+    return function (evento) {
+      setFormulario({ ...formulario, [campo]: evento.target.value });
+    };
   };
 
   const realizarPeticion = async function (evento) {
@@ -123,9 +114,8 @@ function FormularioUsuario() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="usuario"
                         value={formulario.usuario}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario("usuario")}
                       />
                     </Col>
                   </Row>
@@ -135,9 +125,8 @@ function FormularioUsuario() {
                       <Form.Control
                         size="sm"
                         type="password"
-                        id="clave"
                         value={formulario.clave}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario("clave")}
                       />
                     </Col>
                     <Col xs={6} md={5}>
@@ -145,9 +134,8 @@ function FormularioUsuario() {
                       <Form.Control
                         size="sm"
                         type="password"
-                        id="clave2"
                         value={formulario.clave2}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario("clave2")}
                       />
                     </Col>
                   </Row>
@@ -157,18 +145,16 @@ function FormularioUsuario() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="cedula"
                         value={formulario.cedula}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario("cedula")}
                       />
                     </Col>
                     <Col xs={6} md={5}>
                       <Form.Label>Rol</Form.Label>
                       <Form.Select
                         size="sm"
-                        id="rol"
                         value={formulario.rol}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario("rol")}
                       >
                         <option value="PROMOTOR">PROMOTOR</option>
                         <option value="ADMINISTRADOR">ADMINISTRADOR</option>
@@ -181,9 +167,8 @@ function FormularioUsuario() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="nombre"
                         value={formulario.nombre}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario("nombre")}
                       />
                     </Col>
                     <Col xs={6} md={5}>
@@ -191,9 +176,8 @@ function FormularioUsuario() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="apellido"
                         value={formulario.apellido}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario("apellido")}
                       />
                     </Col>
                   </Row>
@@ -203,9 +187,8 @@ function FormularioUsuario() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="tlf"
                         value={formulario.tlf}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario("tlf")}
                       />
                     </Col>
                     <Col xs={6} md={5}>
@@ -213,9 +196,8 @@ function FormularioUsuario() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="email"
                         value={formulario.email}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario("email")}
                       />
                     </Col>
                   </Row>

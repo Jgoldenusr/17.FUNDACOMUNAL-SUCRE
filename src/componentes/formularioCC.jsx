@@ -7,117 +7,8 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import { ContextoAutenticado, AlertaError, Error404, Spinner } from "./modulos";
-
-const formularioVacio = {
-  usuario: { cedula: "" },
-  comuna: "",
-  estados: "SUCRE",
-  localidad: "",
-  municipios: "",
-  nombre: "",
-  parroquias: "",
-  redi: "ORIENTAL",
-  situr: "",
-  tipo: "",
-};
-
-const Opciones = {
-  tipo: ["INDIGENA", "MIXTO", "RURAL", "URBANO"],
-  redi: [
-    "ANDES",
-    "CAPITAL",
-    "CENTRAL",
-    "GUAYANA",
-    "INSULAR",
-    "LLANOS",
-    "OCCIDENTAL",
-    "ORIENTAL",
-  ],
-  municipios: [
-    "ANDRES ELOY BLANCO",
-    "ANDRES MATA",
-    "ARISMENDI",
-    "BENITEZ",
-    "BERMUDEZ",
-    "BOLIVAR",
-    "CAJIGAL",
-    "CRUZ SALMERON ACOSTA",
-    "LIBERTADOR",
-    "MARIÑO",
-    "MEJIA",
-    "MONTES",
-    "RIBERO",
-    "SUCRE",
-    "VALDEZ",
-  ],
-  parroquias: {
-    ["ANDRES ELOY BLANCO"]: ["MARIÑO", "ROMULO GALLEGOS"],
-    ["ANDRES MATA"]: ["SAN JOSE DE AEROCUAR", "TAVERA ACOSTA"],
-    ["ARISMENDI"]: [
-      "RIO CARIBE",
-      "ANTONIO JOSE DE SUCRE",
-      "EL MORRO DE PUERTO SANTO",
-      "PUERTO SANTO",
-      "SAN JUAN DE LAS GALDONAS",
-    ],
-    ["BENITEZ"]: [
-      "EL PILAR",
-      "EL RINCON",
-      "GENERAL FRANCISCO ANTONIO VAZQUEZ",
-      "GUARAUNOS",
-      "TUNAPUICITO",
-      "UNION",
-    ],
-    ["BERMUDEZ"]: [
-      "SANTA CATALINA",
-      "SANTA ROSA",
-      "SANTA TERESA",
-      "BOLIVAR",
-      "MARACAPANA",
-    ],
-    ["BOLIVAR"]: ["MARIGUITAR"],
-    ["CAJIGAL"]: ["LIBERTAD", "EL PAUJIL", "YAGUARAPARO"],
-    ["CRUZ SALMERON ACOSTA"]: [
-      "CRUZ SALMERON ACOSTA",
-      "CHACOPATA",
-      "MANICUARE",
-    ],
-    ["LIBERTADOR"]: ["TUNAPUY", "CAMPO ELIAS"],
-    ["MARIÑO"]: [
-      "IRAPA",
-      "CAMPO CLARO",
-      "MARAVAL",
-      "SAN ANTONIO DE IRAPA",
-      "SORO",
-    ],
-    ["MEJIA"]: ["MEJIA"],
-    ["MONTES"]: [
-      "CUMANACOA",
-      "ARENAS",
-      "ARICAGUA",
-      "COCOLLAR",
-      "SAN FERNANDO",
-      "SAN LORENZO",
-    ],
-    ["RIBERO"]: [
-      "VILLA FRONTADO (MUELLE DE CARIACO)",
-      "CATUARO",
-      "RENDON",
-      "SAN CRUZ",
-      "SANTA MARIA",
-    ],
-    ["SUCRE"]: [
-      "ALTAGRACIA",
-      "SANTA INES",
-      "VALENTIN VALIENTE",
-      "AYACUCHO",
-      "SAN JUAN",
-      "RAUL LEONI",
-      "GRAN MARISCAL",
-    ],
-    ["VALDEZ"]: ["CRISTOBAL COLON", "BIDEAU", "PUNTA DE PIEDRAS", "GUIRIA"],
-  },
-};
+import { formularioVacioCC } from "../config/plantillas";
+import { OpcionesCC } from "../config/opciones";
 
 function FormularioCC() {
   const { id } = useParams();
@@ -125,7 +16,7 @@ function FormularioCC() {
   const [errorDeValidacion, setErrorDeValidacion] = useState(null);
   const [cargando, setCargando] = useState(id ? true : false);
   const [subiendo, setSubiendo] = useState(false);
-  const [formulario, setFormulario] = useState({ ...formularioVacio });
+  const [formulario, setFormulario] = useState({ ...formularioVacioCC });
   const { miUsuario } = useContext(ContextoAutenticado);
   const navegarHasta = useNavigate();
 
@@ -157,32 +48,34 @@ function FormularioCC() {
     if (id) {
       buscarCCParaEditar();
     } else {
-      setFormulario({ ...formularioVacio });
+      setFormulario({ ...formularioVacioCC });
     }
   }, [id]);
-  const actualizarFormulario = function (propiedad) {
+
+  const actualizarFormulario = function (campo, propiedad) {
     return function (evento) {
       if (propiedad) {
         setFormulario({
           ...formulario,
-          [propiedad]: { [evento.target.id]: evento.target.value },
+          [propiedad]: { [campo]: evento.target.value },
         });
       } else {
-        if (evento.target.id === "municipios") {
+        if (campo === "municipios") {
           setFormulario({
             ...formulario,
             parroquias: "",
-            [evento.target.id]: evento.target.value,
+            [campo]: evento.target.value,
           });
         } else {
           setFormulario({
             ...formulario,
-            [evento.target.id]: evento.target.value,
+            [campo]: evento.target.value,
           });
         }
       }
     };
   };
+
   const realizarPeticion = async function (evento) {
     evento.preventDefault();
     setSubiendo(true);
@@ -242,9 +135,8 @@ function FormularioCC() {
                       <Form.Select
                         disabled
                         size="sm"
-                        id="estados"
                         value={formulario.estados}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("estados")}
                       >
                         <option value="SUCRE">SUCRE</option>
                       </Form.Select>
@@ -255,12 +147,11 @@ function FormularioCC() {
                       <Form.Label>Tipo de consejo comunal</Form.Label>
                       <Form.Select
                         size="sm"
-                        id="tipo"
                         value={formulario.tipo}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("tipo")}
                       >
                         <option value="">SELECCIONE UN TIPO</option>
-                        {Opciones.tipo.map((opcion) => (
+                        {OpcionesCC.tipo.map((opcion) => (
                           <option key={opcion} value={opcion}>
                             {opcion}
                           </option>
@@ -274,12 +165,11 @@ function FormularioCC() {
                       <Form.Select
                         disabled
                         size="sm"
-                        id="redi"
                         value={formulario.redi}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("redi")}
                       >
                         <option value="">SELECCIONE UN REDI</option>
-                        {Opciones.redi.map((opcion) => (
+                        {OpcionesCC.redi.map((opcion) => (
                           <option key={opcion} value={opcion}>
                             {opcion}
                           </option>
@@ -292,12 +182,11 @@ function FormularioCC() {
                       <Form.Label>Municipio donde se ubica el C.C</Form.Label>
                       <Form.Select
                         size="sm"
-                        id="municipios"
                         value={formulario.municipios}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("municipios")}
                       >
                         <option value="">SELECCIONE UN MUNICIPIO</option>
-                        {Opciones.municipios.map((opcion) => (
+                        {OpcionesCC.municipios.map((opcion) => (
                           <option key={opcion} value={opcion}>
                             {opcion}
                           </option>
@@ -310,13 +199,12 @@ function FormularioCC() {
                       <Form.Label>Parroquia donde se ubica el C.C</Form.Label>
                       <Form.Select
                         size="sm"
-                        id="parroquias"
                         value={formulario.parroquias}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("parroquias")}
                       >
                         <option value="">SELECCIONE UNA PARROQUIA</option>
                         {formulario.municipios &&
-                          Opciones.parroquias[`${formulario.municipios}`].map(
+                          OpcionesCC.parroquias[`${formulario.municipios}`].map(
                             (opcion) => (
                               <option key={opcion} value={opcion}>
                                 {opcion}
@@ -332,9 +220,8 @@ function FormularioCC() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="localidad"
                         value={formulario.localidad}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("localidad")}
                       />
                     </Col>
                   </Row>
@@ -346,9 +233,8 @@ function FormularioCC() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="comuna"
                         value={formulario.comuna}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("comuna")}
                       />
                     </Col>
                   </Row>
@@ -358,9 +244,8 @@ function FormularioCC() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="nombre"
                         value={formulario.nombre}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("nombre")}
                       />
                     </Col>
                   </Row>
@@ -370,9 +255,8 @@ function FormularioCC() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="situr"
                         value={formulario.situr}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("situr")}
                       />
                     </Col>
                   </Row>
@@ -382,9 +266,8 @@ function FormularioCC() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="cedula"
                         value={formulario.usuario.cedula}
-                        onChange={actualizarFormulario("usuario")}
+                        onChange={actualizarFormulario("cedula", "usuario")}
                       />
                     </Col>
                   </Row>

@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
@@ -18,8 +18,10 @@ function FormularioIngreso() {
   const { guardarUsuario } = useContext(ContextoAutenticado);
   const navegarHasta = useNavigate();
 
-  const actualizarFormulario = function (evento) {
-    setFormulario({ ...formulario, [evento.target.id]: evento.target.value });
+  const actualizarFormulario = function (campo) {
+    return function (evento) {
+      setFormulario({ ...formulario, [campo]: evento.target.value });
+    };
   };
 
   const realizarPeticion = async function (evento) {
@@ -72,9 +74,8 @@ function FormularioIngreso() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="usuario"
                         value={formulario.usuario}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario("usuario")}
                       />
                     </Col>
                   </Row>
@@ -84,9 +85,8 @@ function FormularioIngreso() {
                       <Form.Control
                         size="sm"
                         type="password"
-                        id="clave"
                         value={formulario.clave}
-                        onChange={actualizarFormulario}
+                        onChange={actualizarFormulario("clave")}
                       />
                     </Col>
                   </Row>

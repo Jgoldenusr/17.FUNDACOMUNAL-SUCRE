@@ -6,6 +6,17 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { OpcionesReporte } from "../config/opciones";
+import {
+  formularioCasoAdmin,
+  formularioComunicaciones,
+  formularioFormacion,
+  formularioFortalecimiento,
+  formularioIncidencias,
+  formularioParticipacion,
+} from "../config/plantillas";
 import {
   ContextoAutenticado,
   AlertaBorrar,
@@ -13,193 +24,6 @@ import {
   Error404,
   Spinner,
 } from "./modulos";
-
-const formularioBase = {
-  cc: "",
-  fecha: "",
-  organosAdscritos: "",
-  usuario: "",
-};
-const formularioCasoAdmin = {
-  ...formularioBase,
-  caso: "",
-  tipoCaso: "",
-};
-const formularioComunicaciones = {
-  ...formularioBase,
-  prensa: {
-    notas: "",
-    resenas: "",
-  },
-  redes: [
-    {
-      cuenta: "",
-      publicaciones: "",
-    },
-  ],
-};
-const formularioFormacion = {
-  ...formularioBase,
-  beneficiados: {
-    hombres: "",
-    mujeres: "",
-  },
-  estrategia: "",
-  modalidad: "",
-  tematica: "",
-  verificacion: "",
-};
-const formularioFortalecimiento = {
-  ...formularioBase,
-  acompanamiento: "",
-  nombreOSP: "",
-  tipoActividad: "",
-  tipoOSP: "",
-  proyectoCFG: {
-    etapa: "",
-    tipo: "",
-  },
-};
-const formularioIncidencias = {
-  ...formularioBase,
-  areaSustantiva: "",
-  tipoIncidencia: "",
-};
-const formularioParticipacion = {
-  ...formularioBase,
-  acompanamiento: "",
-  familiasBeneficiadas: "",
-};
-const Opciones = {
-  participacion: {
-    acompanamiento: [
-      "ASAMBLEAS INFORMATIVAS PARA LA CONFORMACION DEL CONSEJO COMUNAL",
-      "ASAMBLEAS PARA LA ESCOGENCIA DE LA COMISION ELECTORAL PERMANENTE",
-      "PROCESO DE POSTULACION DE LAS VOCERIAS DEL CONSEJO COMUNAL",
-      "PROCESO DE ELECCIONES DE VOCERIAS",
-      "ASAMBLEA INFORMATIVA DEL EQUIPO PROMOTOR PROVISIONAL",
-      "ELABORACION MAPA DE PROBLEMAS Y SOLUCIONES",
-      "ASAMBLEA DE RENDICION DE CUENTA",
-      "JURAMENTACION DE VOCERIAS ELECTAS",
-      "ELABORACION DE PLAN DE DESARROLLO INTEGRAL COMUNITARIO O PLAN PATRIA COMUNAL",
-      "ELECCIONES DE COMISIONES PROVISIONALES DE COMUNAS",
-      "PROCESO DEL REFERENDUM DE CARTAS FUNDACIONALES",
-      "MESA DE TRABAJO DE ALGUN COMITE",
-      "ELABORACION DE LA AGENDA CONCRETA DE ACCION (ACA)",
-      "PROCESO FORMATIVO MUNICIPAL A.C.A",
-      "PROCESO FORMATIVO MUNICIPAL PARA EL REGISTRO DE LOS CONSEJOS COMUNALES",
-      "PROCESOS FORMATIVOS MUNICIPAL ELECTORALES",
-      "LEVANTAMIENTO CARTOGRAFICO",
-      "PROCESAMIENTO CARTOGRAFICO (DIGITALIZACION DE MAPA)",
-      "ELABORACION DE LA CARTOGRAFIA COMUNALES",
-    ],
-  },
-  formacion: {
-    estrategia: [
-      "TALLER",
-      "CHARLA",
-      "CONVERSATORIO",
-      "CAPACITACION",
-      "MESA DE TRABAJO",
-      "FORO",
-      "SEMINARIO",
-      "INDUCCION",
-      "VIDEO CONFERENCIA",
-    ],
-    modalidad: ["PRESENCIAL", "VIRTUAL", "MIXTA"],
-    tematica: [
-      "3R.NETS",
-      "COLECTIVO DE COORDINACION COMUNITARIA",
-      "PLAN PATRIA COMUNAL O PLAN DE DESARROLLO COMUNITARIO",
-      "SISTEMA ECONOMICO COMUNAL",
-      "REGISTRO DE CONSEJOS COMUNALES",
-      "CARTOGRAFIA COMUNAL",
-      "COMISION ELECTORAL PERMANENTE",
-      "COMISION ELECTORAL PROVISIONAL",
-      "FUNCIONES DE VOCERIAS, COMITES Y MESAS TECNICAS",
-      "LEYES DE ORGANIZACION COMUNAL",
-      "PROCESO FORMATIVO MUNICIPAL A.C.A",
-      "PROCESO FORMATIVO MUNICIPAL PARA EL REGISTROS DE LOS CONSEJOS COMUNALES",
-      "PROCESOS FORMATIVOS MUNICIPAL ELECTORALES",
-    ],
-    verificacion: ["LISTA DE ASISTENCIA", "FOTOGRAFIA", "AMBOS", "NINGUNO"],
-  },
-  fortalecimiento: {
-    acompanamiento: [
-      "COMITE DE ECONOMIA COMUNAL PARA LA ACTIVACION DE (OSP)",
-      "MESAS DEL CONSEJO DE ECONOMIA",
-      "ELABORACION DE PLANES PRODUCTIVOS",
-      "FUNCIONAMIENTO O REIMPULSO DE (UPF)",
-      "FUNCIONAMIENTO O REIMPULSO DE (EPS)",
-      "PROYECTOS DEL CONSEJO FEDERAL DE GOBIERNO (CFG)",
-      "FUNCIONAMIENTO O REIMPULSO DE EMPRENDEDORES",
-      "FUNCIONAMIENTO O REIMPULSO DE COOPERATIVAS",
-      "GRUPO DE INTERCAMBIO SOLIDARIO",
-      "PROCESO DE ASAMBLEA PARA APROBACION DE PROYECTO",
-      "PLAN SIEMBRA",
-      "PROYECTOS DE VIVEROS",
-      "PLAN TESTIL",
-      "PLAN CONUCO Y CEREALES",
-      "CONSTRUCCION DEL CIRCUITO ECONOMICO ESTADAL",
-      "IDENTIFICACION DE LAS EXPERIENCIAS PRODUCTIVAS",
-    ],
-    tipoActividad: [
-      "AGROPECUARIA",
-      "SERVICIO DE ADMINISTRACION PUBLICA",
-      "INDUSTRIA MANU FACTURERA",
-      "ESTABLECIMIENTO FINANCIERO",
-      "CONSTRUCCION",
-      "ELECTRICIDAD, GAS Y AGUA",
-      "MINERALES METALICOS Y NO METALICOS",
-      "PETROLEO CRUDO Y GAS NATURAL",
-      "COMERCIO",
-      "OTROS SERVICIOS",
-      "COMUNICACIONES",
-      "TRANSPORTE Y ALMACENAMIENTO",
-    ],
-    tipoOSP: [
-      "CONSEJO COMUNAL",
-      "UNIDAD DE PRODUCCION FAMILIAR",
-      "EMPRESA DE PRODUCCION SOCIAL DIRECTA",
-      "EMPRESA DE PRODUCCION SOCIAL INDIRECTA",
-      "EMPRESA DE PRODUCCION SOCIAL MIXTA",
-      "EMPRENDEDORES",
-      "GRUPO DE INTERCAMBIO SOLIDARIO",
-      "COOPERATIVAS",
-    ],
-    proyectoCFG: {
-      etapa: ["ETAPA 1", "ETAPA 2", "ETAPA 3", "CULMINADO"],
-      tipo: [
-        "AMBIENTAL",
-        "CULTURAL",
-        "DEPORTIVO",
-        "EDUCACION",
-        "ELECTRICIDAD",
-        "INFRAESTRUCTURA MARITIMA, FLUVIAL Y LA ACUICULTURA",
-        "MANEJO INTEGRAL DEL AGUA",
-        "MUROS",
-        "PROCESOS INDUSTRIALES",
-        "SALUD",
-        "SERVICIOS PRODUCTIVOS",
-        "SISTEMA DE PRODUCCION AGRICOLA",
-        "SISTEMAS AGROPECUARIOS",
-        "VIALIDAD",
-        "VIVIENDA",
-      ],
-    },
-  },
-  incidencias: {
-    areaSustantiva: [
-      "PARTICIPACION",
-      "FORMACION",
-      "FORTALECIMIENTO",
-      "CARTOGRAFIA",
-    ],
-  },
-  casoadmin: {
-    tipoCaso: ["CASO", "DENUNCIA", "ADMINISTRATIVO", "ASESORIA"],
-  },
-};
 
 function FormularioReporte() {
   const { id } = useParams();
@@ -249,22 +73,54 @@ function FormularioReporte() {
     }
   }, [id]);
 
-  const actualizarFormulario = function (propiedad) {
+  const actualizarFormulario = function (campo, propiedad, i) {
     return function (evento) {
       if (propiedad) {
-        setFormulario({
-          ...formulario,
-          [propiedad]: {
-            ...formulario[propiedad],
-            [evento.target.id]: evento.target.value,
-          },
-        });
+        if (i >= 0) {
+          const temp = formulario[propiedad].map((item, idx) => {
+            if (i !== idx) return item;
+            return { ...item, [campo]: evento.target.value };
+          });
+          setFormulario({
+            ...formulario,
+            [propiedad]: temp,
+          });
+        } else {
+          setFormulario({
+            ...formulario,
+            [propiedad]: {
+              ...formulario[propiedad],
+              [campo]: evento.target.value,
+            },
+          });
+        }
       } else {
         setFormulario({
           ...formulario,
-          [evento.target.id]: evento.target.value,
+          [campo]: evento.target.value,
         });
       }
+    };
+  };
+
+  const agregarRedes = function () {
+    setFormulario({
+      ...formulario,
+      redes: formulario.redes.concat([
+        {
+          cuenta: "",
+          publicaciones: "",
+        },
+      ]),
+    });
+  };
+
+  const borrarRedes = function (i) {
+    return function () {
+      setFormulario({
+        ...formulario,
+        redes: formulario.redes.filter((item, itemId) => i !== itemId),
+      });
     };
   };
 
@@ -388,9 +244,9 @@ function FormularioReporte() {
                       >
                         <option value="casoadmin">CASO ADMINISTRATIVO</option>
                         <option value="comunicaciones">COMUNICACIONES</option>
+                        <option value="fortalecimiento">FORTALECIMIENTO</option>
                         <option value="formacion">FORMACION</option>
                         <option value="incidencias">INCIDENCIAS</option>
-                        <option value="fortalecimiento">FORTALECIMIENTO</option>
                         <option value="participacion">PARTICIPACION</option>
                       </Form.Select>
                     </Col>
@@ -400,9 +256,8 @@ function FormularioReporte() {
                       <Form.Label>Consejo comunal</Form.Label>
                       <Form.Select
                         size="sm"
-                        id="cc"
                         value={formulario.cc}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("cc")}
                       >
                         <option>SELECCIONE UN CONSEJO COMUNAL</option>
                         {miUsuario.cc.map((elemento) => (
@@ -419,9 +274,8 @@ function FormularioReporte() {
                       <Form.Control
                         size="sm"
                         type="date"
-                        id="fecha"
                         value={formulario.fecha.substring(0, 10)}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("fecha")}
                       />
                     </Col>
                   </Row>
@@ -432,12 +286,11 @@ function FormularioReporte() {
                           <Form.Label>Acompañamiento</Form.Label>
                           <Form.Select
                             size="sm"
-                            id="acompanamiento"
                             value={formulario.acompanamiento}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("acompanamiento")}
                           >
                             <option>SELECCIONE UN ACOMPAÑAMIENTO</option>
-                            {Opciones.participacion.acompanamiento.map(
+                            {OpcionesReporte.participacion.acompanamiento.map(
                               (opcion) => (
                                 <option key={opcion} value={opcion}>
                                   {opcion}
@@ -453,9 +306,10 @@ function FormularioReporte() {
                           <Form.Control
                             size="sm"
                             type="text"
-                            id="familiasBeneficiadas"
                             value={formulario.familiasBeneficiadas}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario(
+                              "familiasBeneficiadas"
+                            )}
                           />
                         </Col>
                       </Row>
@@ -467,16 +321,17 @@ function FormularioReporte() {
                           <Form.Label>Estrategia</Form.Label>
                           <Form.Select
                             size="sm"
-                            id="estrategia"
                             value={formulario.estrategia}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("estrategia")}
                           >
                             <option>SELECCIONE UNA ESTRATEGIA</option>
-                            {Opciones.formacion.estrategia.map((opcion) => (
-                              <option key={opcion} value={opcion}>
-                                {opcion}
-                              </option>
-                            ))}
+                            {OpcionesReporte.formacion.estrategia.map(
+                              (opcion) => (
+                                <option key={opcion} value={opcion}>
+                                  {opcion}
+                                </option>
+                              )
+                            )}
                           </Form.Select>
                         </Col>
                       </Row>
@@ -485,16 +340,17 @@ function FormularioReporte() {
                           <Form.Label>Modalidad</Form.Label>
                           <Form.Select
                             size="sm"
-                            id="modalidad"
                             value={formulario.modalidad}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("modalidad")}
                           >
                             <option>SELECCIONE UNA MODALIDAD</option>
-                            {Opciones.formacion.modalidad.map((opcion) => (
-                              <option key={opcion} value={opcion}>
-                                {opcion}
-                              </option>
-                            ))}
+                            {OpcionesReporte.formacion.modalidad.map(
+                              (opcion) => (
+                                <option key={opcion} value={opcion}>
+                                  {opcion}
+                                </option>
+                              )
+                            )}
                           </Form.Select>
                         </Col>
                       </Row>
@@ -503,16 +359,17 @@ function FormularioReporte() {
                           <Form.Label>Tematica</Form.Label>
                           <Form.Select
                             size="sm"
-                            id="tematica"
                             value={formulario.tematica}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("tematica")}
                           >
                             <option>SELECCIONE UNA TEMATICA</option>
-                            {Opciones.formacion.tematica.map((opcion) => (
-                              <option key={opcion} value={opcion}>
-                                {opcion}
-                              </option>
-                            ))}
+                            {OpcionesReporte.formacion.tematica.map(
+                              (opcion) => (
+                                <option key={opcion} value={opcion}>
+                                  {opcion}
+                                </option>
+                              )
+                            )}
                           </Form.Select>
                         </Col>
                       </Row>
@@ -521,16 +378,17 @@ function FormularioReporte() {
                           <Form.Label>Verificacion</Form.Label>
                           <Form.Select
                             size="sm"
-                            id="verificacion"
                             value={formulario.verificacion}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("verificacion")}
                           >
                             <option>SELECCIONE UN TIPO DE VERIFICACION</option>
-                            {Opciones.formacion.verificacion.map((opcion) => (
-                              <option key={opcion} value={opcion}>
-                                {opcion}
-                              </option>
-                            ))}
+                            {OpcionesReporte.formacion.verificacion.map(
+                              (opcion) => (
+                                <option key={opcion} value={opcion}>
+                                  {opcion}
+                                </option>
+                              )
+                            )}
                           </Form.Select>
                         </Col>
                       </Row>
@@ -540,9 +398,11 @@ function FormularioReporte() {
                           <Form.Control
                             size="sm"
                             type="text"
-                            id="hombres"
                             value={formulario.beneficiados.hombres}
-                            onChange={actualizarFormulario("beneficiados")}
+                            onChange={actualizarFormulario(
+                              "hombres",
+                              "beneficiados"
+                            )}
                           />
                         </Col>
                         <Col xs={6} md={5}>
@@ -550,9 +410,11 @@ function FormularioReporte() {
                           <Form.Control
                             size="sm"
                             type="text"
-                            id="mujeres"
                             value={formulario.beneficiados.mujeres}
-                            onChange={actualizarFormulario("beneficiados")}
+                            onChange={actualizarFormulario(
+                              "mujeres",
+                              "beneficiados"
+                            )}
                           />
                         </Col>
                       </Row>
@@ -567,9 +429,8 @@ function FormularioReporte() {
                           <Form.Control
                             size="sm"
                             type="text"
-                            id="nombreOSP"
                             value={formulario.nombreOSP}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("nombreOSP")}
                           />
                         </Col>
                       </Row>
@@ -578,12 +439,11 @@ function FormularioReporte() {
                           <Form.Label>Acompañamiento</Form.Label>
                           <Form.Select
                             size="sm"
-                            id="acompanamiento"
                             value={formulario.acompanamiento}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("acompanamiento")}
                           >
                             <option>SELECCIONE UN ACOMPAÑAMIENTO</option>
-                            {Opciones.fortalecimiento.acompanamiento.map(
+                            {OpcionesReporte.fortalecimiento.acompanamiento.map(
                               (opcion) => (
                                 <option key={opcion} value={opcion}>
                                   {opcion}
@@ -598,14 +458,13 @@ function FormularioReporte() {
                           <Form.Label>Tipo de actividad economica</Form.Label>
                           <Form.Select
                             size="sm"
-                            id="tipoActividad"
                             value={formulario.tipoActividad}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("tipoActividad")}
                           >
                             <option>
                               SELECCIONE UN TIPO DE ACTIVIDAD ECONOMICA
                             </option>
-                            {Opciones.fortalecimiento.tipoActividad.map(
+                            {OpcionesReporte.fortalecimiento.tipoActividad.map(
                               (opcion) => (
                                 <option key={opcion} value={opcion}>
                                   {opcion}
@@ -622,16 +481,17 @@ function FormularioReporte() {
                           </Form.Label>
                           <Form.Select
                             size="sm"
-                            id="tipoOSP"
                             value={formulario.tipoOSP}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("tipoOSP")}
                           >
                             <option>SELECCIONE UN TIPO DE ORGANIZACION</option>
-                            {Opciones.fortalecimiento.tipoOSP.map((opcion) => (
-                              <option key={opcion} value={opcion}>
-                                {opcion}
-                              </option>
-                            ))}
+                            {OpcionesReporte.fortalecimiento.tipoOSP.map(
+                              (opcion) => (
+                                <option key={opcion} value={opcion}>
+                                  {opcion}
+                                </option>
+                              )
+                            )}
                           </Form.Select>
                         </Col>
                       </Row>
@@ -642,14 +502,16 @@ function FormularioReporte() {
                           </Form.Label>
                           <Form.Select
                             size="sm"
-                            id="tipo"
                             value={formulario.proyectoCFG.tipo}
-                            onChange={actualizarFormulario("proyectoCFG")}
+                            onChange={actualizarFormulario(
+                              "tipo",
+                              "proyectoCFG"
+                            )}
                           >
                             <option value="">
                               SELECCIONE EL TIPO (SI APLICA)
                             </option>
-                            {Opciones.fortalecimiento.proyectoCFG.tipo.map(
+                            {OpcionesReporte.fortalecimiento.proyectoCFG.tipo.map(
                               (opcion) => (
                                 <option key={opcion} value={opcion}>
                                   {opcion}
@@ -666,14 +528,16 @@ function FormularioReporte() {
                           </Form.Label>
                           <Form.Select
                             size="sm"
-                            id="etapa"
                             value={formulario.proyectoCFG.etapa}
-                            onChange={actualizarFormulario("proyectoCFG")}
+                            onChange={actualizarFormulario(
+                              "etapa",
+                              "proyectoCFG"
+                            )}
                           >
                             <option value="">
                               SELECCIONE LA ETAPA (SI APLICA)
                             </option>
-                            {Opciones.fortalecimiento.proyectoCFG.etapa.map(
+                            {OpcionesReporte.fortalecimiento.proyectoCFG.etapa.map(
                               (opcion) => (
                                 <option key={opcion} value={opcion}>
                                   {opcion}
@@ -691,12 +555,11 @@ function FormularioReporte() {
                           <Form.Label>Area sustantiva</Form.Label>
                           <Form.Select
                             size="sm"
-                            id="areaSustantiva"
                             value={formulario.areaSustantiva}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("areaSustantiva")}
                           >
                             <option>SELECCIONE UN AREA SUSTANTIVA</option>
-                            {Opciones.incidencias.areaSustantiva.map(
+                            {OpcionesReporte.incidencias.areaSustantiva.map(
                               (opcion) => (
                                 <option key={opcion} value={opcion}>
                                   {opcion}
@@ -712,9 +575,8 @@ function FormularioReporte() {
                           <Form.Control
                             size="sm"
                             type="text"
-                            id="tipoIncidencia"
                             value={formulario.tipoIncidencia}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("tipoIncidencia")}
                           />
                         </Col>
                       </Row>
@@ -726,16 +588,17 @@ function FormularioReporte() {
                           <Form.Label>Tipo</Form.Label>
                           <Form.Select
                             size="sm"
-                            id="tipoCaso"
                             value={formulario.tipoCaso}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("tipoCaso")}
                           >
                             <option>SELECCIONE UN TIPO</option>
-                            {Opciones.casoadmin.tipoCaso.map((opcion) => (
-                              <option key={opcion} value={opcion}>
-                                {opcion}
-                              </option>
-                            ))}
+                            {OpcionesReporte.casoadmin.tipoCaso.map(
+                              (opcion) => (
+                                <option key={opcion} value={opcion}>
+                                  {opcion}
+                                </option>
+                              )
+                            )}
                           </Form.Select>
                         </Col>
                       </Row>
@@ -745,9 +608,8 @@ function FormularioReporte() {
                           <Form.Control
                             size="sm"
                             type="text"
-                            id="caso"
                             value={formulario.caso}
-                            onChange={actualizarFormulario()}
+                            onChange={actualizarFormulario("caso")}
                           />
                         </Col>
                       </Row>
@@ -760,9 +622,8 @@ function FormularioReporte() {
                           <Form.Control
                             size="sm"
                             type="text"
-                            id="notas"
                             value={formulario.prensa.notas}
-                            onChange={actualizarFormulario("prensa")}
+                            onChange={actualizarFormulario("notas", "prensa")}
                           />
                         </Col>
                         <Col xs={6} md={5}>
@@ -770,12 +631,57 @@ function FormularioReporte() {
                           <Form.Control
                             size="sm"
                             type="text"
-                            id="resenas"
                             value={formulario.prensa.resenas}
-                            onChange={actualizarFormulario("prensa")}
+                            onChange={actualizarFormulario("resenas", "prensa")}
                           />
                         </Col>
                       </Row>
+                      {formulario.redes.map((red, i) => {
+                        return (
+                          <Row
+                            key={`REDES-${i}`}
+                            className="justify-content-center mb-3"
+                          >
+                            <Col xs={5} md={4}>
+                              <Form.Label>Cuenta</Form.Label>
+                              <Form.Control
+                                size="sm"
+                                type="text"
+                                value={red.cuenta}
+                                onChange={actualizarFormulario(
+                                  "cuenta",
+                                  "redes",
+                                  i
+                                )}
+                              />
+                            </Col>
+                            <Col xs={5} md={4}>
+                              <Form.Label>Publicaciones</Form.Label>
+                              <Form.Control
+                                size="sm"
+                                type="text"
+                                value={red.publicaciones}
+                                onChange={actualizarFormulario(
+                                  "publicaciones",
+                                  "redes",
+                                  i
+                                )}
+                              />
+                            </Col>
+                            <Col
+                              xs={2}
+                              className="d-flex justify-content-between align-self-end"
+                            >
+                              <Button size="sm" onClick={agregarRedes}>
+                                <FontAwesomeIcon icon={faPlus} />
+                              </Button>
+                              <Button size="sm" onClick={borrarRedes(i)}>
+                                <FontAwesomeIcon icon={faMinus} />
+                              </Button>
+                            </Col>
+                          </Row>
+                        );
+                      })}
                     </>
                   ) : (
                     ""
@@ -786,9 +692,8 @@ function FormularioReporte() {
                       <Form.Control
                         size="sm"
                         type="text"
-                        id="organosAdscritos"
                         value={formulario.organosAdscritos}
-                        onChange={actualizarFormulario()}
+                        onChange={actualizarFormulario("organosAdscritos")}
                       />
                     </Col>
                   </Row>
