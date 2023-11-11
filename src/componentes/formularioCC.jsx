@@ -6,14 +6,14 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import { ContextoAutenticado, AlertaError, Error404, Spinner } from "./modulos";
+import { ContextoAutenticado, Error404, Spinner } from "./modulos";
 import { formularioVacioCC } from "../config/plantillas";
 import { OpcionesCC } from "../config/opciones";
 
 function FormularioCC() {
   const { id } = useParams();
   const [error, setError] = useState(null);
-  const [errorDeValidacion, setErrorDeValidacion] = useState(null);
+  const [erroresValidacion, setErroresValidacion] = useState(null);
   const [cargando, setCargando] = useState(id ? true : false);
   const [subiendo, setSubiendo] = useState(false);
   const [formulario, setFormulario] = useState({ ...formularioVacioCC });
@@ -76,10 +76,34 @@ function FormularioCC() {
     };
   };
 
+  const esInvalido = function (campo) {
+    let resultado = false;
+    if (erroresValidacion) {
+      erroresValidacion.array.forEach((error) => {
+        if (error.path === campo) {
+          resultado = true;
+        }
+      });
+    }
+    return resultado;
+  };
+
+  const mostrarMsjInvalido = function (campo) {
+    let msj = "";
+    if (erroresValidacion) {
+      erroresValidacion.array.forEach((error) => {
+        if (error.path === campo) {
+          msj = error.msg;
+        }
+      });
+    }
+    return msj;
+  };
+
   const realizarPeticion = async function (evento) {
     evento.preventDefault();
     setSubiendo(true);
-    setErrorDeValidacion(null);
+    setErroresValidacion(null);
     /* jshint ignore:start */
     const url = id
       ? "http://localhost:4000/ccs/" + formulario._id
@@ -102,10 +126,10 @@ function FormularioCC() {
         navegarHasta(`/ccs/${recibido.id}`, { replace: true });
       } else {
         const recibido = await respuesta.json();
-        setErrorDeValidacion(recibido.error);
+        setErroresValidacion(recibido.error);
       }
     } catch (errorPeticion) {
-      setErrorDeValidacion(errorPeticion);
+      setErroresValidacion(errorPeticion);
     } finally {
       setSubiendo(false);
     }
@@ -137,9 +161,13 @@ function FormularioCC() {
                         size="sm"
                         value={formulario.estados}
                         onChange={actualizarFormulario("estados")}
+                        isInvalid={esInvalido("estados")}
                       >
                         <option value="SUCRE">SUCRE</option>
                       </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("estados")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -149,6 +177,7 @@ function FormularioCC() {
                         size="sm"
                         value={formulario.tipo}
                         onChange={actualizarFormulario("tipo")}
+                        isInvalid={esInvalido("tipo")}
                       >
                         <option value="">SELECCIONE UN TIPO</option>
                         {OpcionesCC.tipo.map((opcion) => (
@@ -157,6 +186,9 @@ function FormularioCC() {
                           </option>
                         ))}
                       </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("tipo")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -167,6 +199,7 @@ function FormularioCC() {
                         size="sm"
                         value={formulario.redi}
                         onChange={actualizarFormulario("redi")}
+                        isInvalid={esInvalido("redi")}
                       >
                         <option value="">SELECCIONE UN REDI</option>
                         {OpcionesCC.redi.map((opcion) => (
@@ -175,6 +208,9 @@ function FormularioCC() {
                           </option>
                         ))}
                       </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("redi")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -184,6 +220,7 @@ function FormularioCC() {
                         size="sm"
                         value={formulario.municipios}
                         onChange={actualizarFormulario("municipios")}
+                        isInvalid={esInvalido("municipios")}
                       >
                         <option value="">SELECCIONE UN MUNICIPIO</option>
                         {OpcionesCC.municipios.map((opcion) => (
@@ -192,6 +229,9 @@ function FormularioCC() {
                           </option>
                         ))}
                       </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("municipios")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -201,6 +241,7 @@ function FormularioCC() {
                         size="sm"
                         value={formulario.parroquias}
                         onChange={actualizarFormulario("parroquias")}
+                        isInvalid={esInvalido("parroquias")}
                       >
                         <option value="">SELECCIONE UNA PARROQUIA</option>
                         {formulario.municipios &&
@@ -212,6 +253,9 @@ function FormularioCC() {
                             )
                           )}
                       </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("parroquias")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -222,7 +266,11 @@ function FormularioCC() {
                         type="text"
                         value={formulario.localidad}
                         onChange={actualizarFormulario("localidad")}
+                        isInvalid={esInvalido("localidad")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("localidad")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -235,7 +283,11 @@ function FormularioCC() {
                         type="text"
                         value={formulario.comuna}
                         onChange={actualizarFormulario("comuna")}
+                        isInvalid={esInvalido("comuna")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("comuna")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -246,7 +298,11 @@ function FormularioCC() {
                         type="text"
                         value={formulario.nombre}
                         onChange={actualizarFormulario("nombre")}
+                        isInvalid={esInvalido("nombre")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("nombre")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -257,7 +313,11 @@ function FormularioCC() {
                         type="text"
                         value={formulario.situr}
                         onChange={actualizarFormulario("situr")}
+                        isInvalid={esInvalido("situr")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("situr")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -268,7 +328,11 @@ function FormularioCC() {
                         type="text"
                         value={formulario.usuario.cedula}
                         onChange={actualizarFormulario("cedula", "usuario")}
+                        isInvalid={esInvalido("usuario.cedula")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("usuario.cedula")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -283,11 +347,6 @@ function FormularioCC() {
                     </Col>
                   </Row>
                 </Container>
-                {errorDeValidacion ? (
-                  <AlertaError error={errorDeValidacion} />
-                ) : (
-                  ""
-                )}
               </Form>
             </Card.Body>
           </Card>

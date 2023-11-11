@@ -6,13 +6,13 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import { ContextoAutenticado, AlertaError, Error404, Spinner } from "./modulos";
+import { ContextoAutenticado, Error404, Spinner } from "./modulos";
 import { formularioVacioUsuario } from "../config/plantillas";
 
 function FormularioUsuario() {
   const { id } = useParams();
   const [error, setError] = useState(null);
-  const [errorDeValidacion, setErrorDeValidacion] = useState(null);
+  const [erroresValidacion, setErroresValidacion] = useState(null);
   const [cargando, setCargando] = useState(id ? true : false);
   const [subiendo, setSubiendo] = useState(false);
   const [formulario, setFormulario] = useState({ ...formularioVacioUsuario });
@@ -57,10 +57,34 @@ function FormularioUsuario() {
     };
   };
 
+  const esInvalido = function (campo) {
+    let resultado = false;
+    if (erroresValidacion) {
+      erroresValidacion.array.forEach((error) => {
+        if (error.path === campo) {
+          resultado = true;
+        }
+      });
+    }
+    return resultado;
+  };
+
+  const mostrarMsjInvalido = function (campo) {
+    let msj = "";
+    if (erroresValidacion) {
+      erroresValidacion.array.forEach((error) => {
+        if (error.path === campo) {
+          msj = error.msg;
+        }
+      });
+    }
+    return msj;
+  };
+
   const realizarPeticion = async function (evento) {
     evento.preventDefault();
     setSubiendo(true);
-    setErrorDeValidacion(null);
+    setErroresValidacion(null);
     /* jshint ignore:start */
     const url = id
       ? "http://localhost:4000/usuarios/" + formulario._id
@@ -83,10 +107,10 @@ function FormularioUsuario() {
         navegarHasta(`/usuarios/${recibido.id}`, { replace: true });
       } else {
         const recibido = await respuesta.json();
-        setErrorDeValidacion(recibido.error);
+        setErroresValidacion(recibido.error);
       }
     } catch (errorPeticion) {
-      setErrorDeValidacion(errorPeticion);
+      setErroresValidacion(errorPeticion);
     } finally {
       setSubiendo(false);
     }
@@ -106,7 +130,7 @@ function FormularioUsuario() {
               {id ? "Actualizar usuario" : "Registrar nuevo usuario"}
             </Card.Header>
             <Card.Body>
-              <Form onSubmit={realizarPeticion}>
+              <Form noValidate onSubmit={realizarPeticion}>
                 <Container fluid>
                   <Row className="justify-content-center mb-3">
                     <Col xs={12} md={10}>
@@ -116,7 +140,11 @@ function FormularioUsuario() {
                         type="text"
                         value={formulario.usuario}
                         onChange={actualizarFormulario("usuario")}
+                        isInvalid={esInvalido("usuario")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("usuario")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -127,7 +155,11 @@ function FormularioUsuario() {
                         type="password"
                         value={formulario.clave}
                         onChange={actualizarFormulario("clave")}
+                        isInvalid={esInvalido("clave")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("clave")}
+                      </Form.Control.Feedback>
                     </Col>
                     <Col xs={6} md={5}>
                       <Form.Label>Confirme su contraseña</Form.Label>
@@ -136,7 +168,11 @@ function FormularioUsuario() {
                         type="password"
                         value={formulario.clave2}
                         onChange={actualizarFormulario("clave2")}
+                        isInvalid={esInvalido("clave2")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("clave2")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -147,7 +183,11 @@ function FormularioUsuario() {
                         type="text"
                         value={formulario.cedula}
                         onChange={actualizarFormulario("cedula")}
+                        isInvalid={esInvalido("cedula")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("cedula")}
+                      </Form.Control.Feedback>
                     </Col>
                     <Col xs={6} md={5}>
                       <Form.Label>Rol</Form.Label>
@@ -155,10 +195,14 @@ function FormularioUsuario() {
                         size="sm"
                         value={formulario.rol}
                         onChange={actualizarFormulario("rol")}
+                        isInvalid={esInvalido("rol")}
                       >
                         <option value="PROMOTOR">PROMOTOR</option>
                         <option value="ADMINISTRADOR">ADMINISTRADOR</option>
                       </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("rol")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -169,7 +213,11 @@ function FormularioUsuario() {
                         type="text"
                         value={formulario.nombre}
                         onChange={actualizarFormulario("nombre")}
+                        isInvalid={esInvalido("nombre")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("nombre")}
+                      </Form.Control.Feedback>
                     </Col>
                     <Col xs={6} md={5}>
                       <Form.Label>Primer apellido</Form.Label>
@@ -178,7 +226,11 @@ function FormularioUsuario() {
                         type="text"
                         value={formulario.apellido}
                         onChange={actualizarFormulario("apellido")}
+                        isInvalid={esInvalido("apellido")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("apellido")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -189,7 +241,11 @@ function FormularioUsuario() {
                         type="text"
                         value={formulario.tlf}
                         onChange={actualizarFormulario("tlf")}
+                        isInvalid={esInvalido("tlf")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("tlf")}
+                      </Form.Control.Feedback>
                     </Col>
                     <Col xs={6} md={5}>
                       <Form.Label>E-mail</Form.Label>
@@ -198,7 +254,11 @@ function FormularioUsuario() {
                         type="text"
                         value={formulario.email}
                         onChange={actualizarFormulario("email")}
+                        isInvalid={esInvalido("email")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("email")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -213,11 +273,6 @@ function FormularioUsuario() {
                     </Col>
                   </Row>
                 </Container>
-                {errorDeValidacion ? (
-                  <AlertaError error={errorDeValidacion} />
-                ) : (
-                  ""
-                )}
               </Form>
             </Card.Body>
           </Card>

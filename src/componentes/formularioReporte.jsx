@@ -20,7 +20,6 @@ import {
 import {
   ContextoAutenticado,
   AlertaBorrar,
-  AlertaError,
   Error404,
   Spinner,
 } from "./modulos";
@@ -29,7 +28,7 @@ function FormularioReporte() {
   const { id } = useParams();
   const [cargando, setCargando] = useState(id ? true : false);
   const [error, setError] = useState(null);
-  const [errorDeValidacion, setErrorDeValidacion] = useState(null);
+  const [erroresValidacion, setErroresValidacion] = useState(null);
   const [borrar, setBorrar] = useState(false);
   const [subiendo, setSubiendo] = useState(false);
   const [tipo, setTipo] = useState("participacion");
@@ -121,6 +120,7 @@ function FormularioReporte() {
         ...formulario,
         redes: formulario.redes.filter((item, itemId) => i !== itemId),
       });
+      setErroresValidacion(null);
     };
   };
 
@@ -145,18 +145,43 @@ function FormularioReporte() {
         setFormulario(formularioComunicaciones);
         break;
     }
+    setErroresValidacion(null);
     setTipo(evento.target.value);
   };
 
+  const esInvalido = function (campo) {
+    let resultado = false;
+    if (erroresValidacion) {
+      erroresValidacion.array.forEach((error) => {
+        if (error.path === campo) {
+          resultado = true;
+        }
+      });
+    }
+    return resultado;
+  };
+
+  const mostrarMsjInvalido = function (campo) {
+    let msj = "";
+    if (erroresValidacion) {
+      erroresValidacion.array.forEach((error) => {
+        if (error.path === campo) {
+          msj = error.msg;
+        }
+      });
+    }
+    return msj;
+  };
+
   const mostrarAlertaBorrar = function () {
-    setErrorDeValidacion(null);
+    setErroresValidacion(null);
     setBorrar(true);
   };
 
   const realizarPeticion = async function (evento) {
     evento.preventDefault();
     setSubiendo(true);
-    setErrorDeValidacion(null);
+    setErroresValidacion(null);
     /* jshint ignore:start */
     const url = id
       ? `http://localhost:4000/reportes/${tipo}/${formulario._id}`
@@ -179,10 +204,10 @@ function FormularioReporte() {
         navegarHasta(`/reportes/${recibido.id}`, { replace: true });
       } else {
         const recibido = await respuesta.json();
-        setErrorDeValidacion(recibido.error);
+        setErroresValidacion(recibido.error);
       }
     } catch (errorPeticion) {
-      setErrorDeValidacion(errorPeticion);
+      setErroresValidacion(errorPeticion);
     } finally {
       setSubiendo(false);
     }
@@ -208,10 +233,10 @@ function FormularioReporte() {
         navegarHasta("/reportes", { replace: true });
       } else {
         const recibido = await respuesta.json();
-        setErrorDeValidacion(recibido.error);
+        setErroresValidacion(recibido.error);
       }
     } catch (errorPeticion) {
-      setErrorDeValidacion(errorPeticion);
+      setErroresValidacion(errorPeticion);
     } finally {
       setSubiendo(false);
     }
@@ -258,6 +283,7 @@ function FormularioReporte() {
                         size="sm"
                         value={formulario.cc}
                         onChange={actualizarFormulario("cc")}
+                        isInvalid={esInvalido("cc")}
                       >
                         <option>SELECCIONE UN CONSEJO COMUNAL</option>
                         {miUsuario.cc.map((elemento) => (
@@ -266,6 +292,9 @@ function FormularioReporte() {
                           </option>
                         ))}
                       </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("cc")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -288,6 +317,7 @@ function FormularioReporte() {
                             size="sm"
                             value={formulario.acompanamiento}
                             onChange={actualizarFormulario("acompanamiento")}
+                            isInvalid={esInvalido("acompanamiento")}
                           >
                             <option>SELECCIONE UN ACOMPAÑAMIENTO</option>
                             {OpcionesReporte.participacion.acompanamiento.map(
@@ -298,6 +328,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("acompanamiento")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -310,7 +343,11 @@ function FormularioReporte() {
                             onChange={actualizarFormulario(
                               "familiasBeneficiadas"
                             )}
+                            isInvalid={esInvalido("familiasBeneficiadas")}
                           />
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("familiasBeneficiadas")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                     </>
@@ -323,6 +360,7 @@ function FormularioReporte() {
                             size="sm"
                             value={formulario.estrategia}
                             onChange={actualizarFormulario("estrategia")}
+                            isInvalid={esInvalido("estrategia")}
                           >
                             <option>SELECCIONE UNA ESTRATEGIA</option>
                             {OpcionesReporte.formacion.estrategia.map(
@@ -333,6 +371,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("estrategia")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -342,6 +383,7 @@ function FormularioReporte() {
                             size="sm"
                             value={formulario.modalidad}
                             onChange={actualizarFormulario("modalidad")}
+                            isInvalid={esInvalido("modalidad")}
                           >
                             <option>SELECCIONE UNA MODALIDAD</option>
                             {OpcionesReporte.formacion.modalidad.map(
@@ -352,6 +394,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("modalidad")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -361,6 +406,7 @@ function FormularioReporte() {
                             size="sm"
                             value={formulario.tematica}
                             onChange={actualizarFormulario("tematica")}
+                            isInvalid={esInvalido("tematica")}
                           >
                             <option>SELECCIONE UNA TEMATICA</option>
                             {OpcionesReporte.formacion.tematica.map(
@@ -371,6 +417,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("tematica")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -380,6 +429,7 @@ function FormularioReporte() {
                             size="sm"
                             value={formulario.verificacion}
                             onChange={actualizarFormulario("verificacion")}
+                            isInvalid={esInvalido("verificacion")}
                           >
                             <option>SELECCIONE UN TIPO DE VERIFICACION</option>
                             {OpcionesReporte.formacion.verificacion.map(
@@ -390,6 +440,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("verificacion")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -403,7 +456,11 @@ function FormularioReporte() {
                               "hombres",
                               "beneficiados"
                             )}
+                            isInvalid={esInvalido("beneficiados.hombres")}
                           />
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("beneficiados.hombres")}
+                          </Form.Control.Feedback>
                         </Col>
                         <Col xs={6} md={5}>
                           <Form.Label>Beneficiados (mujeres)</Form.Label>
@@ -415,7 +472,11 @@ function FormularioReporte() {
                               "mujeres",
                               "beneficiados"
                             )}
+                            isInvalid={esInvalido("beneficiados.mujeres")}
                           />
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("beneficiados.mujeres")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                     </>
@@ -431,7 +492,11 @@ function FormularioReporte() {
                             type="text"
                             value={formulario.nombreOSP}
                             onChange={actualizarFormulario("nombreOSP")}
+                            isInvalid={esInvalido("nombreOSP")}
                           />
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("nombreOSP")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -441,6 +506,7 @@ function FormularioReporte() {
                             size="sm"
                             value={formulario.acompanamiento}
                             onChange={actualizarFormulario("acompanamiento")}
+                            isInvalid={esInvalido("acompanamiento")}
                           >
                             <option>SELECCIONE UN ACOMPAÑAMIENTO</option>
                             {OpcionesReporte.fortalecimiento.acompanamiento.map(
@@ -451,6 +517,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("acompanamiento")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -460,6 +529,7 @@ function FormularioReporte() {
                             size="sm"
                             value={formulario.tipoActividad}
                             onChange={actualizarFormulario("tipoActividad")}
+                            isInvalid={esInvalido("tipoActividad")}
                           >
                             <option>
                               SELECCIONE UN TIPO DE ACTIVIDAD ECONOMICA
@@ -472,6 +542,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("tipoActividad")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -483,6 +556,7 @@ function FormularioReporte() {
                             size="sm"
                             value={formulario.tipoOSP}
                             onChange={actualizarFormulario("tipoOSP")}
+                            isInvalid={esInvalido("tipoOSP")}
                           >
                             <option>SELECCIONE UN TIPO DE ORGANIZACION</option>
                             {OpcionesReporte.fortalecimiento.tipoOSP.map(
@@ -493,6 +567,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("tipoOSP")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -507,6 +584,7 @@ function FormularioReporte() {
                               "tipo",
                               "proyectoCFG"
                             )}
+                            isInvalid={esInvalido("proyectoCFG.tipo")}
                           >
                             <option value="">
                               SELECCIONE EL TIPO (SI APLICA)
@@ -519,6 +597,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("proyectoCFG.tipo")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -533,6 +614,7 @@ function FormularioReporte() {
                               "etapa",
                               "proyectoCFG"
                             )}
+                            isInvalid={esInvalido("proyectoCFG.etapa")}
                           >
                             <option value="">
                               SELECCIONE LA ETAPA (SI APLICA)
@@ -545,6 +627,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("proyectoCFG.etapa")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                     </>
@@ -557,6 +642,7 @@ function FormularioReporte() {
                             size="sm"
                             value={formulario.areaSustantiva}
                             onChange={actualizarFormulario("areaSustantiva")}
+                            isInvalid={esInvalido("areaSustantiva")}
                           >
                             <option>SELECCIONE UN AREA SUSTANTIVA</option>
                             {OpcionesReporte.incidencias.areaSustantiva.map(
@@ -567,6 +653,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("areaSustantiva")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -577,7 +666,11 @@ function FormularioReporte() {
                             type="text"
                             value={formulario.tipoIncidencia}
                             onChange={actualizarFormulario("tipoIncidencia")}
+                            isInvalid={esInvalido("tipoIncidencia")}
                           />
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("tipoIncidencia")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                     </>
@@ -590,6 +683,7 @@ function FormularioReporte() {
                             size="sm"
                             value={formulario.tipoCaso}
                             onChange={actualizarFormulario("tipoCaso")}
+                            isInvalid={esInvalido("tipoCaso")}
                           >
                             <option>SELECCIONE UN TIPO</option>
                             {OpcionesReporte.casoadmin.tipoCaso.map(
@@ -600,6 +694,9 @@ function FormularioReporte() {
                               )
                             )}
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("tipoCaso")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       <Row className="justify-content-center mb-3">
@@ -610,7 +707,11 @@ function FormularioReporte() {
                             type="text"
                             value={formulario.caso}
                             onChange={actualizarFormulario("caso")}
+                            isInvalid={esInvalido("caso")}
                           />
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("caso")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                     </>
@@ -624,7 +725,11 @@ function FormularioReporte() {
                             type="text"
                             value={formulario.prensa.notas}
                             onChange={actualizarFormulario("notas", "prensa")}
+                            isInvalid={esInvalido("prensa.notas")}
                           />
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("prensa.notas")}
+                          </Form.Control.Feedback>
                         </Col>
                         <Col xs={6} md={5}>
                           <Form.Label>Reseñas de prensa (opcional)</Form.Label>
@@ -633,7 +738,11 @@ function FormularioReporte() {
                             type="text"
                             value={formulario.prensa.resenas}
                             onChange={actualizarFormulario("resenas", "prensa")}
+                            isInvalid={esInvalido("prensa.resenas")}
                           />
+                          <Form.Control.Feedback type="invalid">
+                            {mostrarMsjInvalido("prensa.resenas")}
+                          </Form.Control.Feedback>
                         </Col>
                       </Row>
                       {formulario.redes.map((red, i) => {
@@ -653,7 +762,11 @@ function FormularioReporte() {
                                   "redes",
                                   i
                                 )}
+                                isInvalid={esInvalido(`redes[${i}].cuenta`)}
                               />
+                              <Form.Control.Feedback type="invalid">
+                                {mostrarMsjInvalido(`redes[${i}].cuenta`)}
+                              </Form.Control.Feedback>
                             </Col>
                             <Col xs={5} md={4}>
                               <Form.Label>Publicaciones</Form.Label>
@@ -666,7 +779,15 @@ function FormularioReporte() {
                                   "redes",
                                   i
                                 )}
+                                isInvalid={esInvalido(
+                                  `redes[${i}].publicaciones`
+                                )}
                               />
+                              <Form.Control.Feedback type="invalid">
+                                {mostrarMsjInvalido(
+                                  `redes[${i}].publicaciones`
+                                )}
+                              </Form.Control.Feedback>
                             </Col>
                             <Col
                               xs={2}
@@ -694,7 +815,11 @@ function FormularioReporte() {
                         type="text"
                         value={formulario.organosAdscritos}
                         onChange={actualizarFormulario("organosAdscritos")}
+                        isInvalid={esInvalido("organosAdscritos")}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {mostrarMsjInvalido("organosAdscritos")}
+                      </Form.Control.Feedback>
                     </Col>
                   </Row>
                   <Row className="justify-content-center mb-3">
@@ -721,9 +846,7 @@ function FormularioReporte() {
                     </Col>
                   </Row>
                 </Container>
-                {errorDeValidacion ? (
-                  <AlertaError error={errorDeValidacion} />
-                ) : borrar ? (
+                {borrar ? (
                   <AlertaBorrar
                     realizarPeticion={realizarPeticionBorrar}
                     setBorrar={setBorrar}
