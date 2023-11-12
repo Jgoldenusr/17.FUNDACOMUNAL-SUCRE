@@ -136,6 +136,7 @@ function FormularioUsuario() {
                     <Col xs={12} md={10}>
                       <Form.Label>Nombre de usuario</Form.Label>
                       <Form.Control
+                        maxLength={20}
                         size="sm"
                         type="text"
                         value={formulario.usuario}
@@ -151,6 +152,7 @@ function FormularioUsuario() {
                     <Col xs={6} md={5}>
                       <Form.Label>Contraseña</Form.Label>
                       <Form.Control
+                        maxLength={30}
                         size="sm"
                         type="password"
                         value={formulario.clave}
@@ -164,6 +166,7 @@ function FormularioUsuario() {
                     <Col xs={6} md={5}>
                       <Form.Label>Confirme su contraseña</Form.Label>
                       <Form.Control
+                        maxLength={30}
                         size="sm"
                         type="password"
                         value={formulario.clave2}
@@ -179,6 +182,7 @@ function FormularioUsuario() {
                     <Col xs={6} md={5}>
                       <Form.Label>Cedula</Form.Label>
                       <Form.Control
+                        maxLength={9}
                         size="sm"
                         type="text"
                         value={formulario.cedula}
@@ -209,6 +213,7 @@ function FormularioUsuario() {
                     <Col xs={6} md={5}>
                       <Form.Label>Primer nombre</Form.Label>
                       <Form.Control
+                        maxLength={20}
                         size="sm"
                         type="text"
                         value={formulario.nombre}
@@ -222,6 +227,7 @@ function FormularioUsuario() {
                     <Col xs={6} md={5}>
                       <Form.Label>Primer apellido</Form.Label>
                       <Form.Control
+                        maxLength={20}
                         size="sm"
                         type="text"
                         value={formulario.apellido}
@@ -237,6 +243,7 @@ function FormularioUsuario() {
                     <Col xs={6} md={5}>
                       <Form.Label>Numero telefonico</Form.Label>
                       <Form.Control
+                        maxLength={12}
                         size="sm"
                         type="text"
                         value={formulario.tlf}
@@ -250,6 +257,7 @@ function FormularioUsuario() {
                     <Col xs={6} md={5}>
                       <Form.Label>E-mail</Form.Label>
                       <Form.Control
+                        maxLength={50}
                         size="sm"
                         type="text"
                         value={formulario.email}

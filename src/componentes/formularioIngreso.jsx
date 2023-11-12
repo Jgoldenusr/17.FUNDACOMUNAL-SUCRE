@@ -72,6 +72,7 @@ function FormularioIngreso() {
                     <Col xs={12} md={6}>
                       <Form.Label>Nombre de usuario</Form.Label>
                       <Form.Control
+                        maxLength={20}
                         size="sm"
                         type="text"
                         value={formulario.usuario}
@@ -83,6 +84,7 @@ function FormularioIngreso() {
                     <Col xs={12} md={6}>
                       <Form.Label>Contraseña</Form.Label>
                       <Form.Control
+                        maxLength={30}
                         size="sm"
                         type="password"
                         value={formulario.clave}

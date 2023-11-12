@@ -262,6 +262,7 @@ function FormularioCC() {
                     <Col xs={12} md={10}>
                       <Form.Label>Localidad donde se ubica el C.C</Form.Label>
                       <Form.Control
+                        maxLength={100}
                         size="sm"
                         type="text"
                         value={formulario.localidad}
@@ -294,6 +295,7 @@ function FormularioCC() {
                     <Col xs={12} md={10}>
                       <Form.Label>Nombre del consejo comual</Form.Label>
                       <Form.Control
+                        maxLength={100}
                         size="sm"
                         type="text"
                         value={formulario.nombre}
@@ -309,6 +311,7 @@ function FormularioCC() {
                     <Col xs={12} md={10}>
                       <Form.Label>Codigo situr del consejo comunal</Form.Label>
                       <Form.Control
+                        maxLength={17}
                         size="sm"
                         type="text"
                         value={formulario.situr}
@@ -324,6 +327,7 @@ function FormularioCC() {
                     <Col xs={12} md={10}>
                       <Form.Label>Cedula del usuario asociado</Form.Label>
                       <Form.Control
+                        maxLength={9}
                         size="sm"
                         type="text"
                         value={formulario.usuario.cedula}

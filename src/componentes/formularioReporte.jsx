@@ -337,6 +337,7 @@ function FormularioReporte() {
                         <Col xs={12} md={10}>
                           <Form.Label>Familias beneficiadas</Form.Label>
                           <Form.Control
+                            maxLength={9}
                             size="sm"
                             type="text"
                             value={formulario.familiasBeneficiadas}
@@ -449,6 +450,7 @@ function FormularioReporte() {
                         <Col xs={6} md={5}>
                           <Form.Label>Beneficiados (hombres)</Form.Label>
                           <Form.Control
+                            maxLength={9}
                             size="sm"
                             type="text"
                             value={formulario.beneficiados.hombres}
@@ -465,6 +467,7 @@ function FormularioReporte() {
                         <Col xs={6} md={5}>
                           <Form.Label>Beneficiados (mujeres)</Form.Label>
                           <Form.Control
+                            maxLength={9}
                             size="sm"
                             type="text"
                             value={formulario.beneficiados.mujeres}
@@ -488,6 +491,7 @@ function FormularioReporte() {
                             Nombre de la organizacion socioproductiva
                           </Form.Label>
                           <Form.Control
+                            maxLength={100}
                             size="sm"
                             type="text"
                             value={formulario.nombreOSP}
@@ -662,6 +666,7 @@ function FormularioReporte() {
                         <Col xs={12} md={10}>
                           <Form.Label>Tipo de incidencia</Form.Label>
                           <Form.Control
+                            maxLength={100}
                             size="sm"
                             type="text"
                             value={formulario.tipoIncidencia}
@@ -703,6 +708,7 @@ function FormularioReporte() {
                         <Col xs={12} md={10}>
                           <Form.Label>Caso administrativo</Form.Label>
                           <Form.Control
+                            maxLength={100}
                             size="sm"
                             type="text"
                             value={formulario.caso}
@@ -721,6 +727,7 @@ function FormularioReporte() {
                         <Col xs={6} md={5}>
                           <Form.Label>Notas de prensa (opcional)</Form.Label>
                           <Form.Control
+                            maxLength={9}
                             size="sm"
                             type="text"
                             value={formulario.prensa.notas}
@@ -734,6 +741,7 @@ function FormularioReporte() {
                         <Col xs={6} md={5}>
                           <Form.Label>Reseñas de prensa (opcional)</Form.Label>
                           <Form.Control
+                            maxLength={9}
                             size="sm"
                             type="text"
                             value={formulario.prensa.resenas}
@@ -771,6 +779,7 @@ function FormularioReporte() {
                             <Col xs={5} md={4}>
                               <Form.Label>Publicaciones</Form.Label>
                               <Form.Control
+                                maxLength={9}
                                 size="sm"
                                 type="text"
                                 value={red.publicaciones}
@@ -811,6 +820,7 @@ function FormularioReporte() {
                     <Col xs={12} md={10}>
                       <Form.Label>Organos adscritos</Form.Label>
                       <Form.Control
+                        maxLength={30}
                         size="sm"
                         type="text"
                         value={formulario.organosAdscritos}
