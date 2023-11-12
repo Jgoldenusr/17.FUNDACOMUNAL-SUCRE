@@ -84,7 +84,7 @@ function AlertaError({ error }) {
         {error.array ? (
           <ul>
             {error.array.map((error, indice) => {
-              return <li key={indice}>{error.msg}</li>;
+              return <li key={`MOD-${indice}`}>{error.msg}</li>;
             })}
           </ul>
         ) : (

@@ -253,7 +253,7 @@ function VerReporte() {
                       <ListGroup className="px-3 pt-3 pb-0 bg-light">
                         {reporte.redes.map((info, i) => {
                           return (
-                            <ListGroup className="pb-3" key={i}>
+                            <ListGroup className="pb-3" key={`RED-${i}`}>
                               <ListGroup.Item>
                                 <FontAwesomeIcon
                                   icon={faRss}

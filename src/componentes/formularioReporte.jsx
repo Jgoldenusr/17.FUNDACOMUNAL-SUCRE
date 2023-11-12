@@ -748,7 +748,7 @@ function FormularioReporte() {
                       {formulario.redes.map((red, i) => {
                         return (
                           <Row
-                            key={`REDES-${i}`}
+                            key={`RED-${i}`}
                             className="justify-content-center mb-3"
                           >
                             <Col xs={5} md={4}>
