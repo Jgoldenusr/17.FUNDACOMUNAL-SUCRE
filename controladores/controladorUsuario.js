@@ -14,8 +14,9 @@ exports.actualizarUsuario =
       .trim()
       .isInt({ min: 1 })
       .withMessage("La cedula debe ser un numero mayor que 0")
+      .bail()
       .isInt({ max: 999999999 })
-      .withMessage("La cedula debe ser un numero menor que 999999999")
+      .withMessage("La cedula excede la cifra maxima")
       .bail()
       .custom(Validar.cedulaNoRepetida),
     body("nombre")
@@ -23,8 +24,10 @@ exports.actualizarUsuario =
       .escape()
       .isLength({ min: 1 })
       .withMessage("Debe especificar un nombre")
+      .bail()
       .isLength({ max: 20 })
       .withMessage("El nombre no debe exceder los 20 caracteres")
+      .bail()
       .isAlpha()
       .withMessage("El nombre solo debe incluir letras")
       .toUpperCase(),
@@ -33,8 +36,10 @@ exports.actualizarUsuario =
       .escape()
       .isLength({ min: 1 })
       .withMessage("Debe especificar un apellido")
+      .bail()
       .isLength({ max: 20 })
       .withMessage("El apellido no debe exceder los 20 caracteres")
+      .bail()
       .isAlpha()
       .withMessage("El apellido solo debe incluir letras")
       .toUpperCase(),
@@ -43,8 +48,10 @@ exports.actualizarUsuario =
       .escape()
       .isLength({ min: 1 })
       .withMessage("Debe especificar un numero telefonico")
+      .bail()
       .isLength({ max: 12 })
       .withMessage("El numero telefonico no debe exceder los 12 caracteres")
+      .bail()
       .isNumeric({ no_symbols: true })
       .withMessage("El numero telefonico no debe incluir simbolos ni letras")
       .bail()
@@ -54,6 +61,7 @@ exports.actualizarUsuario =
       .escape()
       .isLength({ max: 50 })
       .withMessage("El correo electronico no puede exceder los 50 caracteres")
+      .bail()
       .isEmail()
       .withMessage("El correo electronico no posee un formato valido")
       .bail()
@@ -66,14 +74,16 @@ exports.actualizarUsuario =
       .escape()
       .isLength({ min: 5 })
       .withMessage("El nombre de usuario debe tener minimo 5 caracteres")
-      .isLength({ max: 15 })
-      .withMessage("El nombre de usuario no debe exceder los 15 caracteres")
+      .bail()
+      .isLength({ max: 20 })
+      .withMessage("El nombre de usuario no debe exceder los 20 caracteres")
       .bail()
       .custom(Validar.nombreUsuarioNoRepetido),
     body("clave")
       .optional({ values: "falsy" })
       .isLength({ min: 5 })
       .withMessage("La clave debe tener minimo 5 caracteres")
+      .bail()
       .isLength({ max: 30 })
       .withMessage("La clave no debe exceder los 30 caracteres")
       .bail()
@@ -81,7 +91,7 @@ exports.actualizarUsuario =
         if (valorClave === req.body.clave2) {
           return true;
         } else {
-          throw new Error("Las claves no coinciden");
+          throw new Error("Las claves que introdujo no coinciden");
         }
       }),
     body("clave2")
@@ -90,7 +100,7 @@ exports.actualizarUsuario =
         if (valorClave2 === req.body.clave) {
           return true;
         } else {
-          throw new Error("Las claves no coinciden");
+          throw new Error("Las claves que introdujo no coinciden");
         }
       }),
     //Esta funcion se ejecuta despues de validados los campos
@@ -224,8 +234,9 @@ exports.registrarUsuario =
       .trim()
       .isInt({ min: 1 })
       .withMessage("La cedula debe ser un numero mayor que 0")
+      .bail()
       .isInt({ max: 999999999 })
-      .withMessage("La cedula debe ser un numero menor que 999999999")
+      .withMessage("La cedula excede la cifra maxima")
       .bail()
       .custom(Validar.cedulaNueva),
     body("nombre")
@@ -233,8 +244,10 @@ exports.registrarUsuario =
       .escape()
       .isLength({ min: 1 })
       .withMessage("Debe especificar un nombre")
+      .bail()
       .isLength({ max: 20 })
       .withMessage("El nombre no debe exceder los 20 caracteres")
+      .bail()
       .isAlpha()
       .withMessage("El nombre solo debe incluir letras")
       .toUpperCase(),
@@ -243,8 +256,10 @@ exports.registrarUsuario =
       .escape()
       .isLength({ min: 1 })
       .withMessage("Debe especificar un apellido")
+      .bail()
       .isLength({ max: 20 })
       .withMessage("El apellido no debe exceder los 20 caracteres")
+      .bail()
       .isAlpha()
       .withMessage("El apellido solo debe incluir letras")
       .toUpperCase(),
@@ -253,8 +268,10 @@ exports.registrarUsuario =
       .escape()
       .isLength({ min: 1 })
       .withMessage("Debe especificar un numero telefonico")
+      .bail()
       .isLength({ max: 12 })
       .withMessage("El numero telefonico no debe exceder los 12 caracteres")
+      .bail()
       .isNumeric({ no_symbols: true })
       .withMessage("El numero telefonico no debe incluir simbolos ni letras")
       .bail()
@@ -264,6 +281,7 @@ exports.registrarUsuario =
       .escape()
       .isLength({ max: 50 })
       .withMessage("El correo electronico no puede exceder los 50 caracteres")
+      .bail()
       .isEmail()
       .withMessage("El correo electronico no posee un formato valido")
       .bail()
@@ -276,19 +294,21 @@ exports.registrarUsuario =
       .escape()
       .isLength({ min: 5 })
       .withMessage("El nombre de usuario debe tener minimo 5 caracteres")
-      .isLength({ max: 15 })
-      .withMessage("El nombre de usuario no debe exceder los 15 caracteres")
+      .bail()
+      .isLength({ max: 20 })
+      .withMessage("El nombre de usuario no debe exceder los 20 caracteres")
       .bail()
       .custom(Validar.nombreUsuarioNuevo),
     body("clave")
       .isLength({ min: 5 })
       .withMessage("La clave debe tener minimo 5 caracteres")
+      .bail()
       .isLength({ max: 30 })
       .withMessage("La clave no debe exceder los 30 caracteres"),
-    body(
-      "clave2",
-      "Las contraseñas que introdujo no coinciden, verifique"
-    ).custom(function (valorClave2, { req }) {
+    body("clave2", "Las claves que introdujo no coinciden").custom(function (
+      valorClave2,
+      { req }
+    ) {
       return valorClave2 === req.body.clave;
     }),
     //Esta funcion se ejecuta despues de validados los campos

@@ -94,6 +94,7 @@ exports.nuevoParticipacion = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -124,8 +125,9 @@ exports.nuevoParticipacion = [
     .trim()
     .isInt({ min: 1 })
     .withMessage("El campo 'familias beneficiadas' debe ser mayor a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("Las'familias beneficiadas' debe ser menores que 999999999"),
+    .withMessage("El campo 'familias beneficiadas' excede la cifra maxima"),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -172,6 +174,7 @@ exports.actualizarParticipacion = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -202,8 +205,9 @@ exports.actualizarParticipacion = [
     .trim()
     .isInt({ min: 1 })
     .withMessage("El campo 'familias beneficiadas' debe ser mayor a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("Las'familias beneficiadas' debe ser menores que 999999999"),
+    .withMessage("El campo 'familias beneficiadas' excede la cifra maxima"),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -252,6 +256,7 @@ exports.nuevoFormacion = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -259,14 +264,16 @@ exports.nuevoFormacion = [
     .trim()
     .isInt({ min: 0 })
     .withMessage("El campo 'hombres' no puede ser menor a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'hombres' no debe exceder los 999999999"),
+    .withMessage("El campo 'hombres' excede la cifra maxima"),
   body("beneficiados.mujeres")
     .trim()
     .isInt({ min: 0 })
     .withMessage("El campo 'mujeres' no puede ser menor a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'mujeres' no debe exceder los 999999999"),
+    .withMessage("El campo 'mujeres' excede la cifra maxima"),
   body("estrategia", "Estrategia invalida")
     .trim()
     .isIn([
@@ -355,6 +362,7 @@ exports.actualizarFormacion = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -362,14 +370,16 @@ exports.actualizarFormacion = [
     .trim()
     .isInt({ min: 0 })
     .withMessage("El campo 'hombres' no puede ser menor a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'hombres' no debe exceder los 999999999"),
+    .withMessage("El campo 'hombres' excede la cifra maxima"),
   body("beneficiados.mujeres")
     .trim()
     .isInt({ min: 0 })
     .withMessage("El campo 'mujeres' no puede ser menor a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'mujeres' no debe exceder los 999999999"),
+    .withMessage("El campo 'mujeres' excede la cifra maxima"),
   body("estrategia", "Estrategia invalida")
     .trim()
     .isIn([
@@ -460,6 +470,7 @@ exports.nuevoFortalecimiento = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -488,6 +499,7 @@ exports.nuevoFortalecimiento = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'nombreOSP' no debe estar vacio")
+    .bail()
     .isLength({ max: 100 })
     .withMessage("El campo 'nombreOSP' no debe exceder los 100 caracteres")
     .toUpperCase(),
@@ -595,6 +607,7 @@ exports.actualizarFortalecimiento = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -623,6 +636,7 @@ exports.actualizarFortalecimiento = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'nombreOSP' no debe estar vacio")
+    .bail()
     .isLength({ max: 100 })
     .withMessage("El campo 'nombreOSP' no debe exceder los 100 caracteres")
     .toUpperCase(),
@@ -732,6 +746,7 @@ exports.nuevoIncidencias = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -743,6 +758,7 @@ exports.nuevoIncidencias = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'tipo de incidencia' no debe estar vacio")
+    .bail()
     .isLength({ max: 100 })
     .withMessage(
       "El campo 'tipo de incidencia' debe ser menor a 100 caracteres"
@@ -794,6 +810,7 @@ exports.actualizarIncidencias = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -805,6 +822,7 @@ exports.actualizarIncidencias = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'tipo de incidencia' no debe estar vacio")
+    .bail()
     .isLength({ max: 100 })
     .withMessage(
       "El campo 'tipo de incidencia' debe ser menor a 100 caracteres"
@@ -858,6 +876,7 @@ exports.nuevoCasoAdmin = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -866,6 +885,7 @@ exports.nuevoCasoAdmin = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'caso' no debe estar vacio")
+    .bail()
     .isLength({ max: 100 })
     .withMessage("El campo 'caso' debe ser menor a 100 caracteres")
     .toUpperCase(),
@@ -918,6 +938,7 @@ exports.actualizarCasoAdmin = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -926,6 +947,7 @@ exports.actualizarCasoAdmin = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'caso' no debe estar vacio")
+    .bail()
     .isLength({ max: 100 })
     .withMessage("El campo 'caso' debe ser menor a 100 caracteres")
     .toUpperCase(),
@@ -980,6 +1002,7 @@ exports.nuevoComunicaciones = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -988,22 +1011,25 @@ exports.nuevoComunicaciones = [
     .trim()
     .isInt({ min: 1 })
     .withMessage("El campo 'notas' debe ser mayor a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'notas' no debe exceder los 999999999"),
+    .withMessage("El campo 'notas' excede la cifra maxima"),
   body("prensa.resenas")
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
     .withMessage("El campo 'resenas' debe ser mayor a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'resenas' no debe exceder los 999999999"),
+    .withMessage("El campo 'resenas' excede la cifra maxima"),
   body("redes.*.publicaciones")
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
     .withMessage("Las publicaciones deben ser mayores a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("las publicaciones deben ser menores que 999999999"),
+    .withMessage("Las publicaciones exceden la cifra maxima"),
   body("redes.*.cuenta")
     .optional({ values: "falsy" })
     .trim()
@@ -1059,6 +1085,7 @@ exports.actualizarComunicaciones = [
     .escape()
     .isLength({ min: 1 })
     .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
@@ -1067,28 +1094,31 @@ exports.actualizarComunicaciones = [
     .trim()
     .isInt({ min: 1 })
     .withMessage("El campo 'notas' debe ser mayor a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'notas' no debe exceder los 999999999"),
+    .withMessage("El campo 'notas' excede la cifra maxima"),
   body("prensa.resenas")
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
     .withMessage("El campo 'resenas' debe ser mayor a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("El campo 'resenas' no debe exceder los 999999999"),
+    .withMessage("El campo 'resenas' excede la cifra maxima"),
   body("redes.*.publicaciones")
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
     .withMessage("Las publicaciones deben ser mayores a 0")
+    .bail()
     .isInt({ max: 999999999 })
-    .withMessage("las publicaciones deben ser menores que 999999999"),
+    .withMessage("Las publicaciones exceden la cifra maxima"),
   body("redes.*.cuenta")
     .optional({ values: "falsy" })
     .trim()
     .escape()
     .isLength({ min: 1 })
-    .withMessage("El campo 'caso' no debe estar vacio"),
+    .withMessage("El campo 'cuenta' no debe estar vacio"),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante

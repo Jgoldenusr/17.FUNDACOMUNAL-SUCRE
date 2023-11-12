@@ -7,21 +7,31 @@ const Validar = require("../config/validadores");
 exports.actualizarCC =
   //Se validan los campos
   [
-    body("usuario.cedula").custom(Validar.cedulaExiste),
+    body("usuario.cedula")
+      .trim()
+      .isInt({ min: 1 })
+      .withMessage("La cedula debe ser un numero mayor que 0")
+      .bail()
+      .isInt({ max: 999999999 })
+      .withMessage("La cedula excede la cifra maxima")
+      .bail()
+      .custom(Validar.cedulaExiste),
     body("comuna")
       .optional({ values: "falsy" })
       .trim()
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'comuna' no debe estar vacio")
-      .isLength({ max: 30 })
-      .withMessage("El campo 'comuna' no debe exceder los 30 caracteres")
+      .bail()
+      .isLength({ max: 50 })
+      .withMessage("El campo 'comuna' no debe exceder los 50 caracteres")
       .toUpperCase(),
     body("estados")
       .trim()
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'estados' no debe estar vacio")
+      .bail()
       .isLength({ max: 30 })
       .withMessage("El campo 'estados' no debe exceder los 30 caracteres")
       .toUpperCase(),
@@ -30,6 +40,7 @@ exports.actualizarCC =
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'localidad' no debe estar vacio")
+      .bail()
       .isLength({ max: 100 })
       .withMessage("El campo 'localidad' no debe exceder los 100 caracteres")
       .toUpperCase(),
@@ -38,6 +49,7 @@ exports.actualizarCC =
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'municipios' no debe estar vacio")
+      .bail()
       .isLength({ max: 30 })
       .withMessage("El campo 'municipios' no debe exceder los 30 caracteres")
       .toUpperCase(),
@@ -46,6 +58,7 @@ exports.actualizarCC =
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'nombre' no debe estar vacio")
+      .bail()
       .isLength({ max: 100 })
       .withMessage("El campo 'nombre' no debe exceder los 100 caracteres")
       .toUpperCase(),
@@ -54,6 +67,7 @@ exports.actualizarCC =
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'parroquias' no debe estar vacio")
+      .bail()
       .isLength({ max: 30 })
       .withMessage("El campo 'parroquias' no debe exceder los 30 caracteres")
       .toUpperCase(),
@@ -209,21 +223,31 @@ exports.listarCC = asyncHandler(async function (req, res, next) {
 exports.nuevoCC =
   //Se validan los campos
   [
-    body("usuario.cedula").custom(Validar.cedulaExiste),
+    body("usuario.cedula")
+      .trim()
+      .isInt({ min: 1 })
+      .withMessage("La cedula debe ser un numero mayor que 0")
+      .bail()
+      .isInt({ max: 999999999 })
+      .withMessage("La cedula excede la cifra maxima")
+      .bail()
+      .custom(Validar.cedulaExiste),
     body("comuna")
       .optional({ values: "falsy" })
       .trim()
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'comuna' no debe estar vacio")
-      .isLength({ max: 30 })
-      .withMessage("El campo 'comuna' no debe exceder los 30 caracteres")
+      .bail()
+      .isLength({ max: 50 })
+      .withMessage("El campo 'comuna' no debe exceder los 50 caracteres")
       .toUpperCase(),
     body("estados")
       .trim()
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'estados' no debe estar vacio")
+      .bail()
       .isLength({ max: 30 })
       .withMessage("El campo 'estados' no debe exceder los 30 caracteres")
       .toUpperCase(),
@@ -232,6 +256,7 @@ exports.nuevoCC =
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'localidad' no debe estar vacio")
+      .bail()
       .isLength({ max: 100 })
       .withMessage("El campo 'localidad' no debe exceder los 100 caracteres")
       .toUpperCase(),
@@ -240,6 +265,7 @@ exports.nuevoCC =
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'municipios' no debe estar vacio")
+      .bail()
       .isLength({ max: 30 })
       .withMessage("El campo 'municipios' no debe exceder los 30 caracteres")
       .toUpperCase(),
@@ -248,6 +274,7 @@ exports.nuevoCC =
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'nombre' no debe estar vacio")
+      .bail()
       .isLength({ max: 100 })
       .withMessage("El campo 'nombre' no debe exceder los 100 caracteres")
       .toUpperCase(),
@@ -256,6 +283,7 @@ exports.nuevoCC =
       .escape()
       .isLength({ min: 1 })
       .withMessage("El campo 'parroquias' no debe estar vacio")
+      .bail()
       .isLength({ max: 30 })
       .withMessage("El campo 'parroquias' no debe exceder los 30 caracteres")
       .toUpperCase(),
