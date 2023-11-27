@@ -1,33 +1,24 @@
-import "./estilos/personalizados.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Stack from "react-bootstrap/Stack";
-import EstadisticasGenerales from "./componentes/estadisticasGenerales";
-import FormularioCC from "./componentes/formularioCC";
-import FormularioIngreso from "./componentes/formularioIngreso";
-import FormularioReporte from "./componentes/formularioReporte";
-import FormularioUsuario from "./componentes/formularioUsuario";
-import MostrarCCS from "./componentes/mostrarCCS";
-import MostrarUsuarios from "./componentes/mostrarUsuarios";
-import MostrarReportes from "./componentes/mostrarReportes";
-import VerCC from "./componentes/verCC";
-import VerUsuario from "./componentes/verUsuario";
-import VerReporte from "./componentes/verReporte";
-import {
-  ContextoAutenticado,
-  Envoltorio,
-  Error404,
-} from "./componentes/modulos";
+import ContextoAutenticado from "./componentes/ContextoAutenticado.jsx";
+import Bloquear from "./componentes/Bloquear.jsx";
+import Error404 from "./componentes/Error404.jsx";
+import Envoltorio from "./pantallas/Envoltorio.jsx";
+import EstadisticasGenerales from "./pantallas/EstadisticasGenerales.jsx";
+import FormularioCC from "./pantallas/FormularioCC.jsx";
+import FormularioIngreso from "./pantallas/FormularioIngreso.jsx";
+import FormularioReporte from "./pantallas/FormularioReporte.jsx";
+import FormularioUsuario from "./pantallas/FormularioUsuario.jsx";
+import MostrarCCS from "./pantallas/MostrarCCS.jsx";
+import MostrarReportes from "./pantallas/MostrarReportes.jsx";
+import MostrarUsuarios from "./pantallas/MostrarUsuarios.jsx";
+import VerCC from "./pantallas/VerCC.jsx";
+import VerReporte from "./pantallas/VerReporte.jsx";
+import VerUsuario from "./pantallas/VerUsuario.jsx";
 
 function Base() {
-  const [miUsuario, setMiUsuario] = useState(null);
-
-  useEffect(() => {
-    buscarUsuario();
-  }, []);
-
-  const borrarUsuario = function () {
+  const borrarUsuario = function (evento) {
+    evento.preventDefault();
     setMiUsuario(null);
     localStorage.removeItem("miUsuario");
   };
@@ -35,7 +26,9 @@ function Base() {
   const buscarUsuario = function () {
     const usuarioGuardado = localStorage.getItem("miUsuario");
     if (usuarioGuardado) {
-      setMiUsuario(JSON.parse(usuarioGuardado));
+      return JSON.parse(usuarioGuardado);
+    } else {
+      return null;
     }
   };
 
@@ -44,18 +37,18 @@ function Base() {
     localStorage.setItem("miUsuario", JSON.stringify(usr));
   };
 
+  const [miUsuario, setMiUsuario] = useState(buscarUsuario());
+
   /* jshint ignore:start */
+  /* prettier-ignore */
   return (
     <ContextoAutenticado.Provider
-      value={{ miUsuario, borrarUsuario, buscarUsuario, guardarUsuario }}
+      value={{ miUsuario, borrarUsuario, guardarUsuario }}
     >
       <BrowserRouter>
-        <Stack direction="vertical" className="Lato gradient min-vh-100">
           <Routes>
-            {miUsuario ? (
-              /* prettier-ignore */
+            <Route element={<Bloquear roles={["PROMOTOR"]} />}>
               <Route element={<Envoltorio />}>
-                <Route path="/" element={<EstadisticasGenerales />} />
                 <Route path="ccs" element={<MostrarCCS />} />
                 <Route path="ccs/nuevo" element={<FormularioCC />} />
                 <Route path="ccs/:id" element={<VerCC />} />
@@ -64,19 +57,22 @@ function Base() {
                 <Route path="usuarios/nuevo" element={<FormularioUsuario />}/>
                 <Route path="usuarios/:id" element={<VerUsuario />} />
                 <Route path="usuarios/:id/editar" element={<FormularioUsuario />}/>
-                <Route path="/reportes" element={<MostrarReportes />} />
+              </Route>
+            </Route>
+            <Route element={<Bloquear roles={[""]} />}>
+              <Route element={<Envoltorio />}>
+                <Route path="/" element={<EstadisticasGenerales />} />
+                <Route path="reportes" element={<MostrarReportes />} />
                 <Route path="reportes/nuevo" element={<FormularioReporte />} />
                 <Route path="reportes/:id" element={<VerReporte />} /> 
                 <Route path="reportes/:id/editar" element={<FormularioReporte />} />
                 <Route path="*" element={<Error404 />} />
               </Route>
-            ) : (
-              <Route>
-                <Route path="*" element={<FormularioIngreso />} />
-              </Route>
-            )}
+            </Route>
+            <Route>
+              <Route path="/ingresar" element={<FormularioIngreso />} />
+            </Route>
           </Routes>
-        </Stack>
       </BrowserRouter>
     </ContextoAutenticado.Provider>
   );
