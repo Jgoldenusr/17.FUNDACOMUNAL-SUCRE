@@ -66,10 +66,30 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
 });
 
 exports.listarReportes = asyncHandler(async function (req, res, next) {
+  const { desde, hasta, idcc, idusr } = req.query; //se extraen los parametros de la consulta
+  let parametros = {};
+
+  if (desde && hasta) {
+    //Se agrega el filtro de fecha
+    parametros.fecha = {
+      $gte: new Date(desde),
+      $lt: new Date(hasta),
+    };
+  }
+  if (idcc) {
+    //Se agrega el filtro de tipo
+    parametros.cc = idcc;
+  }
+  if (idusr) {
+    //Se agrega el filtro de usuario
+    parametros.usuario = idusr;
+  }
+
   //Se buscan todos los reportes segun los mas recientes
-  const listaDeReportes = await Reporte.find({})
+  const listaDeReportes = await Reporte.find(parametros)
     .populate("cc", "nombre")
     .populate("usuario", "nombre apellido")
+    .sort({ fecha: -1 })
     .exec();
   //Los resultados de la busqueda se meten en un arreglo
   if (listaDeReportes.length > 0) {

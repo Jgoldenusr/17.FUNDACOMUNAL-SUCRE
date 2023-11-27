@@ -23,7 +23,7 @@ exports.actualizarCC =
       .isLength({ min: 1 })
       .withMessage("El campo 'comuna' no debe estar vacio")
       .bail()
-      .isLength({ max: 50 })
+      .isLength({ max: 60 })
       .withMessage("El campo 'comuna' no debe exceder los 50 caracteres")
       .toUpperCase(),
     body("estados")
@@ -50,7 +50,7 @@ exports.actualizarCC =
       .isLength({ min: 1 })
       .withMessage("El campo 'municipios' no debe estar vacio")
       .bail()
-      .isLength({ max: 30 })
+      .isLength({ max: 60 })
       .withMessage("El campo 'municipios' no debe exceder los 30 caracteres")
       .toUpperCase(),
     body("nombre")
@@ -68,7 +68,7 @@ exports.actualizarCC =
       .isLength({ min: 1 })
       .withMessage("El campo 'parroquias' no debe estar vacio")
       .bail()
-      .isLength({ max: 30 })
+      .isLength({ max: 60 })
       .withMessage("El campo 'parroquias' no debe exceder los 30 caracteres")
       .toUpperCase(),
     body("redi", "Redi invalido")
@@ -208,8 +208,27 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
 });
 
 exports.listarCC = asyncHandler(async function (req, res, next) {
-  //Busca todos los CC y los regresa en un arreglo
-  const listaCC = await CC.find({}).exec();
+  const { municipios, renovados, norenovados, vigentes, novigentes } =
+    req.query; //se extraen los parametros de la consulta
+  let parametros = {};
+
+  if (municipios) {
+    parametros.municipios = municipios;
+  }
+  if (renovados) {
+    parametros.estaRenovado = { $eq: true };
+  }
+  if (norenovados) {
+    parametros.estaRenovado = { $eq: false };
+  }
+  if (vigentes) {
+    parametros.estaVigente = { $eq: true };
+  }
+  if (novigentes) {
+    parametros.estaVigente = { $eq: false };
+  }
+  //Busca todos los CC segun los parametros y los regresa en un arreglo
+  const listaCC = await CC.find(parametros).exec();
 
   if (listaCC.length > 0) {
     //Si el arreglo no esta vacio
@@ -239,7 +258,7 @@ exports.nuevoCC =
       .isLength({ min: 1 })
       .withMessage("El campo 'comuna' no debe estar vacio")
       .bail()
-      .isLength({ max: 50 })
+      .isLength({ max: 60 })
       .withMessage("El campo 'comuna' no debe exceder los 50 caracteres")
       .toUpperCase(),
     body("estados")
@@ -266,7 +285,7 @@ exports.nuevoCC =
       .isLength({ min: 1 })
       .withMessage("El campo 'municipios' no debe estar vacio")
       .bail()
-      .isLength({ max: 30 })
+      .isLength({ max: 60 })
       .withMessage("El campo 'municipios' no debe exceder los 30 caracteres")
       .toUpperCase(),
     body("nombre")
@@ -284,7 +303,7 @@ exports.nuevoCC =
       .isLength({ min: 1 })
       .withMessage("El campo 'parroquias' no debe estar vacio")
       .bail()
-      .isLength({ max: 30 })
+      .isLength({ max: 60 })
       .withMessage("El campo 'parroquias' no debe exceder los 30 caracteres")
       .toUpperCase(),
     body("redi", "Redi invalido")
