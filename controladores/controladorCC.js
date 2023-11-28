@@ -23,7 +23,7 @@ exports.actualizarCC =
       .isLength({ min: 1 })
       .withMessage("El campo 'comuna' no debe estar vacio")
       .bail()
-      .isLength({ max: 60 })
+      .isLength({ max: 100 })
       .withMessage("El campo 'comuna' no debe exceder los 50 caracteres")
       .toUpperCase(),
     body("estados")
@@ -85,8 +85,7 @@ exports.actualizarCC =
       ]),
     body("situr")
       .trim()
-      .matches(/^[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{3}-[0-9]{4}$/)
-      .withMessage("El situr debe tener el patrón 11-11-11-111-1111")
+      .custom(Validar.siturValido)
       .bail()
       .custom(Validar.siturNoRepetido),
     body("tipo", "Tipo invalido")
@@ -258,7 +257,7 @@ exports.nuevoCC =
       .isLength({ min: 1 })
       .withMessage("El campo 'comuna' no debe estar vacio")
       .bail()
-      .isLength({ max: 60 })
+      .isLength({ max: 100 })
       .withMessage("El campo 'comuna' no debe exceder los 50 caracteres")
       .toUpperCase(),
     body("estados")
@@ -320,8 +319,7 @@ exports.nuevoCC =
       ]),
     body("situr")
       .trim()
-      .matches(/^[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{3}-[0-9]{4}$/)
-      .withMessage("El situr debe tener el patrón 11-11-11-111-1111")
+      .custom(Validar.siturValido)
       .bail()
       .custom(Validar.siturNuevo),
     body("tipo", "Tipo invalido")
