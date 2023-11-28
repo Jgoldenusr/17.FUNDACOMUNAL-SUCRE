@@ -115,6 +115,28 @@ exports.tlfNuevo = async function (valorTlf) {
   }
 };
 
+exports.siturValido = async function (situr, { req }) {
+  /* jshint ignore:start */
+  const prefijoSitur =
+    req.body.tipo === "INDIGENA"
+      ? "I-CCO-"
+      : req.body.tipo === "RURAL"
+      ? "R-CCO-"
+      : req.body.tipo === "URBANO"
+      ? "U-CCO-"
+      : "";
+  const expresionRegular = /^(R|U|I)-CCO-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{5}$/;
+  const siturCompleto = prefijoSitur + situr;
+  /* jshint ignore:end */
+
+  if (expresionRegular.test(siturCompleto)) {
+    return true;
+  } else {
+    throw new Error(
+      "El situr debe tener el patron (R o U o I)-CCO-99-99-99-99999"
+    );
+  }
+};
 exports.usuarioReportaCC = async function (idCC, { req }) {
   const usuarioReportaCC = req.user.cc.find((usrCC) => usrCC._id == idCC);
   const esAdmin = req.user.rol === "ADMINISTRADOR";
