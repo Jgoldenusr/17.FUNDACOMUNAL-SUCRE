@@ -18,7 +18,7 @@ exports.borrarReporte = asyncHandler(async function (req, res, next) {
     const reporteABorrar = await Reporte.findById(req.params.id).exec();
     //se busca el CC que se alude en el reporte interno y se cambia su vigencia
     await CC.findByIdAndUpdate(reporteABorrar.cc, {
-      $set: { estaVigente: undefined },
+      $unset: { estaVigente: "" },
     }).exec();
   }
   //Se borra el reporte
@@ -289,7 +289,7 @@ exports.actualizarParticipacion = [
       ) {
         //Borramos el campo estaRenovado
         await CC.findByIdAndUpdate(req.body.cc, {
-          $set: { estaRenovado: undefined },
+          $unset: { estaRenovado: "" },
         }).exec();
       }
       //Se actualiza el reporte
