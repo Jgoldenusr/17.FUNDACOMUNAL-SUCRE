@@ -21,9 +21,11 @@ enrutador.post("/comunicaciones/", controlador.nuevoComunicaciones);
 
 enrutador.post("/formacion/", controlador.nuevoFormacion);
 
+enrutador.post("/fortalecimiento/", controlador.nuevoFortalecimiento);
+
 enrutador.post("/incidencias/", controlador.nuevoIncidencias);
 
-enrutador.post("/fortalecimiento/", controlador.nuevoFortalecimiento);
+enrutador.post("/interno/", controlador.nuevoInterno);
 
 enrutador.post("/participacion/", controlador.nuevoParticipacion);
 
@@ -39,12 +41,6 @@ enrutador.put("/incidencias/:id", controlador.actualizarIncidencias);
 
 enrutador.put("/participacion/:id", controlador.actualizarParticipacion);
 
-/*
-
-enrutador.post("/interno/", controlador.nuevoInterno);
-
 enrutador.put("/interno/:id", controlador.actualizarInterno);
-
-*/
 
 module.exports = enrutador;
