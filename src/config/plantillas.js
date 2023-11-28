@@ -8,7 +8,7 @@ const formularioVacioCC = {
   parroquias: "",
   redi: "ORIENTAL",
   situr: "",
-  tipo: "",
+  tipo: "URBANO",
 };
 
 const formularioVacioUsuario = {
