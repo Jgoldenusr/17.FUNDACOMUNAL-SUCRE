@@ -10,6 +10,7 @@ import {
   FormControl,
   FormHelperText,
   Grid,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -35,6 +36,14 @@ function FormularioCC() {
   const [erroresValidacion, setErroresValidacion] = useState(null);
   const [formulario, setFormulario] = useState({ ...formularioVacioCC });
   const [subiendo, setSubiendo] = useState(false);
+  /* jshint ignore:start */
+  const prefijoSitur =
+    formulario.tipo === "INDIGENA"
+      ? "I-CCO-"
+      : formulario.tipo === "RURAL"
+      ? "R-CCO-"
+      : "U-CCO-";
+  /* jshint ignore:end */
 
   useEffect(() => {
     async function buscarCCParaEditar() {
@@ -79,7 +88,14 @@ function FormularioCC() {
         if (campo === "municipios") {
           setFormulario({
             ...formulario,
+            comuna: "",
             parroquias: "",
+            [campo]: evento.target.value,
+          });
+        } else if (campo === "parroquias") {
+          setFormulario({
+            ...formulario,
+            comuna: "",
             [campo]: evento.target.value,
           });
         } else {
@@ -282,12 +298,21 @@ function FormularioCC() {
                   <InputLabel>
                     Comuna donde se incluye el C.C. (Opcional)
                   </InputLabel>
-                  <FilledInput
+                  <Select
                     error={esInvalido("comuna")}
-                    inputProps={{ maxLength: 100 }}
                     onChange={actualizarFormulario("comuna")}
                     value={formulario.comuna}
-                  />
+                  >
+                    {formulario.parroquias &&
+                      OpcionesCC.comuna[`${formulario.parroquias}`] &&
+                      OpcionesCC.comuna[`${formulario.parroquias}`].map(
+                        (opcion) => (
+                          <MenuItem key={opcion} value={opcion}>
+                            {opcion}
+                          </MenuItem>
+                        )
+                      )}
+                  </Select>
                   <FormHelperText error>
                     {mostrarMsjInvalido("comuna")}
                   </FormHelperText>
@@ -342,6 +367,11 @@ function FormularioCC() {
                     error={esInvalido("situr")}
                     inputProps={{ maxLength: 17 }}
                     onChange={actualizarFormulario("situr")}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        {prefijoSitur}
+                      </InputAdornment>
+                    }
                     value={formulario.situr}
                   />
                   <FormHelperText error>
