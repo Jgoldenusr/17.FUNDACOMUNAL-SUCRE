@@ -11,8 +11,8 @@ const EsquemaCC = new Esquema(
   {
     comuna: { type: String },
     estados: { type: String, required: true },
-    estaRenovado: { type: Boolean, default: false },
-    estaVigente: { type: Boolean, default: false },
+    estaRenovado: { type: Date },
+    estaVigente: { type: Date },
     localidad: { type: String, required: true },
     municipios: { type: String, required: true },
     nombre: { type: String, required: true },
