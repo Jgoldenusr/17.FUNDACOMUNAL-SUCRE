@@ -1,18 +1,29 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const CC = require("../modelos/cc");
 const Reporte = require("../modelos/reporte");
 const ReporteCasoAdmin = require("../modelos/reporteCasoAdmin");
 const ReporteComunicaciones = require("../modelos/reporteComunicaciones");
 const ReporteFormacion = require("../modelos/reporteFormacion");
 const ReporteFortalecimiento = require("../modelos/reporteFortalecimiento");
 const ReporteIncidencias = require("../modelos/reporteIncidencias");
-//const ReporteInterno = require("../modelos/reporteInterno");
+const ReporteInterno = require("../modelos/reporteInterno");
 const ReporteParticipacion = require("../modelos/reporteParticipacion");
 const Validar = require("../config/validadores");
 const mongoose = require("mongoose");
 
 exports.borrarReporte = asyncHandler(async function (req, res, next) {
+  const { interno } = req.query; //se extraen los parametros de la consulta
+  if (interno) {
+    const reporteABorrar = await Reporte.findById(req.params.id).exec();
+    //se busca el CC que se alude en el reporte interno y se cambia su vigencia
+    await CC.findByIdAndUpdate(reporteABorrar.cc, {
+      $set: { estaVigente: undefined },
+    }).exec();
+  }
+  //Se borra el reporte
   await Reporte.findByIdAndRemove(req.params.id).exec();
+  //Exito
   return res.status(200).json(req.params.id);
 });
 
@@ -152,10 +163,11 @@ exports.nuevoParticipacion = [
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
     const errores = validationResult(req);
+    const miFecha = req.body.fecha || Date.now();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc,
-      fecha: req.body.fecha || undefined,
+      fecha: miFecha,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
       acompanamiento: req.body.acompanamiento,
@@ -172,6 +184,13 @@ exports.nuevoParticipacion = [
         },
       });
     } else {
+      //Se verifica si el reporte modifica el cc
+      if (req.body.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS") {
+        //Si lo hace, entonces se modifica
+        await CC.findByIdAndUpdate(req.body.cc, {
+          $set: { estaRenovado: miFecha },
+        }).exec();
+      }
       //Si no hubieron errores
       const reporteFinal = new ReporteParticipacion(nuevoReporte);
       //Finalmente se guarda
@@ -232,12 +251,12 @@ exports.actualizarParticipacion = [
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
     const errores = validationResult(req);
+    const miFecha = req.body.fecha || Date.now();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc,
-      fecha: req.body.fecha || undefined,
+      fecha: miFecha,
       organosAdscritos: req.body.organosAdscritos,
-      usuario: req.user._id,
       acompanamiento: req.body.acompanamiento,
       familiasBeneficiadas: req.body.familiasBeneficiadas,
     };
@@ -252,11 +271,29 @@ exports.actualizarParticipacion = [
         },
       });
     } else {
-      //Si no hubieron errores
+      //Si no hubieron errores, buscamos el reporte viejo
+      let reporteViejo = await ReporteParticipacion.findById(
+        req.params.id
+      ).exec();
+      //Se verifica si el reporte modifica el cc
+      if (req.body.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS") {
+        //Si lo hace, entonces se modifica
+        await CC.findByIdAndUpdate(req.body.cc, {
+          $set: { estaRenovado: miFecha },
+        }).exec();
+      }
+      //En caso de que el reporte viejo renovara el cc, pero la actualizacion no lo quiere renovar
+      else if (
+        reporteViejo.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS" &&
+        req.body.acompanamiento !== reporteViejo.acompanamiento
+      ) {
+        //Borramos el campo estaRenovado
+        await CC.findByIdAndUpdate(req.body.cc, {
+          $set: { estaRenovado: undefined },
+        }).exec();
+      }
       //Se actualiza el reporte
-      await ReporteParticipacion.findByIdAndUpdate(req.params.id, {
-        $set: nuevoReporte,
-      }).exec();
+      await reporteViejo.set(nuevoReporte).save();
       //Exito
       return res.status(200).json({ id: req.params.id });
     }
@@ -445,7 +482,6 @@ exports.actualizarFormacion = [
       cc: req.body.cc,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
-      usuario: req.user._id,
       beneficiados: {
         hombres: req.body.beneficiados.hombres,
         mujeres: req.body.beneficiados.mujeres,
@@ -721,7 +757,6 @@ exports.actualizarFortalecimiento = [
       cc: req.body.cc,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
-      usuario: req.user._id,
       acompanamiento: req.body.acompanamiento,
       nombreOSP: req.body.nombreOSP,
       tipoActividad: req.body.tipoActividad,
@@ -857,7 +892,6 @@ exports.actualizarIncidencias = [
       cc: req.body.cc,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
-      usuario: req.user._id,
       areaSustantiva: req.body.areaSustantiva,
       tipoIncidencia: req.body.tipoIncidencia,
     };
@@ -983,7 +1017,6 @@ exports.actualizarCasoAdmin = [
       cc: req.body.cc,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
-      usuario: req.user._id,
       caso: req.body.caso,
       tipoCaso: req.body.tipoCaso,
     };
@@ -1148,7 +1181,6 @@ exports.actualizarComunicaciones = [
       cc: req.body.cc,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
-      usuario: req.user._id,
       prensa: {
         notas: req.body.prensa.notas,
         resenas: req.body.prensa.resenas,
@@ -1169,6 +1201,116 @@ exports.actualizarComunicaciones = [
       //Si no hubieron errores
       //Se actualiza el reporte
       await ReporteComunicaciones.findByIdAndUpdate(req.params.id, {
+        $set: nuevoReporte,
+      }).exec();
+      //Exito
+      return res.status(200).json({ id: req.params.id });
+    }
+  }),
+];
+
+exports.nuevoInterno = [
+  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fechaRegistro").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
+  body("organosAdscritos")
+    .trim()
+    .escape()
+    .isLength({ min: 1 })
+    .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
+    .isLength({ max: 30 })
+    .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
+    .toUpperCase(),
+  //Se ejecuta despues de validados los campos
+  asyncHandler(async function (req, res, next) {
+    //Los errores de la validacion se pasan a esta constante
+    const errores = validationResult(req);
+    const miFechaRegistro = req.body.fechaRegistro || Date.now();
+    //Se crea un objeto del nuevo reporte
+    const nuevoReporte = {
+      cc: req.body.cc,
+      fecha: req.body.fecha || undefined,
+      fechaRegistro: miFechaRegistro,
+      organosAdscritos: req.body.organosAdscritos,
+      usuario: req.user._id,
+    };
+
+    if (!errores.isEmpty()) {
+      //Si hubieron errores
+      return res.status(400).json({
+        reporte: nuevoReporte,
+        error: {
+          array: errores.array(),
+          message: "Hubieron errores en el proceso de validacion",
+        },
+      });
+    } else {
+      //Buscamos el cc a modificar
+      await CC.findByIdAndUpdate(req.body.cc, {
+        $set: { estaVigente: miFechaRegistro },
+      }).exec();
+      //Si no hubieron errores
+      const reporteFinal = new ReporteInterno(nuevoReporte);
+      //Finalmente se guarda
+      await reporteFinal.save(); //Se guarda
+      return res.status(200).json({ id: reporteFinal._id });
+    }
+  }),
+];
+
+exports.actualizarInterno = [
+  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fechaRegistro").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
+  body("organosAdscritos")
+    .trim()
+    .escape()
+    .isLength({ min: 1 })
+    .withMessage("El campo 'organos adscritos' no debe estar vacio")
+    .bail()
+    .isLength({ max: 30 })
+    .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
+    .toUpperCase(),
+  //Se ejecuta despues de validados los campos
+  asyncHandler(async function (req, res, next) {
+    //Los errores de la validacion se pasan a esta constante
+    const errores = validationResult(req);
+    const miFechaRegistro = req.body.fechaRegistro || Date.now();
+    //Se crea un objeto del nuevo reporte
+    const nuevoReporte = {
+      cc: req.body.cc,
+      fecha: req.body.fecha || undefined,
+      fechaRegistro: miFechaRegistro,
+      organosAdscritos: req.body.organosAdscritos,
+    };
+
+    if (!errores.isEmpty()) {
+      //Si hubieron errores
+      return res.status(400).json({
+        reporte: nuevoReporte,
+        error: {
+          array: errores.array(),
+          message: "Hubieron errores en el proceso de validacion",
+        },
+      });
+    } else {
+      //Buscamos el cc a modificar y se cambia su fecha de vigencia
+      await CC.findByIdAndUpdate(req.body.cc, {
+        $set: { estaVigente: miFechaRegistro },
+      }).exec();
+      //Se actualiza el reporte
+      await ReporteInterno.findByIdAndUpdate(req.params.id, {
         $set: nuevoReporte,
       }).exec();
       //Exito
