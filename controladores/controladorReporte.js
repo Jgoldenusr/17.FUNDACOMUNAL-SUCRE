@@ -13,28 +13,25 @@ const Validar = require("../config/validadores");
 const mongoose = require("mongoose");
 
 exports.borrarReporte = asyncHandler(async function (req, res, next) {
-  const { interno } = req.query; //se extraen los parametros de la consulta
-  if (interno) {
-    const reporteABorrar = await Reporte.findById(req.params.id).exec();
-    //se busca el CC que se alude en el reporte interno y se cambia su vigencia
+  //Se busca el reporte a borrar para ver su tipo
+  const reporteABorrar = await Reporte.findById(req.params.id).exec();
+  //Si es interno
+  if (reporteABorrar.tipo === "interno") {
+    //Se busca el cc al que es alude y se borra su propiedad vigente
     await CC.findByIdAndUpdate(reporteABorrar.cc, {
-      $unset: { estaVigente: "" },
+      $unset: { vigente: "" },
     }).exec();
   }
-  //Se borra el reporte
+  //Ahora si se borra el reporte
   await Reporte.findByIdAndRemove(req.params.id).exec();
   //Exito
   return res.status(200).json(req.params.id);
 });
 
 exports.buscarReporte = asyncHandler(async function (req, res, next) {
-  const { poblar } = req.query; //se extraen los parametros de la consulta
-  //Se arma la consulta inicial
-  let consulta = Reporte.findById(req.params.id);
-  //Solo se poblaran los campos de la consulta en funcion de los parametros
-  if (poblar) {
-    consulta.populate("cc").populate("usuario");
-  }
+  let consulta = Reporte.findById(req.params.id)
+    .populate("cc")
+    .populate("usuario");
   const nuevoReporte = await consulta.exec();
   //La funcion findByID no falla cuando no encuentra nada, sino que regresa null
   if (nuevoReporte === null) {
@@ -163,7 +160,7 @@ exports.nuevoParticipacion = [
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
     const errores = validationResult(req);
-    const miFecha = req.body.fecha || Date.now();
+    const miFecha = req.body.fecha || new Date();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc,
@@ -184,17 +181,17 @@ exports.nuevoParticipacion = [
         },
       });
     } else {
+      //Si no hubieron errores se crea y se guarda
+      const reporteFinal = new ReporteParticipacion(nuevoReporte);
+      await reporteFinal.save();
       //Se verifica si el reporte modifica el cc
       if (req.body.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS") {
-        //Si lo hace, entonces se modifica
-        await CC.findByIdAndUpdate(req.body.cc, {
-          $set: { estaRenovado: miFecha },
-        }).exec();
+        //Si lo hace, entonces se busca y se actualiza
+        const miCC = await CC.findById(req.body.cc).exec();
+        miCC.estaRenovado = { desde: miFecha, idReporte: reporteFinal._id };
+        await miCC.save();
       }
-      //Si no hubieron errores
-      const reporteFinal = new ReporteParticipacion(nuevoReporte);
-      //Finalmente se guarda
-      await reporteFinal.save(); //Se guarda
+      //Exito
       return res.status(200).json({ id: reporteFinal._id });
     }
   }),
@@ -251,7 +248,7 @@ exports.actualizarParticipacion = [
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
     const errores = validationResult(req);
-    const miFecha = req.body.fecha || Date.now();
+    const miFecha = req.body.fecha || new Date();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc,
@@ -272,24 +269,26 @@ exports.actualizarParticipacion = [
       });
     } else {
       //Si no hubieron errores, buscamos el reporte viejo
-      let reporteViejo = await ReporteParticipacion.findById(
+      const reporteViejo = await ReporteParticipacion.findById(
         req.params.id
       ).exec();
       //Se verifica si el reporte modifica el cc
       if (req.body.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS") {
-        //Si lo hace, entonces se modifica
-        await CC.findByIdAndUpdate(req.body.cc, {
-          $set: { estaRenovado: miFecha },
-        }).exec();
+        //Si lo hace, entonces se busca y se actualiza
+        const miCC = await CC.findById(req.body.cc).exec();
+        miCC.estaRenovado = { desde: miFecha, idReporte: reporteViejo._id };
+        await miCC.save();
       }
-      //En caso de que el reporte viejo renovara el cc, pero la actualizacion no lo quiere renovar
-      else if (
-        reporteViejo.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS" &&
-        req.body.acompanamiento !== reporteViejo.acompanamiento
+      if (
+        /*En caso de que el reporte viejo renovara el cc, pero la actualizacion no lo quiere renovar, 
+      o en caso de que el reporte de la actualizacion sea distinto al del reporte original*/
+        (reporteViejo.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS" &&
+          req.body.acompanamiento !== reporteViejo.acompanamiento) ||
+        req.body.cc.toString() !== reporteViejo.cc.toString()
       ) {
-        //Borramos el campo estaRenovado
-        await CC.findByIdAndUpdate(req.body.cc, {
-          $unset: { estaRenovado: "" },
+        //Borramos el campo renovado
+        await CC.findByIdAndUpdate(reporteViejo.cc, {
+          $unset: { renovado: "" },
         }).exec();
       }
       //Se actualiza el reporte
@@ -1212,32 +1211,17 @@ exports.actualizarComunicaciones = [
 exports.nuevoInterno = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
   body("fechaRegistro").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
-  body("organosAdscritos")
-    .trim()
-    .escape()
-    .isLength({ min: 1 })
-    .withMessage("El campo 'organos adscritos' no debe estar vacio")
-    .bail()
-    .isLength({ max: 30 })
-    .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
-    .toUpperCase(),
+  body("situr").trim().custom(Validar.siturExiste),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
     const errores = validationResult(req);
-    const miFechaRegistro = req.body.fechaRegistro || Date.now();
+    const miFechaRegistro = req.body.fechaRegistro || new Date();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
       fecha: req.body.fecha || undefined,
       fechaRegistro: miFechaRegistro,
-      organosAdscritos: req.body.organosAdscritos,
+      situr: req.body.situr,
       usuario: req.user._id,
     };
 
@@ -1252,13 +1236,19 @@ exports.nuevoInterno = [
       });
     } else {
       //Buscamos el cc a modificar
-      await CC.findByIdAndUpdate(req.body.cc, {
-        $set: { estaVigente: miFechaRegistro },
-      }).exec();
-      //Si no hubieron errores
+      const miCC = await CC.findOne({ situr: req.body.situr }).exec();
+      //Agregamos la id al reporte
+      nuevoReporte.cc = miCC._id;
+      //Se crea el nuevo documento y se guarda
       const reporteFinal = new ReporteInterno(nuevoReporte);
-      //Finalmente se guarda
-      await reporteFinal.save(); //Se guarda
+      await reporteFinal.save();
+      //Modificamos el campo de vigencia del cc
+      miCC.estaVigente = {
+        desde: miFechaRegistro,
+        idReporte: reporteFinal._id,
+      };
+      await miCC.save();
+      //Exito
       return res.status(200).json({ id: reporteFinal._id });
     }
   }),
@@ -1267,32 +1257,17 @@ exports.nuevoInterno = [
 exports.actualizarInterno = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
   body("fechaRegistro").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
-  body("organosAdscritos")
-    .trim()
-    .escape()
-    .isLength({ min: 1 })
-    .withMessage("El campo 'organos adscritos' no debe estar vacio")
-    .bail()
-    .isLength({ max: 30 })
-    .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
-    .toUpperCase(),
+  body("situr").trim().custom(Validar.siturExiste),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
     const errores = validationResult(req);
-    const miFechaRegistro = req.body.fechaRegistro || Date.now();
+    const miFechaRegistro = req.body.fechaRegistro || new Date();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
       fecha: req.body.fecha || undefined,
       fechaRegistro: miFechaRegistro,
-      organosAdscritos: req.body.organosAdscritos,
+      situr: req.body.situr,
     };
 
     if (!errores.isEmpty()) {
@@ -1305,14 +1280,26 @@ exports.actualizarInterno = [
         },
       });
     } else {
-      //Buscamos el cc a modificar y se cambia su fecha de vigencia
-      await CC.findByIdAndUpdate(req.body.cc, {
-        $set: { estaVigente: miFechaRegistro },
-      }).exec();
-      //Se actualiza el reporte
-      await ReporteInterno.findByIdAndUpdate(req.params.id, {
-        $set: nuevoReporte,
-      }).exec();
+      //Si no hubieron errores, buscamos el reporte viejo y el cc a alterar
+      const reporteViejo = await ReporteInterno.findById(req.params.id).exec();
+      const miCC = await CC.findOne({ situr: req.body.situr }).exec();
+      //Modificamos el campo de vigencia del cc
+      miCC.estaVigente = {
+        desde: miFechaRegistro,
+        idReporte: reporteViejo._id,
+      };
+      await miCC.save();
+      //Agregamos la id del cc al reporte
+      nuevoReporte.cc = miCC._id;
+      //Si el nuevo cc es diferente al del reporte original
+      if (nuevoReporte.cc.toString() !== reporteViejo.cc.toString()) {
+        //Borramos el campo vigente del cc viejo
+        await CC.findByIdAndUpdate(reporteViejo.cc, {
+          $unset: { vigente: "" },
+        }).exec();
+      }
+      //Se actualiza el reporte viejo
+      await reporteViejo.set(nuevoReporte).save();
       //Exito
       return res.status(200).json({ id: req.params.id });
     }

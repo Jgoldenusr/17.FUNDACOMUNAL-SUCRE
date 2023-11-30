@@ -85,7 +85,7 @@ exports.actualizarCC =
       ]),
     body("situr")
       .trim()
-      .custom(Validar.siturValido)
+      .custom(Validar.siturTienePatronValido)
       .bail()
       .custom(Validar.siturNoRepetido),
     body("tipo", "Tipo invalido")
@@ -180,10 +180,10 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
           $cond: [{ $eq: ["$comuna", ""] }, "$$REMOVE", "$comuna"],
         },
       },
-      noRenovados: { $sum: { $cond: ["$estaRenovado", 0, 1] } },
-      noVigentes: { $sum: { $cond: ["$estaVigente", 0, 1] } },
-      renovados: { $sum: { $cond: ["$estaRenovado", 1, 0] } },
-      vigentes: { $sum: { $cond: ["$estaVigente", 1, 0] } },
+      noRenovados: { $sum: { $cond: ["$renovado", 0, 1] } },
+      noVigentes: { $sum: { $cond: ["$vigente", 0, 1] } },
+      renovados: { $sum: { $cond: ["$renovado", 1, 0] } },
+      vigentes: { $sum: { $cond: ["$vigente", 1, 0] } },
     })
     .addFields({
       comunas: {
@@ -319,7 +319,7 @@ exports.nuevoCC =
       ]),
     body("situr")
       .trim()
-      .custom(Validar.siturValido)
+      .custom(Validar.siturTienePatronValido)
       .bail()
       .custom(Validar.siturNuevo),
     body("tipo", "Tipo invalido")
