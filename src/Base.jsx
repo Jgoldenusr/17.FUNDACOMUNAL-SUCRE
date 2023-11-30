@@ -49,9 +49,7 @@ function Base() {
           <Routes>
             <Route element={<Bloquear roles={["PROMOTOR"]} />}>
               <Route element={<Envoltorio />}>
-                <Route path="ccs" element={<MostrarCCS />} />
                 <Route path="ccs/nuevo" element={<FormularioCC />} />
-                <Route path="ccs/:id" element={<VerCC />} />
                 <Route path="ccs/:id/editar" element={<FormularioCC />} />
                 <Route path="usuarios" element={<MostrarUsuarios />} />
                 <Route path="usuarios/nuevo" element={<FormularioUsuario />}/>
@@ -62,6 +60,8 @@ function Base() {
             <Route element={<Bloquear roles={[""]} />}>
               <Route element={<Envoltorio />}>
                 <Route path="/" element={<EstadisticasGenerales />} />
+                <Route path="ccs" element={<MostrarCCS />} />
+                <Route path="ccs/:id" element={<VerCC />} />
                 <Route path="reportes" element={<MostrarReportes />} />
                 <Route path="reportes/nuevo" element={<FormularioReporte />} />
                 <Route path="reportes/:id" element={<VerReporte />} /> 
