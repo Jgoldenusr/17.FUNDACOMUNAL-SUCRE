@@ -141,3 +141,17 @@ exports.tlfNuevo = async function (valorTlf) {
     return true;
   }
 };
+
+exports.usuarioReportaCC = async function (idCC, { req }) {
+  //Revisar esto
+  const usuarioReportaCC = req.user.cc.find(
+    (usrCC) => usrCC._id.toString() === idCC.toString()
+  );
+  const esAdmin = req.user.rol === "ADMINISTRADOR";
+
+  if (usuarioReportaCC || esAdmin) {
+    return true;
+  } else {
+    throw new Error("El usuario no tiene acceso al consejo comunal");
+  }
+};

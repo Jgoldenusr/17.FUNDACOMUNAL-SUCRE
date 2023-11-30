@@ -26,7 +26,7 @@ function Error({ error }) {
           >
             <ReportProblemIcon sx={{ fontSize: 72 }} />
             <Typography component="div" variant="h5">
-              Error 404
+              Ha ocurrido un error!
             </Typography>
           </CardContent>
           <CardContent>

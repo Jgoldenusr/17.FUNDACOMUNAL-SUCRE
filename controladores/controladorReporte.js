@@ -120,6 +120,12 @@ exports.listarReportes = asyncHandler(async function (req, res, next) {
 
 exports.nuevoParticipacion = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -155,7 +161,9 @@ exports.nuevoParticipacion = [
   body("familiasBeneficiadas")
     .trim()
     .isInt({ min: 1 })
-    .withMessage("El campo 'familias beneficiadas' debe ser mayor a 0")
+    .withMessage(
+      "El campo 'familias beneficiadas' debe ser un entero mayor a 0"
+    )
     .bail()
     .isInt({ max: 999999999 })
     .withMessage("El campo 'familias beneficiadas' excede la cifra maxima"),
@@ -202,6 +210,12 @@ exports.nuevoParticipacion = [
 
 exports.actualizarParticipacion = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -237,7 +251,9 @@ exports.actualizarParticipacion = [
   body("familiasBeneficiadas")
     .trim()
     .isInt({ min: 1 })
-    .withMessage("El campo 'familias beneficiadas' debe ser mayor a 0")
+    .withMessage(
+      "El campo 'familias beneficiadas' debe ser un entero mayor a 0"
+    )
     .bail()
     .isInt({ max: 999999999 })
     .withMessage("El campo 'familias beneficiadas' excede la cifra maxima"),
@@ -298,6 +314,12 @@ exports.actualizarParticipacion = [
 
 exports.nuevoFormacion = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -398,6 +420,12 @@ exports.nuevoFormacion = [
 
 exports.actualizarFormacion = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -499,6 +527,12 @@ exports.actualizarFormacion = [
 
 exports.nuevoFortalecimiento = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -630,6 +664,12 @@ exports.nuevoFortalecimiento = [
 
 exports.actualizarFortalecimiento = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -762,6 +802,12 @@ exports.actualizarFortalecimiento = [
 
 exports.nuevoIncidencias = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -820,6 +866,12 @@ exports.nuevoIncidencias = [
 
 exports.actualizarIncidencias = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -879,6 +931,12 @@ exports.actualizarIncidencias = [
 
 exports.nuevoCasoAdmin = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -935,6 +993,12 @@ exports.nuevoCasoAdmin = [
 
 exports.actualizarCasoAdmin = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -992,6 +1056,12 @@ exports.actualizarCasoAdmin = [
 
 exports.nuevoComunicaciones = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -1005,7 +1075,7 @@ exports.nuevoComunicaciones = [
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
-    .withMessage("El campo 'notas' debe ser mayor a 0")
+    .withMessage("El campo 'notas' debe ser un entero mayor a 0")
     .bail()
     .isInt({ max: 999999999 })
     .withMessage("El campo 'notas' excede la cifra maxima"),
@@ -1013,7 +1083,7 @@ exports.nuevoComunicaciones = [
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
-    .withMessage("El campo 'resenas' debe ser mayor a 0")
+    .withMessage("El campo 'resenas' debe ser un entero mayor a 0")
     .bail()
     .isInt({ max: 999999999 })
     .withMessage("El campo 'resenas' excede la cifra maxima"),
@@ -1069,6 +1139,12 @@ exports.nuevoComunicaciones = [
 
 exports.actualizarComunicaciones = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("cc._id")
+    .trim()
+    .isMongoId()
+    .withMessage("La id proporcionada es invalida")
+    .bail()
+    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -1082,7 +1158,7 @@ exports.actualizarComunicaciones = [
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
-    .withMessage("El campo 'notas' debe ser mayor a 0")
+    .withMessage("El campo 'notas' debe ser un entero mayor a 0")
     .bail()
     .isInt({ max: 999999999 })
     .withMessage("El campo 'notas' excede la cifra maxima"),
@@ -1090,7 +1166,7 @@ exports.actualizarComunicaciones = [
     .optional({ values: "falsy" })
     .trim()
     .isInt({ min: 1 })
-    .withMessage("El campo 'resenas' debe ser mayor a 0")
+    .withMessage("El campo 'resenas' debe ser un entero mayor a 0")
     .bail()
     .isInt({ max: 999999999 })
     .withMessage("El campo 'resenas' excede la cifra maxima"),

@@ -13,8 +13,6 @@ enrutador.get("/estadisticas", controlador.estadisticas);
 
 enrutador.get("/:id", controlador.buscarReporte);
 
-enrutador.use(permisos.autorizarCC);
-
 enrutador.post("/casoadmin/", controlador.nuevoCasoAdmin);
 
 enrutador.post("/comunicaciones/", controlador.nuevoComunicaciones);

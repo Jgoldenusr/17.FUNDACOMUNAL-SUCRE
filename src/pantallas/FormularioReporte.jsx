@@ -262,7 +262,7 @@ function FormularioReporte() {
         navegarHasta("/reportes", { replace: true });
       } else {
         const recibido = await respuesta.json();
-        setError(recibido);
+        setError(recibido.error);
       }
     } catch (errorPeticion) {
       setError(errorPeticion);

@@ -34,25 +34,6 @@ exports.autorizarRol = function (req, res, next) {
       });
 };
 
-exports.autorizarCC = function (req, res, next) {
-  if (req.method === "DELETE") {
-    return next();
-  } else {
-    const asociado = req.user.cc.find(
-      (usrCC) => usrCC._id.toString() === req.body.cc._id.toString()
-    );
-    const esAdmin = req.user.rol === "ADMINISTRADOR";
-
-    return asociado || esAdmin
-      ? next()
-      : res.status(401).json({
-          error: {
-            message: "Usuario no asociado al CC",
-          },
-        });
-  }
-};
-
 exports.autorizarCambio = asyncHandler(async function (req, res, next) {
   if (req.user.rol === "ADMINISTRADOR") {
     return next();
