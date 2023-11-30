@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const { DateTime } = require("luxon");
 const CC = require("../modelos/cc");
 const Reporte = require("../modelos/reporte");
 const ReporteCasoAdmin = require("../modelos/reporteCasoAdmin");
@@ -46,7 +47,7 @@ exports.buscarReporte = asyncHandler(async function (req, res, next) {
 });
 
 exports.estadisticas = asyncHandler(async function (req, res, next) {
-  const { desde, hasta, idusr, idcc } = req.query; //se extraen los parametros de la CONSULTA
+  const { desde, hasta, idusr, idcc, periodo } = req.query; //se extraen los parametros de la CONSULTA
   let parametros = {};
   //Se va agregando los parametros de la agregacion si aplican
   if (desde && hasta) {
@@ -57,6 +58,13 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
   }
   if (idcc) {
     parametros.cc = { $eq: new mongoose.Types.ObjectId(idcc) };
+  }
+  if (periodo) {
+    const inicioPeriodo = DateTime.fromFormat(periodo, "y").toJSDate();
+    const finPeriodo = DateTime.fromFormat(periodo, "y")
+      .endOf("year")
+      .toJSDate();
+    parametros.fecha = { $gte: inicioPeriodo, $lte: finPeriodo };
   }
   //se construye la consulta
   const conteoReportes = await Reporte.aggregate()
@@ -70,6 +78,7 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
     .project({ _id: 0, fecha: "$_id", reportes: 1 })
     .sort({ fecha: 1 })
     .exec();
+
   return res.status(200).json(conteoReportes);
 });
 
@@ -111,12 +120,6 @@ exports.listarReportes = asyncHandler(async function (req, res, next) {
 
 exports.nuevoParticipacion = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -163,7 +166,7 @@ exports.nuevoParticipacion = [
     const miFecha = req.body.fecha || new Date();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: miFecha,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
@@ -187,7 +190,7 @@ exports.nuevoParticipacion = [
       //Se verifica si el reporte modifica el cc
       if (req.body.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS") {
         //Si lo hace, entonces se busca y se actualiza
-        const miCC = await CC.findById(req.body.cc).exec();
+        const miCC = await CC.findById(req.body.cc._id).exec();
         miCC.estaRenovado = { desde: miFecha, idReporte: reporteFinal._id };
         await miCC.save();
       }
@@ -199,12 +202,6 @@ exports.nuevoParticipacion = [
 
 exports.actualizarParticipacion = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -251,7 +248,7 @@ exports.actualizarParticipacion = [
     const miFecha = req.body.fecha || new Date();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: miFecha,
       organosAdscritos: req.body.organosAdscritos,
       acompanamiento: req.body.acompanamiento,
@@ -275,7 +272,7 @@ exports.actualizarParticipacion = [
       //Se verifica si el reporte modifica el cc
       if (req.body.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS") {
         //Si lo hace, entonces se busca y se actualiza
-        const miCC = await CC.findById(req.body.cc).exec();
+        const miCC = await CC.findById(req.body.cc._id).exec();
         miCC.estaRenovado = { desde: miFecha, idReporte: reporteViejo._id };
         await miCC.save();
       }
@@ -284,7 +281,7 @@ exports.actualizarParticipacion = [
       o en caso de que el reporte de la actualizacion sea distinto al del reporte original*/
         (reporteViejo.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS" &&
           req.body.acompanamiento !== reporteViejo.acompanamiento) ||
-        req.body.cc.toString() !== reporteViejo.cc.toString()
+        req.body.cc._id.toString() !== reporteViejo.cc.toString()
       ) {
         //Borramos el campo renovado
         await CC.findByIdAndUpdate(reporteViejo.cc, {
@@ -301,12 +298,6 @@ exports.actualizarParticipacion = [
 
 exports.nuevoFormacion = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -372,7 +363,7 @@ exports.nuevoFormacion = [
     const errores = validationResult(req);
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
@@ -407,12 +398,6 @@ exports.nuevoFormacion = [
 
 exports.actualizarFormacion = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -478,7 +463,7 @@ exports.actualizarFormacion = [
     const errores = validationResult(req);
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       beneficiados: {
@@ -514,12 +499,6 @@ exports.actualizarFormacion = [
 
 exports.nuevoFortalecimiento = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -616,7 +595,7 @@ exports.nuevoFortalecimiento = [
     const errores = validationResult(req);
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
@@ -651,12 +630,6 @@ exports.nuevoFortalecimiento = [
 
 exports.actualizarFortalecimiento = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -753,7 +726,7 @@ exports.actualizarFortalecimiento = [
     const errores = validationResult(req);
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       acompanamiento: req.body.acompanamiento,
@@ -789,12 +762,6 @@ exports.actualizarFortalecimiento = [
 
 exports.nuevoIncidencias = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -824,7 +791,7 @@ exports.nuevoIncidencias = [
     const errores = validationResult(req);
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
@@ -853,12 +820,6 @@ exports.nuevoIncidencias = [
 
 exports.actualizarIncidencias = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -888,7 +849,7 @@ exports.actualizarIncidencias = [
     const errores = validationResult(req);
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       areaSustantiva: req.body.areaSustantiva,
@@ -918,12 +879,6 @@ exports.actualizarIncidencias = [
 
 exports.nuevoCasoAdmin = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -951,7 +906,7 @@ exports.nuevoCasoAdmin = [
     const errores = validationResult(req);
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
@@ -980,12 +935,6 @@ exports.nuevoCasoAdmin = [
 
 exports.actualizarCasoAdmin = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -1013,7 +962,7 @@ exports.actualizarCasoAdmin = [
     const errores = validationResult(req);
     //Esto es un objeto, mas no una instancia del modelo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       caso: req.body.caso,
@@ -1043,12 +992,6 @@ exports.actualizarCasoAdmin = [
 
 exports.nuevoComunicaciones = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -1094,7 +1037,7 @@ exports.nuevoComunicaciones = [
     const errores = validationResult(req);
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
@@ -1126,12 +1069,6 @@ exports.nuevoComunicaciones = [
 
 exports.actualizarComunicaciones = [
   body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("cc")
-    .trim()
-    .isMongoId()
-    .withMessage("La id proporcionada es invalida")
-    .bail()
-    .custom(Validar.usuarioReportaCC),
   body("organosAdscritos")
     .trim()
     .escape()
@@ -1177,7 +1114,7 @@ exports.actualizarComunicaciones = [
     const errores = validationResult(req);
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      cc: req.body.cc,
+      cc: req.body.cc._id,
       fecha: req.body.fecha || undefined,
       organosAdscritos: req.body.organosAdscritos,
       prensa: {
