@@ -24,7 +24,7 @@ const formularioVacioUsuario = {
 };
 
 const formularioReporteBase = {
-  cc: "",
+  cc: { _id: "" },
   fecha: "",
   organosAdscritos: "",
   usuario: "",
