@@ -171,6 +171,7 @@ exports.buscarCC = asyncHandler(async function (req, res, next) {
 });
 
 exports.estadisticas = asyncHandler(async function (req, res, next) {
+  const fechaDeAhora = new Date();
   const conteoCC = await CC.aggregate()
     .group({
       _id: "$municipios",
@@ -180,10 +181,62 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
           $cond: [{ $eq: ["$comuna", ""] }, "$$REMOVE", "$comuna"],
         },
       },
-      noRenovados: { $sum: { $cond: ["$renovado", 0, 1] } },
-      noVigentes: { $sum: { $cond: ["$vigente", 0, 1] } },
-      renovados: { $sum: { $cond: ["$renovado", 1, 0] } },
-      vigentes: { $sum: { $cond: ["$vigente", 1, 0] } },
+      noRenovados: {
+        $sum: {
+          $cond: [
+            {
+              $or: [
+                { $lte: ["$renovado", null] },
+                { $gt: [fechaDeAhora, "$renovado.hasta"] },
+              ],
+            },
+            1,
+            0,
+          ],
+        },
+      },
+      noVigentes: {
+        $sum: {
+          $cond: [
+            {
+              $or: [
+                { $lte: ["$vigente", null] },
+                { $gt: [fechaDeAhora, "$vigente.hasta"] },
+              ],
+            },
+            1,
+            0,
+          ],
+        },
+      },
+      renovados: {
+        $sum: {
+          $cond: [
+            {
+              $and: [
+                { $gt: ["$renovado", null] },
+                { $gt: ["$renovado.hasta", fechaDeAhora] },
+              ],
+            },
+            1,
+            0,
+          ],
+        },
+      },
+      vigentes: {
+        $sum: {
+          $cond: [
+            {
+              $and: [
+                { $gt: ["$vigente", null] },
+                { $gt: ["$vigente.hasta", fechaDeAhora] },
+              ],
+            },
+            1,
+            0,
+          ],
+        },
+      },
     })
     .addFields({
       comunas: {
