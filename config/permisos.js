@@ -25,16 +25,32 @@ exports.autorizarRol = function (req, res, next) {
     });
   }
 
-  return valido ? next() : res.status(401).send("Rol no autorizado");
+  return valido
+    ? next()
+    : res.status(401).json({
+        error: {
+          message: "Rol no autorizado",
+        },
+      });
 };
 
 exports.autorizarCC = function (req, res, next) {
-  const asociado = req.user.cc.find(
-    (usrCC) => usrCC._id.toString() === req.body.cc._id.toString()
-  );
-  const esAdmin = req.user.rol === "ADMINISTRADOR";
+  if (req.method === "DELETE") {
+    return next();
+  } else {
+    const asociado = req.user.cc.find(
+      (usrCC) => usrCC._id.toString() === req.body.cc._id.toString()
+    );
+    const esAdmin = req.user.rol === "ADMINISTRADOR";
 
-  return asociado || esAdmin ? next() : res.status(401).send("No asociado");
+    return asociado || esAdmin
+      ? next()
+      : res.status(401).json({
+          error: {
+            message: "Usuario no asociado al CC",
+          },
+        });
+  }
 };
 
 exports.autorizarCambio = asyncHandler(async function (req, res, next) {
@@ -49,6 +65,12 @@ exports.autorizarCambio = asyncHandler(async function (req, res, next) {
       usuario: req.user._id,
     }).exec();
     //Si tuvo exito, pasamos al siguiente middleware, sino, desautorizamos
-    return reporteAsociado ? next() : res.status(401).send("No autorizado");
+    return reporteAsociado
+      ? next()
+      : res.status(401).json({
+          error: {
+            message: "Usuario no asociado al reporte",
+          },
+        });
   }
 });

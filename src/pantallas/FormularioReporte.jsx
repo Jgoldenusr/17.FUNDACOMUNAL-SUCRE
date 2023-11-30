@@ -229,10 +229,14 @@ function FormularioReporte() {
         navegarHasta(`/reportes/${recibido.id}`, { replace: true });
       } else {
         const recibido = await respuesta.json();
-        setErroresValidacion(recibido.error);
+        if (recibido.error.array) {
+          setErroresValidacion(recibido.error);
+        } else {
+          setError(recibido.error);
+        }
       }
     } catch (errorPeticion) {
-      setErroresValidacion(errorPeticion);
+      setError(errorPeticion);
     } finally {
       setSubiendo(false);
     }
@@ -258,10 +262,10 @@ function FormularioReporte() {
         navegarHasta("/reportes", { replace: true });
       } else {
         const recibido = await respuesta.json();
-        setErroresValidacion(recibido.error);
+        setError(recibido);
       }
     } catch (errorPeticion) {
-      setErroresValidacion(errorPeticion);
+      setError(errorPeticion);
     } finally {
       setSubiendo(false);
     }
