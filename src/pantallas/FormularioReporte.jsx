@@ -333,9 +333,9 @@ function FormularioReporte() {
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
-                        error={esInvalido("cc")}
-                        onChange={actualizarFormulario("cc")}
-                        value={formulario.cc}
+                        error={esInvalido("cc._id")}
+                        onChange={actualizarFormulario("_id", "cc")}
+                        value={formulario.cc._id}
                       >
                         {miUsuario.cc.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
@@ -344,7 +344,7 @@ function FormularioReporte() {
                         ))}
                       </Select>
                       <FormHelperText error>
-                        {mostrarMsjInvalido("cc")}
+                        {mostrarMsjInvalido("cc._id")}
                       </FormHelperText>
                       {id && miUsuario.rol === "ADMINISTRADOR" && (
                         <FormHelperText>
@@ -410,9 +410,9 @@ function FormularioReporte() {
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
-                        error={esInvalido("cc")}
-                        onChange={actualizarFormulario("cc")}
-                        value={formulario.cc}
+                        error={esInvalido("cc._id")}
+                        onChange={actualizarFormulario("_id", "cc")}
+                        value={formulario.cc._id}
                       >
                         {miUsuario.cc.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
@@ -421,7 +421,7 @@ function FormularioReporte() {
                         ))}
                       </Select>
                       <FormHelperText error>
-                        {mostrarMsjInvalido("cc")}
+                        {mostrarMsjInvalido("cc._id")}
                       </FormHelperText>
                       {id && miUsuario.rol === "ADMINISTRADOR" && (
                         <FormHelperText>
@@ -564,9 +564,9 @@ function FormularioReporte() {
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
-                        error={esInvalido("cc")}
-                        onChange={actualizarFormulario("cc")}
-                        value={formulario.cc}
+                        error={esInvalido("cc._id")}
+                        onChange={actualizarFormulario("_id", "cc")}
+                        value={formulario.cc._id}
                       >
                         {miUsuario.cc.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
@@ -575,7 +575,7 @@ function FormularioReporte() {
                         ))}
                       </Select>
                       <FormHelperText error>
-                        {mostrarMsjInvalido("cc")}
+                        {mostrarMsjInvalido("cc._id")}
                       </FormHelperText>
                       {id && miUsuario.rol === "ADMINISTRADOR" && (
                         <FormHelperText>
@@ -733,9 +733,9 @@ function FormularioReporte() {
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
-                        error={esInvalido("cc")}
-                        onChange={actualizarFormulario("cc")}
-                        value={formulario.cc}
+                        error={esInvalido("cc._id")}
+                        onChange={actualizarFormulario("_id", "cc")}
+                        value={formulario.cc._id}
                       >
                         {miUsuario.cc.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
@@ -744,7 +744,7 @@ function FormularioReporte() {
                         ))}
                       </Select>
                       <FormHelperText error>
-                        {mostrarMsjInvalido("cc")}
+                        {mostrarMsjInvalido("cc._id")}
                       </FormHelperText>
                       {id && miUsuario.rol === "ADMINISTRADOR" && (
                         <FormHelperText>
@@ -810,9 +810,9 @@ function FormularioReporte() {
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
-                        error={esInvalido("cc")}
-                        onChange={actualizarFormulario("cc")}
-                        value={formulario.cc}
+                        error={esInvalido("cc._id")}
+                        onChange={actualizarFormulario("_id", "cc")}
+                        value={formulario.cc._id}
                       >
                         {miUsuario.cc.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
@@ -821,7 +821,7 @@ function FormularioReporte() {
                         ))}
                       </Select>
                       <FormHelperText error>
-                        {mostrarMsjInvalido("cc")}
+                        {mostrarMsjInvalido("cc._id")}
                       </FormHelperText>
                       {id && miUsuario.rol === "ADMINISTRADOR" && (
                         <FormHelperText>
@@ -885,9 +885,9 @@ function FormularioReporte() {
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
-                        error={esInvalido("cc")}
-                        onChange={actualizarFormulario("cc")}
-                        value={formulario.cc}
+                        error={esInvalido("cc._id")}
+                        onChange={actualizarFormulario("_id", "cc")}
+                        value={formulario.cc._id}
                       >
                         {miUsuario.cc.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
@@ -896,7 +896,7 @@ function FormularioReporte() {
                         ))}
                       </Select>
                       <FormHelperText error>
-                        {mostrarMsjInvalido("cc")}
+                        {mostrarMsjInvalido("cc._id")}
                       </FormHelperText>
                       {id && miUsuario.rol === "ADMINISTRADOR" && (
                         <FormHelperText>
