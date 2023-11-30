@@ -7,13 +7,13 @@ enrutador.use(permisos.autenticarToken);
 
 enrutador.use(permisos.autorizarRol);
 
-enrutador.delete("/:id", controlador.borrarReporte);
-
 enrutador.get("/", controlador.listarReportes);
 
 enrutador.get("/estadisticas", controlador.estadisticas);
 
 enrutador.get("/:id", controlador.buscarReporte);
+
+enrutador.use(permisos.autorizarCC);
 
 enrutador.post("/casoadmin/", controlador.nuevoCasoAdmin);
 
@@ -28,6 +28,10 @@ enrutador.post("/incidencias/", controlador.nuevoIncidencias);
 enrutador.post("/interno/", controlador.nuevoInterno);
 
 enrutador.post("/participacion/", controlador.nuevoParticipacion);
+
+enrutador.use(permisos.autorizarCambio);
+
+enrutador.delete("/:id", controlador.borrarReporte);
 
 enrutador.put("/casoadmin/:id", controlador.actualizarCasoAdmin);
 
