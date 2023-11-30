@@ -216,7 +216,9 @@ exports.iniciarSesion = asyncHandler(async function (req, res, next) {
 
 exports.listarUsuarios = asyncHandler(async function (req, res, next) {
   //Se buscan todos los usuarios y se meten en un arreglo
-  const listaDeUsuarios = await Usuario.find({}).exec();
+  const listaDeUsuarios = await Usuario.find({
+    _id: { $ne: req.user._id },
+  }).exec();
 
   if (listaDeUsuarios.length > 0) {
     //Si el arreglo no esta vacio
