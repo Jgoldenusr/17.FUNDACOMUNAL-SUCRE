@@ -15,8 +15,9 @@ import ContextoAutenticado from "./ContextoAutenticado";
 import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 
-function BotonMenu({ id, ruta }) {
+function BotonMenu({ id, ruta, situr }) {
   const navegarHasta = useNavigate();
   const { miUsuario } = useContext(ContextoAutenticado);
   const [ancla, setAncla] = useState(null);
@@ -25,6 +26,12 @@ function BotonMenu({ id, ruta }) {
   const clickEditar = function () {
     navegarHasta(`${ruta ? `../${ruta}/` : ""}${id}/editar`, {
       replace: ruta ? true : false,
+    });
+  };
+
+  const clickVerificar = function () {
+    navegarHasta(`../reportes/nuevo?situr=${situr}`, {
+      replace: true,
     });
   };
 
@@ -45,7 +52,7 @@ function BotonMenu({ id, ruta }) {
   /* jshint ignore:start */
   return (
     <>
-      <IconButton onClick={manejarClickAbrir}>
+      <IconButton color="inherit" onClick={manejarClickAbrir}>
         <MoreVertIcon />
       </IconButton>
       <Menu anchorEl={ancla} open={abierto} onClose={manejarCierre}>
@@ -61,6 +68,14 @@ function BotonMenu({ id, ruta }) {
               <SettingsOutlinedIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText>Editar</ListItemText>
+          </MenuItem>
+        )}
+        {miUsuario.rol === "ADMINISTRADOR" && situr && (
+          <MenuItem onClick={clickVerificar}>
+            <ListItemIcon>
+              <VerifiedRoundedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Verificar</ListItemText>
           </MenuItem>
         )}
       </Menu>

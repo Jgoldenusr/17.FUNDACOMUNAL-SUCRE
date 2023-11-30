@@ -1,20 +1,14 @@
 import { ResponsiveTimeRange } from "@nivo/calendar";
 import { BasicTooltip } from "@nivo/tooltip";
-import { DateTime, Interval } from "luxon";
 import { useNavigate } from "react-router-dom";
+import {
+  diasDelTrimestre,
+  mostrarFechaConFormato,
+  mostrarISODate,
+} from "../config/utilidades";
 
 function GraficoDeCalor({ data, trimestre }) {
   const navegarHasta = useNavigate();
-
-  const diasDelTrimestre = function () {
-    const inicio = DateTime.fromFormat(trimestre.toString(), "q");
-    const fin = inicio.endOf("quarter").plus({ days: 1 });
-    const intervaloFechas = Interval.fromDateTimes(inicio, fin);
-    const dias = Array.from(intervaloFechas.splitBy({ days: 1 }), (dt) =>
-      dt.start.toISODate()
-    );
-    return dias;
-  };
 
   const fechas = diasDelTrimestre().map((dia) => {
     const fechaEncontrada = data.find((otraFecha) => dia === otraFecha.day);
@@ -66,9 +60,7 @@ function GraficoDeCalor({ data, trimestre }) {
         }}
         onClick={(d, e) => {
           navegarHasta(
-            `/reportes?desde=${d.day}&hasta=${DateTime.fromISO(d.day)
-              .plus({ days: 1 })
-              .toISODate()}`,
+            `/reportes?desde=${d.day}&hasta=${mostrarISODate(d.day, 1)}`,
             {
               replace: true,
             }
@@ -76,9 +68,7 @@ function GraficoDeCalor({ data, trimestre }) {
         }}
         tooltip={({ day, value, color }) => (
           <BasicTooltip
-            id={`${value} reporte(s) el ${DateTime.fromISO(day, {
-              setZone: true,
-            }).toLocaleString(DateTime.DATE_MED)}`}
+            id={`${value} reporte(s) el ${mostrarFechaConFormato(day)}`}
             color={color}
             enableChip
           />

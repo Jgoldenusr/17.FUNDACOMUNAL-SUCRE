@@ -15,8 +15,7 @@ import Diversity3RoundedIcon from "@mui/icons-material/Diversity3Rounded";
 import FmdBadRoundedIcon from "@mui/icons-material/FmdBadRounded";
 import RssFeedRoundedIcon from "@mui/icons-material/RssFeedRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
-//Otros
-import { DateTime } from "luxon";
+import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 
 function MostrarReportes() {
   const { miUsuario } = useContext(ContextoAutenticado);
@@ -69,39 +68,29 @@ function MostrarReportes() {
       {reportes &&
         reportes.map((reporte) => {
           return (
-            <Grid item xs={12} md={4} xl={3} key={reporte._id}>
+            <Grid item xs={12} md={6} xl={4} key={reporte._id}>
               <Card elevation={6}>
                 <CardHeader
                   disableTypography
                   action={<BotonMenu id={reporte._id} />}
                   avatar={
-                    reporte.tipo === "casoadmin" ? (
-                      <Avatar sx={{ bgcolor: "#9c27b0" }}>
+                    <Avatar sx={{ bgcolor: "#1976d2" }}>
+                      {reporte.tipo === "casoadmin" ? (
                         <AssignmentLateRoundedIcon />
-                      </Avatar>
-                    ) : reporte.tipo === "comunicaciones" ? (
-                      <Avatar sx={{ bgcolor: "#03a9f4" }}>
+                      ) : reporte.tipo === "comunicaciones" ? (
                         <RssFeedRoundedIcon />
-                      </Avatar>
-                    ) : reporte.tipo === "fortalecimiento" ? (
-                      <Avatar sx={{ bgcolor: "#01579b" }}>
+                      ) : reporte.tipo === "fortalecimiento" ? (
                         <ConstructionRoundedIcon />
-                      </Avatar>
-                    ) : reporte.tipo === "formacion" ? (
-                      <Avatar sx={{ bgcolor: "#2e7d32" }}>
+                      ) : reporte.tipo === "formacion" ? (
                         <SchoolRoundedIcon />
-                      </Avatar>
-                    ) : reporte.tipo === "incidencias" ? (
-                      <Avatar sx={{ bgcolor: "#d32f2f" }}>
+                      ) : reporte.tipo === "incidencias" ? (
                         <FmdBadRoundedIcon />
-                      </Avatar>
-                    ) : reporte.tipo === "participacion" ? (
-                      <Avatar sx={{ bgcolor: "#ed6c02" }}>
+                      ) : reporte.tipo === "participacion" ? (
                         <Diversity3RoundedIcon />
-                      </Avatar>
-                    ) : (
-                      ""
-                    )
+                      ) : (
+                        <VerifiedRoundedIcon />
+                      )}
+                    </Avatar>
                   }
                   sx={{
                     "& .MuiCardHeader-content": {
@@ -116,9 +105,7 @@ function MostrarReportes() {
                       textOverflow={"ellipsis"}
                       variant="body2"
                     >
-                      {DateTime.fromISO(reporte.fecha, {
-                        setZone: true,
-                      }).toLocaleString(DateTime.DATE_MED)}
+                      {reporte.fechaConFormato}
                     </Typography>
                   }
                   title={

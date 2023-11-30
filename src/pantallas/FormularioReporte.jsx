@@ -1,6 +1,6 @@
 //Componentes de react y react router
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 //Componentes MUI
 import {
   Button,
@@ -34,6 +34,7 @@ import {
   formularioFormacion,
   formularioFortalecimiento,
   formularioIncidencias,
+  formularioInterno,
   formularioParticipacion,
 } from "../config/plantillas";
 import { OpcionesReporte } from "../config/opciones";
@@ -46,6 +47,7 @@ function FormularioReporte() {
   const [error, setError] = useState(null);
   const [erroresValidacion, setErroresValidacion] = useState(null);
   const [formulario, setFormulario] = useState(formularioParticipacion);
+  const [parametros, setParametros] = useSearchParams();
   const [subiendo, setSubiendo] = useState(false);
   const [tipo, setTipo] = useState("participacion");
   const { miUsuario } = useContext(ContextoAutenticado);
@@ -65,7 +67,10 @@ function FormularioReporte() {
         const respuesta = await fetch(url, peticion);
         if (respuesta.ok) {
           const recibido = await respuesta.json();
-          setFormulario(recibido);
+          setFormulario({
+            ...recibido,
+            situr: recibido.tipo === "interno" ? recibido.cc.situr : undefined,
+          });
           setTipo(recibido.tipo);
         } else {
           const recibido = await respuesta.json();
@@ -80,6 +85,9 @@ function FormularioReporte() {
     //Ejecucion (cuando se carga el componente)
     if (id) {
       buscarReporteParaEditar();
+    } else if (parametros.get("situr")) {
+      setFormulario({ ...formularioInterno, situr: parametros.get("situr") });
+      setTipo("interno");
     } else {
       setFormulario(formularioParticipacion);
       setTipo("participacion");
@@ -151,6 +159,9 @@ function FormularioReporte() {
         break;
       case "incidencias":
         setFormulario(formularioIncidencias);
+        break;
+      case "interno":
+        setFormulario(formularioInterno);
         break;
       case "casoadmin":
         setFormulario(formularioCasoAdmin);
@@ -300,6 +311,9 @@ function FormularioReporte() {
                     <MenuItem value="formacion">FORMACION</MenuItem>
                     <MenuItem value="incidencias">INCIDENCIAS</MenuItem>
                     <MenuItem value="participacion">PARTICIPACION</MenuItem>
+                    {miUsuario.rol === "ADMINISTRADOR" && (
+                      <MenuItem value="interno">INTERNO</MenuItem>
+                    )}
                   </Select>
                 </FormControl>
               </Grid>
@@ -313,27 +327,33 @@ function FormularioReporte() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth variant="filled">
-                  <InputLabel>Consejo comunal</InputLabel>
-                  <Select
-                    error={esInvalido("cc")}
-                    onChange={actualizarFormulario("cc")}
-                    value={formulario.cc}
-                  >
-                    {miUsuario.cc.map((elemento) => (
-                      <MenuItem key={elemento._id} value={elemento._id}>
-                        {elemento.nombre}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText error>
-                    {mostrarMsjInvalido("cc")}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
               {tipo === "participacion" ? (
                 <>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Consejo comunal</InputLabel>
+                      <Select
+                        error={esInvalido("cc")}
+                        onChange={actualizarFormulario("cc")}
+                        value={formulario.cc}
+                      >
+                        {miUsuario.cc.map((elemento) => (
+                          <MenuItem key={elemento._id} value={elemento._id}>
+                            {elemento.nombre}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("cc")}
+                      </FormHelperText>
+                      {id && miUsuario.rol === "ADMINISTRADOR" && (
+                        <FormHelperText>
+                          *Si no hay opciones se usara el consejo comunal
+                          original del reporte
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
                   <Grid item xs={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Acompañamiento</InputLabel>
@@ -369,9 +389,48 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Organos adscritos</InputLabel>
+                      <FilledInput
+                        error={esInvalido("organosAdscritos")}
+                        inputProps={{ maxLength: 30 }}
+                        onChange={actualizarFormulario("organosAdscritos")}
+                        value={formulario.organosAdscritos}
+                      />
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("organosAdscritos")}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
                 </>
               ) : tipo === "formacion" ? (
                 <>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Consejo comunal</InputLabel>
+                      <Select
+                        error={esInvalido("cc")}
+                        onChange={actualizarFormulario("cc")}
+                        value={formulario.cc}
+                      >
+                        {miUsuario.cc.map((elemento) => (
+                          <MenuItem key={elemento._id} value={elemento._id}>
+                            {elemento.nombre}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("cc")}
+                      </FormHelperText>
+                      {id && miUsuario.rol === "ADMINISTRADOR" && (
+                        <FormHelperText>
+                          *Si no hay opciones se usara el consejo comunal
+                          original del reporte
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
                   <Grid item xs={12} md={6}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Estrategia</InputLabel>
@@ -484,9 +543,48 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Organos adscritos</InputLabel>
+                      <FilledInput
+                        error={esInvalido("organosAdscritos")}
+                        inputProps={{ maxLength: 30 }}
+                        onChange={actualizarFormulario("organosAdscritos")}
+                        value={formulario.organosAdscritos}
+                      />
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("organosAdscritos")}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
                 </>
               ) : tipo === "fortalecimiento" ? (
                 <>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Consejo comunal</InputLabel>
+                      <Select
+                        error={esInvalido("cc")}
+                        onChange={actualizarFormulario("cc")}
+                        value={formulario.cc}
+                      >
+                        {miUsuario.cc.map((elemento) => (
+                          <MenuItem key={elemento._id} value={elemento._id}>
+                            {elemento.nombre}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("cc")}
+                      </FormHelperText>
+                      {id && miUsuario.rol === "ADMINISTRADOR" && (
+                        <FormHelperText>
+                          *Si no hay opciones se usara el consejo comunal
+                          original del reporte
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
                   <Grid item xs={12} md={6}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>
@@ -576,6 +674,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("tipo", "proyectoCFG")}
                         value={formulario.proyectoCFG.tipo}
                       >
+                        <MenuItem value="">SIN TIPO</MenuItem>
                         {OpcionesReporte.fortalecimiento.proyectoCFG.tipo.map(
                           (opcion) => (
                             <MenuItem key={opcion} value={opcion}>
@@ -599,6 +698,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("etapa", "proyectoCFG")}
                         value={formulario.proyectoCFG.etapa}
                       >
+                        <MenuItem value="">NINGUNA</MenuItem>
                         {OpcionesReporte.fortalecimiento.proyectoCFG.etapa.map(
                           (opcion) => (
                             <MenuItem key={opcion} value={opcion}>
@@ -612,9 +712,48 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Organos adscritos</InputLabel>
+                      <FilledInput
+                        error={esInvalido("organosAdscritos")}
+                        inputProps={{ maxLength: 30 }}
+                        onChange={actualizarFormulario("organosAdscritos")}
+                        value={formulario.organosAdscritos}
+                      />
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("organosAdscritos")}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
                 </>
               ) : tipo === "incidencias" ? (
                 <>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Consejo comunal</InputLabel>
+                      <Select
+                        error={esInvalido("cc")}
+                        onChange={actualizarFormulario("cc")}
+                        value={formulario.cc}
+                      >
+                        {miUsuario.cc.map((elemento) => (
+                          <MenuItem key={elemento._id} value={elemento._id}>
+                            {elemento.nombre}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("cc")}
+                      </FormHelperText>
+                      {id && miUsuario.rol === "ADMINISTRADOR" && (
+                        <FormHelperText>
+                          *Si no hay opciones se usara el consejo comunal
+                          original del reporte
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
                   <Grid item xs={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Area sustantiva</InputLabel>
@@ -650,9 +789,48 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Organos adscritos</InputLabel>
+                      <FilledInput
+                        error={esInvalido("organosAdscritos")}
+                        inputProps={{ maxLength: 30 }}
+                        onChange={actualizarFormulario("organosAdscritos")}
+                        value={formulario.organosAdscritos}
+                      />
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("organosAdscritos")}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
                 </>
               ) : tipo === "casoadmin" ? (
                 <>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Consejo comunal</InputLabel>
+                      <Select
+                        error={esInvalido("cc")}
+                        onChange={actualizarFormulario("cc")}
+                        value={formulario.cc}
+                      >
+                        {miUsuario.cc.map((elemento) => (
+                          <MenuItem key={elemento._id} value={elemento._id}>
+                            {elemento.nombre}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("cc")}
+                      </FormHelperText>
+                      {id && miUsuario.rol === "ADMINISTRADOR" && (
+                        <FormHelperText>
+                          *Si no hay opciones se usara el consejo comunal
+                          original del reporte
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
                   <Grid item xs={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Tipo</InputLabel>
@@ -686,9 +864,48 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Organos adscritos</InputLabel>
+                      <FilledInput
+                        error={esInvalido("organosAdscritos")}
+                        inputProps={{ maxLength: 30 }}
+                        onChange={actualizarFormulario("organosAdscritos")}
+                        value={formulario.organosAdscritos}
+                      />
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("organosAdscritos")}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
                 </>
               ) : tipo === "comunicaciones" ? (
                 <>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Consejo comunal</InputLabel>
+                      <Select
+                        error={esInvalido("cc")}
+                        onChange={actualizarFormulario("cc")}
+                        value={formulario.cc}
+                      >
+                        {miUsuario.cc.map((elemento) => (
+                          <MenuItem key={elemento._id} value={elemento._id}>
+                            {elemento.nombre}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("cc")}
+                      </FormHelperText>
+                      {id && miUsuario.rol === "ADMINISTRADOR" && (
+                        <FormHelperText>
+                          *Si no hay opciones se usara el consejo comunal
+                          original del reporte
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </Grid>
                   <Grid item xs={12} md={6}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Notas de prensa (opcional)</InputLabel>
@@ -772,24 +989,51 @@ function FormularioReporte() {
                       </Grid>
                     );
                   })}
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Organos adscritos</InputLabel>
+                      <FilledInput
+                        error={esInvalido("organosAdscritos")}
+                        inputProps={{ maxLength: 30 }}
+                        onChange={actualizarFormulario("organosAdscritos")}
+                        value={formulario.organosAdscritos}
+                      />
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("organosAdscritos")}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
                 </>
               ) : (
-                ""
+                <>
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Codigo situr del consejo comunal</InputLabel>
+                      <FilledInput
+                        error={esInvalido("situr")}
+                        inputProps={{ maxLength: 20 }}
+                        onChange={actualizarFormulario("situr")}
+                        value={formulario.situr}
+                      />
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("situr")}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel shrink>
+                        Fecha de entrada en vigencia
+                      </InputLabel>
+                      <FilledInput
+                        onChange={actualizarFormulario("fechaRegistro")}
+                        type="date"
+                        value={formulario.fechaRegistro.substring(0, 10)}
+                      />
+                    </FormControl>
+                  </Grid>
+                </>
               )}
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth variant="filled">
-                  <InputLabel>Organos adscritos</InputLabel>
-                  <FilledInput
-                    error={esInvalido("organosAdscritos")}
-                    inputProps={{ maxLength: 30 }}
-                    onChange={actualizarFormulario("organosAdscritos")}
-                    value={formulario.organosAdscritos}
-                  />
-                  <FormHelperText error>
-                    {mostrarMsjInvalido("organosAdscritos")}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
               <Grid container item xs={12} md={6} spacing={3}>
                 <Grid item xs={id ? 6 : 12}>
                   <Button

@@ -1,12 +1,14 @@
 //Componentes de react y react router
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 //Componentes MUI
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Avatar,
   Card,
+  CardHeader,
   CardContent,
   Divider,
   Grid,
@@ -24,6 +26,7 @@ import ConstructionRoundedIcon from "@mui/icons-material/ConstructionRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import Diversity3RoundedIcon from "@mui/icons-material/Diversity3Rounded";
 import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
+import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExtensionRoundedIcon from "@mui/icons-material/ExtensionRounded";
@@ -52,8 +55,6 @@ import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Error404 from "../componentes/Error404";
 import Spinner from "../componentes/Spinner";
-//Otras librerias
-import { DateTime } from "luxon";
 
 function VerReporte() {
   const { id } = useParams();
@@ -64,7 +65,7 @@ function VerReporte() {
 
   useEffect(() => {
     async function realizarPeticion() {
-      const url = `http://localhost:4000/reportes/${id}?poblar=true`;
+      const url = "http://localhost:4000/reportes/" + id;
       const peticion = {
         headers: new Headers({
           Authorization: `Bearer ${miUsuario.token}`,
@@ -99,16 +100,21 @@ function VerReporte() {
     <Grid container justifyContent="center">
       <Grid item xs={12} md={5}>
         <Card elevation={6}>
-          <Link className="no-deco" to="editar">
-            <CardContent
-              sx={{ bgcolor: "#1976d2", color: "white", textAlign: "center" }}
-            >
-              <DescriptionRoundedIcon sx={{ fontSize: 56 }} />
+          <CardHeader
+            action={<BotonMenu id={reporte._id} ruta="reportes" />}
+            avatar={
+              <Avatar sx={{ bgcolor: "#1976d2" }}>
+                <DescriptionRoundedIcon />
+              </Avatar>
+            }
+            disableTypography
+            title={
               <Typography component="div" variant="subtitle1">
                 {`REPORTE DE ${reporte.tipo.toUpperCase()}`}
               </Typography>
-            </CardContent>
-          </Link>
+            }
+            sx={{ bgcolor: "#1976d2", color: "white" }}
+          />
           <CardContent sx={{ m: 0, p: 0, "&:last-child": { pb: 0 } }}>
             <List disablePadding dense>
               <ListItem
@@ -128,7 +134,13 @@ function VerReporte() {
               </ListItem>
               <ListItem
                 divider
-                secondaryAction={<BotonMenu id={reporte.cc._id} ruta="ccs" />}
+                secondaryAction={
+                  <BotonMenu
+                    id={reporte.cc._id}
+                    ruta="ccs"
+                    situr={reporte.cc.situr}
+                  />
+                }
               >
                 <ListItemIcon>
                   <LocationOnRoundedIcon />
@@ -140,26 +152,24 @@ function VerReporte() {
               </ListItem>
               <ListItem divider>
                 <ListItemIcon>
-                  <AccountBalanceRoundedIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="ORGANOS ADSCRITOS"
-                  secondary={reporte.organosAdscritos}
-                />
-              </ListItem>
-              <ListItem divider>
-                <ListItemIcon>
                   <EventRoundedIcon />
                 </ListItemIcon>
                 <ListItemText
                   primary="FECHA"
-                  secondary={DateTime.fromISO(reporte.fecha, {
-                    setZone: true,
-                  }).toLocaleString(DateTime.DATE_MED)}
+                  secondary={reporte.fechaConFormato}
                 />
               </ListItem>
               {reporte.tipo === "participacion" ? (
                 <>
+                  <ListItem divider>
+                    <ListItemIcon>
+                      <AccountBalanceRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="ORGANOS ADSCRITOS"
+                      secondary={reporte.organosAdscritos}
+                    />
+                  </ListItem>
                   <ListItem divider>
                     <ListItemIcon>
                       <Diversity3RoundedIcon />
@@ -181,6 +191,15 @@ function VerReporte() {
                 </>
               ) : reporte.tipo === "formacion" ? (
                 <>
+                  <ListItem divider>
+                    <ListItemIcon>
+                      <AccountBalanceRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="ORGANOS ADSCRITOS"
+                      secondary={reporte.organosAdscritos}
+                    />
+                  </ListItem>
                   <ListItem divider>
                     <ListItemIcon>
                       <ExtensionRoundedIcon />
@@ -260,6 +279,15 @@ function VerReporte() {
                 <>
                   <ListItem divider>
                     <ListItemIcon>
+                      <AccountBalanceRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="ORGANOS ADSCRITOS"
+                      secondary={reporte.organosAdscritos}
+                    />
+                  </ListItem>
+                  <ListItem divider>
+                    <ListItemIcon>
                       <Diversity3RoundedIcon />
                     </ListItemIcon>
                     <ListItemText
@@ -294,47 +322,60 @@ function VerReporte() {
                       secondary={reporte.tipoOSP}
                     />
                   </ListItem>
-                  <ListItem disablePadding divider>
-                    <Accordion square elevation={0} sx={{ width: "100%" }}>
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        sx={{ pr: 2, pl: 0 }}
-                      >
-                        <ListItem dense component="div">
-                          <ListItemIcon>
-                            <ConstructionRoundedIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="PROYECTO CONSEJO FEDERAL DE GOBIERNO" />
-                        </ListItem>
-                      </AccordionSummary>
-                      <AccordionDetails sx={{ p: 0 }}>
-                        <List dense disablePadding>
-                          <Divider />
-                          <ListItem divider>
-                            <ListItemIcon>
-                              <TourRoundedIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary="ESTADO"
-                              secondary={reporte.proyectoCFG.etapa}
-                            />
-                          </ListItem>
-                          <ListItem>
-                            <ListItemIcon>
-                              <WarehouseRoundedIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary="TIPO"
-                              secondary={reporte.proyectoCFG.tipo}
-                            />
-                          </ListItem>
-                        </List>
-                      </AccordionDetails>
-                    </Accordion>
-                  </ListItem>
+                  {reporte.proyectoCFG &&
+                    reporte.proyectoCFG.tipo &&
+                    reporte.proyectoCFG.etapa && (
+                      <ListItem disablePadding divider>
+                        <Accordion square elevation={0} sx={{ width: "100%" }}>
+                          <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            sx={{ pr: 2, pl: 0 }}
+                          >
+                            <ListItem dense component="div">
+                              <ListItemIcon>
+                                <ConstructionRoundedIcon />
+                              </ListItemIcon>
+                              <ListItemText primary="PROYECTO CONSEJO FEDERAL DE GOBIERNO" />
+                            </ListItem>
+                          </AccordionSummary>
+                          <AccordionDetails sx={{ p: 0 }}>
+                            <List dense disablePadding>
+                              <Divider />
+                              <ListItem divider>
+                                <ListItemIcon>
+                                  <TourRoundedIcon />
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary="ESTADO"
+                                  secondary={reporte.proyectoCFG.etapa}
+                                />
+                              </ListItem>
+                              <ListItem>
+                                <ListItemIcon>
+                                  <WarehouseRoundedIcon />
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary="TIPO"
+                                  secondary={reporte.proyectoCFG.tipo}
+                                />
+                              </ListItem>
+                            </List>
+                          </AccordionDetails>
+                        </Accordion>
+                      </ListItem>
+                    )}
                 </>
               ) : reporte.tipo === "incidencias" ? (
                 <>
+                  <ListItem divider>
+                    <ListItemIcon>
+                      <AccountBalanceRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="ORGANOS ADSCRITOS"
+                      secondary={reporte.organosAdscritos}
+                    />
+                  </ListItem>
                   <ListItem divider>
                     <ListItemIcon>
                       <ErrorRoundedIcon />
@@ -358,6 +399,15 @@ function VerReporte() {
                 <>
                   <ListItem divider>
                     <ListItemIcon>
+                      <AccountBalanceRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="ORGANOS ADSCRITOS"
+                      secondary={reporte.organosAdscritos}
+                    />
+                  </ListItem>
+                  <ListItem divider>
+                    <ListItemIcon>
                       <InsertCommentRoundedIcon />
                     </ListItemIcon>
                     <ListItemText primary="CASO" secondary={reporte.caso} />
@@ -371,6 +421,15 @@ function VerReporte() {
                 </>
               ) : reporte.tipo === "comunicaciones" ? (
                 <>
+                  <ListItem divider>
+                    <ListItemIcon>
+                      <AccountBalanceRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="ORGANOS ADSCRITOS"
+                      secondary={reporte.organosAdscritos}
+                    />
+                  </ListItem>
                   <ListItem disablePadding divider>
                     <Accordion square elevation={0} sx={{ width: "100%" }}>
                       <AccordionSummary
@@ -459,7 +518,17 @@ function VerReporte() {
                   </ListItem>
                 </>
               ) : (
-                ""
+                <>
+                  <ListItem divider>
+                    <ListItemIcon>
+                      <EventAvailableRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="FECHA DE REGISTRO"
+                      secondary={reporte.fechaRegistroConFormato}
+                    />
+                  </ListItem>
+                </>
               )}
             </List>
           </CardContent>

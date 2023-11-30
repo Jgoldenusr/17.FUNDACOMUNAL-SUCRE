@@ -75,11 +75,11 @@ function MostrarUsuarios() {
                       overlap="circular"
                     >
                       {usuario.rol === "ADMINISTRADOR" ? (
-                        <Avatar sx={{ bgcolor: "#3f51b5" }}>
+                        <Avatar sx={{ bgcolor: "#1565c0" }}>
                           <AdminPanelSettingsIcon />
                         </Avatar>
                       ) : (
-                        <Avatar sx={{ bgcolor: "#2196f3" }}>
+                        <Avatar sx={{ bgcolor: "#42a5f5" }}>
                           <PersonRoundedIcon />
                         </Avatar>
                       )}

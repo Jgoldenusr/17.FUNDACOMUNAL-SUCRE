@@ -6,8 +6,10 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Avatar,
   Card,
   CardContent,
+  CardHeader,
   Divider,
   Grid,
   List,
@@ -19,6 +21,8 @@ import {
 //Iconos MUI
 import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
 import DriveFileRenameOutlineRoundedIcon from "@mui/icons-material/DriveFileRenameOutlineRounded";
+import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
+import EventBusyRoundedIcon from "@mui/icons-material/EventBusyRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExploreRoundedIcon from "@mui/icons-material/ExploreRounded";
 import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
@@ -28,13 +32,17 @@ import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import MapsHomeWorkRoundedIcon from "@mui/icons-material/MapsHomeWorkRounded";
 import MapRoundedIcon from "@mui/icons-material/MapRounded";
 import MyLocationRoundedIcon from "@mui/icons-material/MyLocationRounded";
+import NewReleasesRoundedIcon from "@mui/icons-material/NewReleasesRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import PushPinRoundedIcon from "@mui/icons-material/PushPinRounded";
 import TravelExploreRoundedIcon from "@mui/icons-material/TravelExploreRounded";
+import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 //Componentes endogenos
+import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Error404 from "../componentes/Error404";
 import Spinner from "../componentes/Spinner";
+import Tarjeta from "../componentes/Tarjeta";
 
 function VerCC() {
   const { id } = useParams();
@@ -77,19 +85,24 @@ function VerCC() {
   ) : error ? (
     <Error404 error={error} />
   ) : (
-    <Grid container>
-      <Grid item xs={12} md={5}>
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={6}>
         <Card elevation={6}>
-          <Link className="no-deco" to="editar">
-            <CardContent
-              sx={{ bgcolor: "#1976d2", color: "white", textAlign: "center" }}
-            >
-              <LocationOnRoundedIcon sx={{ fontSize: 56 }} />
+          <CardHeader
+            action={<BotonMenu id={cc._id} ruta="ccs" situr={cc.situr} />}
+            avatar={
+              <Avatar sx={{ bgcolor: "#1976d2" }}>
+                <LocationOnRoundedIcon />
+              </Avatar>
+            }
+            disableTypography
+            title={
               <Typography component="div" variant="subtitle1">
                 {cc.nombre}
               </Typography>
-            </CardContent>
-          </Link>
+            }
+            sx={{ bgcolor: "#1976d2", color: "white" }}
+          />
           <CardContent sx={{ m: 0, p: 0, "&:last-child": { pb: 0 } }}>
             <List disablePadding dense>
               <ListItem divider>
@@ -199,6 +212,50 @@ function VerCC() {
             </List>
           </CardContent>
         </Card>
+      </Grid>
+      <Grid item xs={12} md={3}>
+        {cc.estaRenovado && !cc.estaRenovado.vencido ? (
+          <Tarjeta
+            color="#2e7d32"
+            Icono={EventAvailableRoundedIcon}
+            titulo={cc.estaRenovado.desde}
+            url={`/reportes/${cc.estaRenovado.idReporte}`}
+          >
+            <Typography variant="h6">Renovado</Typography>
+          </Tarjeta>
+        ) : (
+          <Tarjeta
+            color="#d32f2f"
+            Icono={EventBusyRoundedIcon}
+            titulo={cc.estaRenovado ? cc.estaRenovado.desde : "Sin fecha"}
+            url={
+              cc.estaRenovado ? `/reportes/${cc.estaRenovado.idReporte}` : ""
+            }
+          >
+            <Typography variant="h6">No renovado</Typography>
+          </Tarjeta>
+        )}
+      </Grid>
+      <Grid item xs={12} md={3}>
+        {cc.estaVigente && !cc.estaVigente.vencido ? (
+          <Tarjeta
+            color="#2e7d32"
+            Icono={VerifiedRoundedIcon}
+            titulo={cc.estaVigente.desde}
+            url={`/reportes/${cc.estaVigente.idReporte}`}
+          >
+            <Typography variant="h6">Vigente</Typography>
+          </Tarjeta>
+        ) : (
+          <Tarjeta
+            color="#d32f2f"
+            Icono={NewReleasesRoundedIcon}
+            titulo={cc.estaVigente ? cc.estaVigente.desde : "Sin fecha"}
+            url={cc.estaVigente ? `/reportes/${cc.estaVigente.idReporte}` : ""}
+          >
+            <Typography variant="h6">No vigente</Typography>
+          </Tarjeta>
+        )}
       </Grid>
     </Grid>
   );

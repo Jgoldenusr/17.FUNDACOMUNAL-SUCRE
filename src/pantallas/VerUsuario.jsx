@@ -6,7 +6,9 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Avatar,
   Card,
+  CardHeader,
   CardContent,
   Divider,
   Grid,
@@ -29,6 +31,7 @@ import MapsHomeWorkRoundedIcon from "@mui/icons-material/MapsHomeWorkRounded";
 import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 //Componentes endogenos
+import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Error404 from "../componentes/Error404";
 import Spinner from "../componentes/Spinner";
@@ -77,16 +80,21 @@ function VerUsuario() {
     <Grid container>
       <Grid item xs={12} md={5}>
         <Card elevation={6}>
-          <Link className="no-deco" to="editar">
-            <CardContent
-              sx={{ bgcolor: "#1976d2", color: "white", textAlign: "center" }}
-            >
-              <PersonRoundedIcon sx={{ fontSize: 56 }} />
+          <CardHeader
+            action={<BotonMenu id={usuario._id} ruta="usuarios" />}
+            avatar={
+              <Avatar sx={{ bgcolor: "#1976d2" }}>
+                <PersonRoundedIcon />
+              </Avatar>
+            }
+            disableTypography
+            title={
               <Typography component="div" variant="subtitle1">
                 {`${usuario.apellido} ${usuario.nombre}`}
               </Typography>
-            </CardContent>
-          </Link>
+            }
+            sx={{ bgcolor: "#1976d2", color: "white" }}
+          />
           <CardContent sx={{ m: 0, p: 0, "&:last-child": { pb: 0 } }}>
             <List disablePadding dense>
               <ListItem divider>

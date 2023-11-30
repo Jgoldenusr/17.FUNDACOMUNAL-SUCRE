@@ -10,7 +10,6 @@ import {
   FormControl,
   FormHelperText,
   Grid,
-  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -36,14 +35,6 @@ function FormularioCC() {
   const [erroresValidacion, setErroresValidacion] = useState(null);
   const [formulario, setFormulario] = useState({ ...formularioVacioCC });
   const [subiendo, setSubiendo] = useState(false);
-  /* jshint ignore:start */
-  const prefijoSitur =
-    formulario.tipo === "INDIGENA"
-      ? "I-CCO-"
-      : formulario.tipo === "RURAL"
-      ? "R-CCO-"
-      : "U-CCO-";
-  /* jshint ignore:end */
 
   useEffect(() => {
     async function buscarCCParaEditar() {
@@ -303,6 +294,7 @@ function FormularioCC() {
                     onChange={actualizarFormulario("comuna")}
                     value={formulario.comuna}
                   >
+                    <MenuItem value="">SIN COMUNA</MenuItem>
                     {formulario.parroquias &&
                       OpcionesCC.comuna[`${formulario.parroquias}`] &&
                       OpcionesCC.comuna[`${formulario.parroquias}`].map(
@@ -365,13 +357,8 @@ function FormularioCC() {
                   <InputLabel>Codigo situr del consejo comunal</InputLabel>
                   <FilledInput
                     error={esInvalido("situr")}
-                    inputProps={{ maxLength: 17 }}
+                    inputProps={{ maxLength: 20 }}
                     onChange={actualizarFormulario("situr")}
-                    startAdornment={
-                      <InputAdornment position="start">
-                        {prefijoSitur}
-                      </InputAdornment>
-                    }
                     value={formulario.situr}
                   />
                   <FormHelperText error>

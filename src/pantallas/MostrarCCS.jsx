@@ -77,14 +77,18 @@ function MostrarCCS() {
               <Card elevation={6}>
                 <CardHeader
                   disableTypography
-                  action={<BotonMenu id={cc._id} />}
+                  action={<BotonMenu id={cc._id} situr={cc.situr} />}
                   avatar={
                     <Avatar
                       sx={{
                         bgcolor:
-                          cc.estaRenovado && cc.estaVigente
+                          cc.estaRenovado &&
+                          !cc.estaRenovado.vencido &&
+                          cc.estaVigente &&
+                          !cc.estaVigente.vencido
                             ? "#2e7d32"
-                            : !cc.estaRenovado && !cc.estaVigente
+                            : (!cc.estaRenovado || cc.estaRenovado.vencido) &&
+                              (!cc.estaVigente || cc.estaVigente.vencido)
                             ? "#d32f2f"
                             : "#ff9800",
                       }}
