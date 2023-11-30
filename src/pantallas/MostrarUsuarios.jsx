@@ -12,7 +12,7 @@ import {
 //Componentes endogenos
 import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
-import Error404 from "../componentes/Error404";
+import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
 //Iconos MUI
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
@@ -56,7 +56,7 @@ function MostrarUsuarios() {
   return cargando ? (
     <Spinner />
   ) : error ? (
-    <Error404 error={error} />
+    <Error error={error} />
   ) : (
     <Grid container spacing={3}>
       {usuarios &&

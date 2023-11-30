@@ -9,7 +9,7 @@ import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 //Componentes endogenos
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
-import Error404 from "../componentes/Error404";
+import Error from "../componentes/Error";
 import GraficoDeBarras from "../componentes/GraficoDeBarras";
 import GraficoDeCalor from "../componentes/GraficoDeCalor";
 import GraficoDePastel from "../componentes/GraficoDePastel";
@@ -76,7 +76,7 @@ function EstadisticasGenerales() {
   useEffect(() => {
     async function realizarPeticion() {
       const url1 = "http://localhost:4000/ccs/estadisticas";
-      const url2 = "http://localhost:4000/reportes/estadisticas";
+      const url2 = "http://localhost:4000/reportes/estadisticas?periodo=2023";
       const peticion = {
         headers: new Headers({
           Authorization: `Bearer ${miUsuario.token}`,
@@ -112,7 +112,7 @@ function EstadisticasGenerales() {
   return cargando ? (
     <Spinner />
   ) : error ? (
-    <Error404 error={error} />
+    <Error error={error} />
   ) : (
     <Grid container rowSpacing={3} spacing={2}>
       <Grid item xs={12} md={3}>
@@ -197,19 +197,16 @@ function EstadisticasGenerales() {
           </CardContent>
         </Card>
       </Grid>
+      <Grid item xs={12}>
+        <Card elevation={3}>
+          <CardContent sx={{ aspectRatio: 3 / 1.5 }}>
+            <GraficoDeCalor data={reportesDiarios()} trimestre={miTrimestre} />
+          </CardContent>
+        </Card>
+      </Grid>
     </Grid>
   );
   /* jshint ignore:end */
 }
-
-/*
-<Grid item xs={6}>
-  <Card elevation={3}>
-    <CardContent sx={{ aspectRatio: 3 / 1.5 }}>
-      <GraficoDeCalor data={reportesDiarios()} trimestre={miTrimestre} />
-    </CardContent>
-  </Card>
-</Grid>
-*/
 
 export default EstadisticasGenerales;

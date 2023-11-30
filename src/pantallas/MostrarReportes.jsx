@@ -6,7 +6,7 @@ import { Avatar, Card, CardHeader, Grid, Typography } from "@mui/material";
 //Componentes endogenos
 import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
-import Error404 from "../componentes/Error404";
+import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
 //Iconos MUI
 import AssignmentLateRoundedIcon from "@mui/icons-material/AssignmentLateRounded";
@@ -62,7 +62,7 @@ function MostrarReportes() {
   return cargando ? (
     <Spinner />
   ) : error ? (
-    <Error404 error={error} />
+    <Error error={error} />
   ) : (
     <Grid container spacing={3}>
       {reportes &&

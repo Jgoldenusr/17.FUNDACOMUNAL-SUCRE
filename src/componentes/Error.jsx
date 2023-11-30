@@ -13,7 +13,7 @@ import {
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import UndoRoundedIcon from "@mui/icons-material/UndoRounded";
 
-function Error404({ error }) {
+function Error({ error }) {
   const navegarHasta = useNavigate();
 
   /* jshint ignore:start */
@@ -57,4 +57,4 @@ function Error404({ error }) {
   /* jshint ignore:end */
 }
 
-export default Error404;
+export default Error;

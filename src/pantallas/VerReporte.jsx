@@ -53,7 +53,7 @@ import WarehouseRoundedIcon from "@mui/icons-material/WarehouseRounded";
 //Componentes endogenos
 import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
-import Error404 from "../componentes/Error404";
+import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
 
 function VerReporte() {
@@ -95,7 +95,7 @@ function VerReporte() {
   return cargando ? (
     <Spinner />
   ) : error ? (
-    <Error404 error={error} />
+    <Error error={error} />
   ) : (
     <Grid container justifyContent="center">
       <Grid item xs={12} md={5}>

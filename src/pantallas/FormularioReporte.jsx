@@ -26,7 +26,7 @@ import Send from "@mui/icons-material/Send";
 //Componentes endogenos
 import AlertaBorrar from "../componentes/AlertaBorrar";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
-import Error404 from "../componentes/Error404";
+import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
 import {
   formularioCasoAdmin,
@@ -271,7 +271,7 @@ function FormularioReporte() {
   return cargando ? (
     <Spinner />
   ) : error ? (
-    <Error404 error={error} />
+    <Error error={error} />
   ) : (
     <Grid container justifyContent="center">
       <Grid item xs={12} md={10}>

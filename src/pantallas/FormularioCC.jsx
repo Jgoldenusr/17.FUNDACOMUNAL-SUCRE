@@ -21,7 +21,7 @@ import EditLocationAltRoundedIcon from "@mui/icons-material/EditLocationAltRound
 import Send from "@mui/icons-material/Send";
 //Componentes endogenos
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
-import Error404 from "../componentes/Error404";
+import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
 import { formularioVacioCC } from "../config/plantillas";
 import { OpcionesCC } from "../config/opciones";
@@ -162,7 +162,7 @@ function FormularioCC() {
   return cargando ? (
     <Spinner />
   ) : error ? (
-    <Error404 error={error} />
+    <Error error={error} />
   ) : (
     <Grid container justifyContent="center">
       <Grid item xs={12} md={10}>

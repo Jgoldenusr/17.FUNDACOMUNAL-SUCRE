@@ -25,7 +25,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 //Componentes endogenos
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
-import Error404 from "../componentes/Error404";
+import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
 import { formularioVacioUsuario } from "../config/plantillas";
 
@@ -154,7 +154,7 @@ function FormularioUsuario() {
   return cargando ? (
     <Spinner />
   ) : error ? (
-    <Error404 error={error} />
+    <Error error={error} />
   ) : (
     <Grid container justifyContent="center">
       <Grid item xs={12} md={10}>

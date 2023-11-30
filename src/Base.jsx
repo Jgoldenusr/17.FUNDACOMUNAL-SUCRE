@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ContextoAutenticado from "./componentes/ContextoAutenticado.jsx";
 import Bloquear from "./componentes/Bloquear.jsx";
-import Error404 from "./componentes/Error404.jsx";
+import Error from "./componentes/Error.jsx";
 import Envoltorio from "./pantallas/Envoltorio.jsx";
 import EstadisticasGenerales from "./pantallas/EstadisticasGenerales.jsx";
 import FormularioCC from "./pantallas/FormularioCC.jsx";
@@ -66,7 +66,7 @@ function Base() {
                 <Route path="reportes/nuevo" element={<FormularioReporte />} />
                 <Route path="reportes/:id" element={<VerReporte />} /> 
                 <Route path="reportes/:id/editar" element={<FormularioReporte />} />
-                <Route path="*" element={<Error404 />} />
+                <Route path="*" element={<Error />} />
               </Route>
             </Route>
             <Route>

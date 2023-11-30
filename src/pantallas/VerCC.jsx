@@ -40,7 +40,7 @@ import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 //Componentes endogenos
 import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
-import Error404 from "../componentes/Error404";
+import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
 import Tarjeta from "../componentes/Tarjeta";
 
@@ -83,7 +83,7 @@ function VerCC() {
   return cargando ? (
     <Spinner />
   ) : error ? (
-    <Error404 error={error} />
+    <Error error={error} />
   ) : (
     <Grid container spacing={3}>
       <Grid item xs={12} md={6}>
