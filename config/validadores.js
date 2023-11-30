@@ -73,6 +73,15 @@ exports.nombreUsuarioNuevo = async function (valorUsuario) {
   }
 };
 
+exports.siturExiste = async function (valorSitur) {
+  const siturExiste = await CC.findOne({ situr: valorSitur });
+  if (siturExiste) {
+    return true;
+  } else {
+    throw new Error("El situr proporcionado no existe");
+  }
+};
+
 exports.siturNoRepetido = async function (valorSitur, { req }) {
   const siturExiste = await CC.findOne({
     situr: valorSitur,
@@ -91,6 +100,24 @@ exports.siturNuevo = async function (valorSitur) {
     throw new Error("El situr ya se encuentra en uso");
   } else {
     return true;
+  }
+};
+
+exports.siturTienePatronValido = function (valorSitur, { req }) {
+  /* jshint ignore:start */
+  const primerCaracter =
+    req.body.tipo === "INDIGENA" ? "I" : req.body.tipo === "RURAL" ? "R" : "U";
+  const expresionRegular = new RegExp(
+    `^${primerCaracter}-CCO-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{5}$`
+  );
+  /* jshint ignore:end */
+
+  if (expresionRegular.test(valorSitur)) {
+    return true;
+  } else {
+    throw new Error(
+      `El situr debe tener el patron ${primerCaracter}-CCO-99-99-99-99999`
+    );
   }
 };
 
@@ -115,29 +142,8 @@ exports.tlfNuevo = async function (valorTlf) {
   }
 };
 
-exports.siturValido = async function (situr, { req }) {
-  /* jshint ignore:start */
-  const prefijoSitur =
-    req.body.tipo === "INDIGENA"
-      ? "I-CCO-"
-      : req.body.tipo === "RURAL"
-      ? "R-CCO-"
-      : req.body.tipo === "URBANO"
-      ? "U-CCO-"
-      : "";
-  const expresionRegular = /^(R|U|I)-CCO-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{5}$/;
-  const siturCompleto = prefijoSitur + situr;
-  /* jshint ignore:end */
-
-  if (expresionRegular.test(siturCompleto)) {
-    return true;
-  } else {
-    throw new Error(
-      "El situr debe tener el patron (R o U o I)-CCO-99-99-99-99999"
-    );
-  }
-};
 exports.usuarioReportaCC = async function (idCC, { req }) {
+  //Revisar esto
   const usuarioReportaCC = req.user.cc.find((usrCC) => usrCC._id == idCC);
   const esAdmin = req.user.rol === "ADMINISTRADOR";
 
