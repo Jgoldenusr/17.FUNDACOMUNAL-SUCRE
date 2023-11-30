@@ -13,7 +13,7 @@ exports.actualizarUsuario =
     body("cedula")
       .trim()
       .isInt({ min: 1 })
-      .withMessage("La cedula debe ser un numero mayor que 0")
+      .withMessage("La cedula debe ser un numero entero mayor que 0")
       .bail()
       .isInt({ max: 999999999 })
       .withMessage("La cedula excede la cifra maxima")
@@ -180,7 +180,7 @@ exports.iniciarSesion = asyncHandler(async function (req, res, next) {
     //Si no se encontro un usuario que concuerde con el nombre, se manda error
     return res.status(400).json({
       error: {
-        message: "Nombre de usuario incorrecto",
+        message: "Nombre de usuario o clave erronea",
       },
     });
   } else {
@@ -235,7 +235,7 @@ exports.registrarUsuario =
     body("cedula")
       .trim()
       .isInt({ min: 1 })
-      .withMessage("La cedula debe ser un numero mayor que 0")
+      .withMessage("La cedula debe ser un numero entero mayor que 0")
       .bail()
       .isInt({ max: 999999999 })
       .withMessage("La cedula excede la cifra maxima")
