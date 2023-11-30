@@ -11,7 +11,7 @@ const opcionesDeEsquema = {
 
 const EsquemaCC = new Esquema(
   {
-    comuna: { type: String },
+    comuna: { type: String, default: "" },
     estados: { type: String, required: true },
     renovado: new Esquema({
       desde: { type: Date },
