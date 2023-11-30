@@ -80,6 +80,12 @@ const formularioIncidencias = {
   tipoIncidencia: "",
 };
 
+const formularioInterno = {
+  ...formularioReporteBase,
+  fechaRegistro: "",
+  situr: "",
+};
+
 const formularioParticipacion = {
   ...formularioReporteBase,
   acompanamiento: "",
@@ -95,5 +101,6 @@ export {
   formularioFormacion,
   formularioFortalecimiento,
   formularioIncidencias,
+  formularioInterno,
   formularioParticipacion,
 };

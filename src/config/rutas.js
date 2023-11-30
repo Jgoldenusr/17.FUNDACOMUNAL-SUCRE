@@ -6,8 +6,8 @@ import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import NoteAddRoundedIcon from "@mui/icons-material/NoteAddRounded";
-import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 
 const rutasGET = [
   {
@@ -31,7 +31,7 @@ const rutasGET = [
   {
     ruta: "usuarios",
     nombre: "Usuarios",
-    icono: PeopleAltRoundedIcon,
+    icono: PersonRoundedIcon,
     listaNegra: ["PROMOTOR"],
   },
   {
