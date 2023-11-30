@@ -26,7 +26,7 @@ const rutasGET = [
     ruta: "ccs",
     nombre: "Ubicaciones",
     icono: LocationOnRoundedIcon,
-    listaNegra: ["PROMOTOR"],
+    listaNegra: [""],
   },
   {
     ruta: "usuarios",
