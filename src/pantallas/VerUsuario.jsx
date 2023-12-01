@@ -81,7 +81,16 @@ function VerUsuario() {
       <Grid item xs={12} md={5}>
         <Card elevation={6}>
           <CardHeader
-            action={<BotonMenu id={usuario._id} ruta="usuarios" />}
+            action={
+              <BotonMenu
+                id={usuario._id}
+                opciones={{
+                  ocultar: ["PROMOTOR"],
+                  editar: [""],
+                }}
+                ruta="usuarios"
+              />
+            }
             avatar={
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <PersonRoundedIcon />

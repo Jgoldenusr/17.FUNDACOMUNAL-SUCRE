@@ -72,7 +72,15 @@ function MostrarReportes() {
               <Card elevation={6}>
                 <CardHeader
                   disableTypography
-                  action={<BotonMenu id={reporte._id} />}
+                  action={
+                    <BotonMenu
+                      id={reporte._id}
+                      opciones={{
+                        verMas: [],
+                        editar: ["PROMOTOR"],
+                      }}
+                    />
+                  }
                   avatar={
                     <Avatar sx={{ bgcolor: "#1976d2" }}>
                       {reporte.tipo === "casoadmin" ? (

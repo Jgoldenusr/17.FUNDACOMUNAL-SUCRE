@@ -89,7 +89,18 @@ function VerCC() {
       <Grid item xs={12} md={6}>
         <Card elevation={6}>
           <CardHeader
-            action={<BotonMenu id={cc._id} ruta="ccs" situr={cc.situr} />}
+            action={
+              <BotonMenu
+                etc={{ situr: cc.situr }}
+                id={cc._id}
+                opciones={{
+                  ocultar: ["PROMOTOR"],
+                  editar: [""],
+                  verificar: [""],
+                }}
+                ruta="ccs"
+              />
+            }
             avatar={
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <LocationOnRoundedIcon />

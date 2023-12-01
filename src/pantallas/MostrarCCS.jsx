@@ -77,7 +77,17 @@ function MostrarCCS() {
               <Card elevation={6}>
                 <CardHeader
                   disableTypography
-                  action={<BotonMenu id={cc._id} situr={cc.situr} />}
+                  action={
+                    <BotonMenu
+                      etc={{ situr: cc.situr }}
+                      id={cc._id}
+                      opciones={{
+                        verMas: [],
+                        editar: ["PROMOTOR"],
+                        verificar: ["PROMOTOR"],
+                      }}
+                    />
+                  }
                   avatar={
                     <Avatar
                       sx={{

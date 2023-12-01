@@ -66,7 +66,16 @@ function MostrarUsuarios() {
               <Card elevation={6}>
                 <CardHeader
                   disableTypography
-                  action={<BotonMenu id={usuario._id} />}
+                  action={
+                    <BotonMenu
+                      id={usuario._id}
+                      opciones={{
+                        ocultar: ["PROMOTOR"],
+                        verMas: [""],
+                        editar: [""],
+                      }}
+                    />
+                  }
                   avatar={
                     <Badge
                       badgeContent={usuario.cc.length}

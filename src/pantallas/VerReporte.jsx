@@ -101,7 +101,16 @@ function VerReporte() {
       <Grid item xs={12} md={5}>
         <Card elevation={6}>
           <CardHeader
-            action={<BotonMenu id={reporte._id} ruta="reportes" />}
+            action={
+              <BotonMenu
+                id={reporte._id}
+                opciones={{
+                  ocultar: ["PROMOTOR"],
+                  editar: [""],
+                }}
+                ruta="reportes"
+              />
+            }
             avatar={
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <DescriptionRoundedIcon />
@@ -120,7 +129,15 @@ function VerReporte() {
               <ListItem
                 divider
                 secondaryAction={
-                  <BotonMenu id={reporte.usuario._id} ruta="usuarios" />
+                  <BotonMenu
+                    id={reporte.usuario._id}
+                    opciones={{
+                      ocultar: ["PROMOTOR"],
+                      verMas: [""],
+                      editar: [""],
+                    }}
+                    ruta="usuarios"
+                  />
                 }
               >
                 <ListItemIcon>
@@ -136,9 +153,14 @@ function VerReporte() {
                 divider
                 secondaryAction={
                   <BotonMenu
+                    etc={{ situr: reporte.cc.situr }}
                     id={reporte.cc._id}
+                    opciones={{
+                      verMas: [],
+                      editar: ["PROMOTOR"],
+                      verificar: ["PROMOTOR"],
+                    }}
                     ruta="ccs"
-                    situr={reporte.cc.situr}
                   />
                 }
               >

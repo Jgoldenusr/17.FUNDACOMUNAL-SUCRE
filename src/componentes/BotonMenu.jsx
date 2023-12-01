@@ -17,7 +17,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 
-function BotonMenu({ id, ruta, situr }) {
+function BotonMenu({ etc, id, opciones, ruta }) {
   const navegarHasta = useNavigate();
   const { miUsuario } = useContext(ContextoAutenticado);
   const [ancla, setAncla] = useState(null);
@@ -30,7 +30,7 @@ function BotonMenu({ id, ruta, situr }) {
   };
 
   const clickVerificar = function () {
-    navegarHasta(`../reportes/nuevo?situr=${situr}`, {
+    navegarHasta(`../reportes/nuevo?situr=${etc.situr}`, {
       replace: true,
     });
   };
@@ -50,37 +50,45 @@ function BotonMenu({ id, ruta, situr }) {
   };
 
   /* jshint ignore:start */
-  return (
-    <>
-      <IconButton color="inherit" onClick={manejarClickAbrir}>
-        <MoreVertIcon />
-      </IconButton>
-      <Menu anchorEl={ancla} open={abierto} onClose={manejarCierre}>
-        <MenuItem onClick={clickVerMas}>
-          <ListItemIcon>
-            <InsertChartOutlinedIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Ver mas</ListItemText>
-        </MenuItem>
-        {miUsuario.rol === "ADMINISTRADOR" && (
-          <MenuItem onClick={clickEditar}>
-            <ListItemIcon>
-              <SettingsOutlinedIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Editar</ListItemText>
-          </MenuItem>
-        )}
-        {miUsuario.rol === "ADMINISTRADOR" && situr && (
-          <MenuItem onClick={clickVerificar}>
-            <ListItemIcon>
-              <VerifiedRoundedIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Verificar</ListItemText>
-          </MenuItem>
-        )}
-      </Menu>
-    </>
-  );
+  if (opciones.ocultar && opciones.ocultar.includes(miUsuario.rol)) {
+    return "";
+  } else {
+    return (
+      <>
+        <IconButton color="inherit" onClick={manejarClickAbrir}>
+          <MoreVertIcon />
+        </IconButton>
+        <Menu anchorEl={ancla} open={abierto} onClose={manejarCierre}>
+          {opciones.verMas && !opciones.verMas.includes(miUsuario.rol) && (
+            <MenuItem onClick={clickVerMas}>
+              <ListItemIcon>
+                <InsertChartOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Ver mas</ListItemText>
+            </MenuItem>
+          )}
+
+          {opciones.editar && !opciones.editar.includes(miUsuario.rol) && (
+            <MenuItem onClick={clickEditar}>
+              <ListItemIcon>
+                <SettingsOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Editar</ListItemText>
+            </MenuItem>
+          )}
+          {opciones.verificar &&
+            !opciones.verificar.includes(miUsuario.rol) && (
+              <MenuItem onClick={clickVerificar}>
+                <ListItemIcon>
+                  <VerifiedRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Verificar</ListItemText>
+              </MenuItem>
+            )}
+        </Menu>
+      </>
+    );
+  }
   /* jshint ignore:end */
 }
 
