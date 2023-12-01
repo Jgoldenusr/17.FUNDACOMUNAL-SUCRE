@@ -430,92 +430,98 @@ function VerReporte() {
                       secondary={reporte.organosAdscritos}
                     />
                   </ListItem>
-                  <ListItem disablePadding divider>
-                    <Accordion square elevation={0} sx={{ width: "100%" }}>
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        sx={{ pr: 2, pl: 0 }}
-                      >
-                        <ListItem dense component="div">
-                          <ListItemIcon>
-                            <NewspaperRoundedIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="PRENSA" />
-                        </ListItem>
-                      </AccordionSummary>
-                      <AccordionDetails sx={{ p: 0 }}>
-                        <List dense disablePadding>
-                          <Divider />
-                          <ListItem divider>
-                            <ListItemIcon>
-                              <FeaturedPlayListRoundedIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary="NOTAS"
-                              secondary={reporte.prensa.notas}
-                            />
-                          </ListItem>
-                          <ListItem>
-                            <ListItemIcon>
-                              <TextsmsRoundedIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary="RESEÑAS"
-                              secondary={reporte.prensa.resenas}
-                            />
-                          </ListItem>
-                        </List>
-                      </AccordionDetails>
-                    </Accordion>
-                  </ListItem>
-                  <ListItem disablePadding divider>
-                    <Accordion square elevation={0} sx={{ width: "100%" }}>
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        sx={{ pr: 2, pl: 0 }}
-                      >
-                        <ListItem dense component="div">
-                          <ListItemIcon>
-                            <RssFeedRoundedIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="REDES" />
-                        </ListItem>
-                      </AccordionSummary>
-                      <AccordionDetails sx={{ p: 0 }}>
-                        {reporte.redes.map((info, i) => {
-                          let par = i % 2 === 0;
-                          return (
-                            <List
-                              dense
-                              disablePadding
-                              key={`RED-${i}`}
-                              sx={{ bgcolor: par ? "#f5f5f5" : "white" }}
-                            >
+                  {reporte.prensa &&
+                    reporte.prensa.notas &&
+                    reporte.prensa.resenas && (
+                      <ListItem disablePadding divider>
+                        <Accordion square elevation={0} sx={{ width: "100%" }}>
+                          <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            sx={{ pr: 2, pl: 0 }}
+                          >
+                            <ListItem dense component="div">
+                              <ListItemIcon>
+                                <NewspaperRoundedIcon />
+                              </ListItemIcon>
+                              <ListItemText primary="PRENSA" />
+                            </ListItem>
+                          </AccordionSummary>
+                          <AccordionDetails sx={{ p: 0 }}>
+                            <List dense disablePadding>
                               <Divider />
                               <ListItem divider>
                                 <ListItemIcon>
-                                  <AccountCircleRoundedIcon />
+                                  <FeaturedPlayListRoundedIcon />
                                 </ListItemIcon>
                                 <ListItemText
-                                  primary="CUENTA"
-                                  secondary={info.cuenta}
+                                  primary="NOTAS"
+                                  secondary={reporte.prensa.notas}
                                 />
                               </ListItem>
                               <ListItem>
                                 <ListItemIcon>
-                                  <FeedRoundedIcon />
+                                  <TextsmsRoundedIcon />
                                 </ListItemIcon>
                                 <ListItemText
-                                  primary="PUBLICACIONES"
-                                  secondary={info.publicaciones}
+                                  primary="RESEÑAS"
+                                  secondary={reporte.prensa.resenas}
                                 />
                               </ListItem>
                             </List>
-                          );
-                        })}
-                      </AccordionDetails>
-                    </Accordion>
-                  </ListItem>
+                          </AccordionDetails>
+                        </Accordion>
+                      </ListItem>
+                    )}
+                  {reporte.redes && reporte.redes.length > 0 && (
+                    <ListItem disablePadding divider>
+                      <Accordion square elevation={0} sx={{ width: "100%" }}>
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          sx={{ pr: 2, pl: 0 }}
+                        >
+                          <ListItem dense component="div">
+                            <ListItemIcon>
+                              <RssFeedRoundedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="REDES" />
+                          </ListItem>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ p: 0 }}>
+                          {reporte.redes.map((info, i) => {
+                            let par = i % 2 === 0;
+                            return (
+                              <List
+                                dense
+                                disablePadding
+                                key={`RED-${i}`}
+                                sx={{ bgcolor: par ? "#f5f5f5" : "white" }}
+                              >
+                                <Divider />
+                                <ListItem divider>
+                                  <ListItemIcon>
+                                    <AccountCircleRoundedIcon />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    primary="CUENTA"
+                                    secondary={info.cuenta}
+                                  />
+                                </ListItem>
+                                <ListItem>
+                                  <ListItemIcon>
+                                    <FeedRoundedIcon />
+                                  </ListItemIcon>
+                                  <ListItemText
+                                    primary="PUBLICACIONES"
+                                    secondary={info.publicaciones}
+                                  />
+                                </ListItem>
+                              </List>
+                            );
+                          })}
+                        </AccordionDetails>
+                      </Accordion>
+                    </ListItem>
+                  )}
                 </>
               ) : (
                 <>
