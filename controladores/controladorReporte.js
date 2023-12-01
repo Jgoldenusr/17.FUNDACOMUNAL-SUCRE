@@ -47,17 +47,11 @@ exports.buscarReporte = asyncHandler(async function (req, res, next) {
 });
 
 exports.estadisticas = asyncHandler(async function (req, res, next) {
-  const { desde, hasta, idusr, idcc, periodo } = req.query; //se extraen los parametros de la CONSULTA
+  const { usuario, cc, periodo } = req.query; //se extraen los parametros de la CONSULTA
   let parametros = {};
   //Se va agregando los parametros de la agregacion si aplican
-  if (desde && hasta) {
-    parametros.fecha = { $gte: new Date(desde), $lt: new Date(hasta) };
-  }
-  if (idusr) {
-    parametros.usuario = { $eq: new mongoose.Types.ObjectId(idusr) };
-  }
-  if (idcc) {
-    parametros.cc = { $eq: new mongoose.Types.ObjectId(idcc) };
+  if (cc) {
+    parametros.cc = { $eq: new mongoose.Types.ObjectId(cc) };
   }
   if (periodo) {
     const inicioPeriodo = DateTime.fromFormat(periodo, "y").toJSDate();
@@ -65,6 +59,9 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
       .endOf("year")
       .toJSDate();
     parametros.fecha = { $gte: inicioPeriodo, $lt: finPeriodo };
+  }
+  if (usuario) {
+    parametros.usuario = { $eq: new mongoose.Types.ObjectId(usuario) };
   }
   //se construye la consulta
   const conteoReportes = await Reporte.aggregate()
@@ -174,25 +171,41 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
 });
 
 exports.listarReportes = asyncHandler(async function (req, res, next) {
-  const { desde, hasta, idcc, idusr } = req.query; //se extraen los parametros de la consulta
+  const { cc, desde, dia, hasta, usuario, periodo, tipo } = req.query; //se extraen los parametros de la consulta
   let parametros = {};
 
+  if (cc) {
+    //Se agrega el filtro de tipo
+    parametros.cc = cc;
+  }
   if (desde && hasta) {
     //Se agrega el filtro de fecha
-    parametros.fecha = {
-      $gte: new Date(desde),
-      $lt: new Date(hasta),
-    };
+    const inicio = DateTime.fromISO(desde).startOf("day").toJSDate();
+    const fin = DateTime.fromISO(hasta).endOf("day").toJSDate();
+    parametros.fecha = { $gte: inicio, $lt: fin };
   }
-  if (idcc) {
-    //Se agrega el filtro de tipo
-    parametros.cc = idcc;
+  if (dia) {
+    //Se agrega el filtro de dia
+    const inicioDia = DateTime.fromISO(dia).startOf("day").toJSDate();
+    const finDia = DateTime.fromISO(dia).endOf("day").toJSDate();
+    parametros.fecha = { $gte: inicioDia, $lt: finDia };
   }
-  if (idusr) {
+  if (periodo) {
+    //Se agrega el filtro de periodo
+    const inicioPeriodo = DateTime.fromFormat(periodo, "y").toJSDate();
+    const finPeriodo = DateTime.fromFormat(periodo, "y")
+      .endOf("year")
+      .toJSDate();
+    parametros.fecha = { $gte: inicioPeriodo, $lt: finPeriodo };
+  }
+  if (usuario) {
     //Se agrega el filtro de usuario
-    parametros.usuario = idusr;
+    parametros.usuario = usuario;
   }
-
+  if (tipo) {
+    //Se agrega el filtro de tipo
+    parametros.tipo = tipo;
+  }
   //Se buscan todos los reportes segun los mas recientes
   const listaDeReportes = await Reporte.find(parametros)
     .populate("cc", "nombre")
