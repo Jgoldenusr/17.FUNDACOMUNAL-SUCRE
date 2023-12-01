@@ -51,7 +51,7 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
   let parametros = {};
   //Se va agregando los parametros de la agregacion si aplican
   if (desde && hasta) {
-    parametros.fecha = { $gte: new Date(desde), $lte: new Date(hasta) };
+    parametros.fecha = { $gte: new Date(desde), $lt: new Date(hasta) };
   }
   if (idusr) {
     parametros.usuario = { $eq: new mongoose.Types.ObjectId(idusr) };
@@ -64,7 +64,7 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
     const finPeriodo = DateTime.fromFormat(periodo, "y")
       .endOf("year")
       .toJSDate();
-    parametros.fecha = { $gte: inicioPeriodo, $lte: finPeriodo };
+    parametros.fecha = { $gte: inicioPeriodo, $lt: finPeriodo };
   }
   //se construye la consulta
   const conteoReportes = await Reporte.aggregate()
@@ -74,8 +74,99 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
         $dateToString: { format: "%Y-%m-%d", date: "$fecha" },
       },
     })
-    .group({ _id: "$fecha", reportes: { $count: {} } })
-    .project({ _id: 0, fecha: "$_id", reportes: 1 })
+    .group({
+      _id: "$fecha",
+      total: { $count: {} },
+      casoadmin: {
+        $sum: {
+          $cond: [
+            {
+              $eq: ["$tipo", "casoadmin"],
+            },
+            1,
+            0,
+          ],
+        },
+      },
+      comunicaciones: {
+        $sum: {
+          $cond: [
+            {
+              $eq: ["$tipo", "comunicaciones"],
+            },
+            1,
+            0,
+          ],
+        },
+      },
+      formacion: {
+        $sum: {
+          $cond: [
+            {
+              $eq: ["$tipo", "formacion"],
+            },
+            1,
+            0,
+          ],
+        },
+      },
+      fortalecimiento: {
+        $sum: {
+          $cond: [
+            {
+              $eq: ["$tipo", "fortalecimiento"],
+            },
+            1,
+            0,
+          ],
+        },
+      },
+      incidencias: {
+        $sum: {
+          $cond: [
+            {
+              $eq: ["$tipo", "incidencias"],
+            },
+            1,
+            0,
+          ],
+        },
+      },
+      interno: {
+        $sum: {
+          $cond: [
+            {
+              $eq: ["$tipo", "interno"],
+            },
+            1,
+            0,
+          ],
+        },
+      },
+      participacion: {
+        $sum: {
+          $cond: [
+            {
+              $eq: ["$tipo", "participacion"],
+            },
+            1,
+            0,
+          ],
+        },
+      },
+    })
+    .project({
+      _id: 0,
+      fecha: "$_id",
+      total: 1,
+      casoadmin: 1,
+      comunicaciones: 1,
+      formacion: 1,
+      fortalecimiento: 1,
+      incidencias: 1,
+      interno: 1,
+      participacion: 1,
+    })
     .sort({ fecha: 1 })
     .exec();
 
