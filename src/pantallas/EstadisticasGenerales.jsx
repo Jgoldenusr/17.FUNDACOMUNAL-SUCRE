@@ -11,7 +11,6 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Error from "../componentes/Error";
 import GraficoDeBarras from "../componentes/GraficoDeBarras";
-import GraficoDeCalor from "../componentes/GraficoDeCalor";
 import GraficoDePastel from "../componentes/GraficoDePastel";
 import Spinner from "../componentes/Spinner";
 import Tarjeta from "../componentes/Tarjeta";
@@ -20,9 +19,7 @@ function EstadisticasGenerales() {
   const { miUsuario } = useContext(ContextoAutenticado);
   const [cargando, setCargando] = useState(true);
   const [dataCCS, setDataCCS] = useState([]);
-  const [dataReportes, setDataReportes] = useState([]);
   const [error, setError] = useState(null);
-  const miTrimestre = Math.floor((new Date().getMonth() + 3) / 3);
 
   const dataCCSPorMunicipio = function () {
     return dataCCS.map((item) => {
@@ -50,15 +47,6 @@ function EstadisticasGenerales() {
     return totales;
   };
 
-  const reportesDiarios = function () {
-    return dataReportes.map((item) => {
-      return {
-        day: item.fecha,
-        value: item.reportes,
-      };
-    });
-  };
-
   const vigentesTotales = function () {
     let totales = [
       { id: "Vigentes", value: 0 },
@@ -75,8 +63,7 @@ function EstadisticasGenerales() {
 
   useEffect(() => {
     async function realizarPeticion() {
-      const url1 = "http://localhost:4000/ccs/estadisticas";
-      const url2 = "http://localhost:4000/reportes/estadisticas?periodo=2023";
+      const url = "http://localhost:4000/ccs/estadisticas";
       const peticion = {
         headers: new Headers({
           Authorization: `Bearer ${miUsuario.token}`,
@@ -85,19 +72,13 @@ function EstadisticasGenerales() {
       };
 
       try {
-        const [respuesta1, respuesta2] = await Promise.all([
-          fetch(url1, peticion),
-          fetch(url2, peticion),
-        ]);
-        if (respuesta1.ok && respuesta2.ok) {
-          const [recibido1, recibido2] = await Promise.all([
-            respuesta1.json(),
-            respuesta2.json(),
-          ]);
-          setDataCCS(recibido1);
-          setDataReportes(recibido2);
+        const respuesta = await fetch(url, peticion);
+        if (respuesta.ok) {
+          const recibido = await respuesta.json();
+          setDataCCS(recibido);
         } else {
-          throw new Error("Fallo la peticion al servidor");
+          const recibido = await respuesta.json();
+          setError(recibido.error);
         }
       } catch (errorPeticion) {
         setError(errorPeticion);
@@ -194,13 +175,6 @@ function EstadisticasGenerales() {
               colores={["#54aeff", "#ffc501", "#40c463", "#ff9800"]}
               data={dataCCSPorMunicipio()}
             />
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <Card elevation={3}>
-          <CardContent sx={{ aspectRatio: 3 / 1.5 }}>
-            <GraficoDeCalor data={reportesDiarios()} trimestre={miTrimestre} />
           </CardContent>
         </Card>
       </Grid>
