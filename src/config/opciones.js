@@ -361,6 +361,15 @@ const OpcionesCC = {
 };
 
 const OpcionesReporte = {
+  tipo: [
+    "casoadmin",
+    "comunicaciones",
+    "formacion",
+    "fortalecimiento",
+    "incidencias",
+    "interno",
+    "participacion",
+  ],
   participacion: {
     acompanamiento: [
       "ASAMBLEAS INFORMATIVAS PARA LA CONFORMACION DEL CONSEJO COMUNAL",

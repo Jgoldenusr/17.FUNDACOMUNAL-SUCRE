@@ -309,15 +309,19 @@ function FormularioReporte() {
                     onChange={cambiarTipoFormulario}
                     value={tipo}
                   >
-                    <MenuItem value="casoadmin">CASO ADMINISTRATIVO</MenuItem>
-                    <MenuItem value="comunicaciones">COMUNICACIONES</MenuItem>
-                    <MenuItem value="fortalecimiento">FORTALECIMIENTO</MenuItem>
-                    <MenuItem value="formacion">FORMACION</MenuItem>
-                    <MenuItem value="incidencias">INCIDENCIAS</MenuItem>
-                    <MenuItem value="participacion">PARTICIPACION</MenuItem>
-                    {miUsuario.rol === "ADMINISTRADOR" && (
-                      <MenuItem value="interno">INTERNO</MenuItem>
-                    )}
+                    {OpcionesReporte.tipo.map((tipo) => {
+                      if (
+                        tipo === "interno" &&
+                        miUsuario.rol !== "ADMINISTRADOR"
+                      ) {
+                        return "";
+                      } else
+                        return (
+                          <MenuItem key={`TIP-${tipo}`} value={tipo}>
+                            {tipo.toLocaleUpperCase()}
+                          </MenuItem>
+                        );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
