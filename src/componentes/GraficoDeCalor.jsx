@@ -30,15 +30,15 @@ const mostrarFechaConFormato = function (fecha) {
   }).toFormat("dd/MM/yyyy");
 };
 
-function GraficoDeCalor({ data, trimestre }) {
+function GraficoDeCalor({ data, filtro, id, trimestre }) {
   const navegarHasta = useNavigate();
 
   const fechas = diasDelTrimestre(trimestre).map((dia) => {
-    const fechaEncontrada = data.find((otraFecha) => dia === otraFecha.day);
+    const fechaEncontrada = data.find((otraFecha) => dia === otraFecha.fecha);
     if (fechaEncontrada) {
       return {
-        day: fechaEncontrada.day,
-        value: fechaEncontrada.value,
+        day: fechaEncontrada.fecha,
+        value: fechaEncontrada.total,
       };
     } else {
       return {
@@ -73,7 +73,7 @@ function GraficoDeCalor({ data, trimestre }) {
         monthLegend={(a, m, f) => `${meses[f.getMonth()]}`}
         weekdayLegendOffset={0}
         weekdayTicks={[]}
-        dayRadius={5}
+        dayRadius={3}
         daySpacing={5}
         onMouseEnter={(e) => {
           document.querySelector(`#RTG-${trimestre}`).style.cursor = "pointer";
@@ -82,12 +82,9 @@ function GraficoDeCalor({ data, trimestre }) {
           document.querySelector(`#RTG-${trimestre}`).style.cursor = "default";
         }}
         onClick={(d, e) => {
-          navegarHasta(
-            `/reportes?desde=${d.day}&hasta=${mostrarISODate(d.day, 1)}`,
-            {
-              replace: true,
-            }
-          );
+          navegarHasta(`/reportes?dia=${d.day}&${filtro}=${id}`, {
+            replace: true,
+          });
         }}
         tooltip={({ day, value, color }) => (
           <BasicTooltip

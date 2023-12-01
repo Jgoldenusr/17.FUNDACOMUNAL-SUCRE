@@ -34,10 +34,25 @@ function MostrarReportes() {
         mode: "cors",
       };
 
+      if (parametros.get("cc")) {
+        url += `cc=${parametros.get("cc")}&`;
+      }
       if (parametros.get("desde") && parametros.get("hasta")) {
         url += `desde=${parametros.get("desde")}&hasta=${parametros.get(
           "hasta"
         )}&`;
+      }
+      if (parametros.get("dia")) {
+        url += `dia=${parametros.get("dia")}&`;
+      }
+      if (parametros.get("periodo")) {
+        url += `periodo=${parametros.get("periodo")}&`;
+      }
+      if (parametros.get("tipo")) {
+        url += `tipo=${parametros.get("tipo")}&`;
+      }
+      if (parametros.get("usuario")) {
+        url += `usuario=${parametros.get("usuario")}`;
       }
 
       try {

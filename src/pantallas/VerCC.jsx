@@ -41,6 +41,8 @@ import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Error from "../componentes/Error";
+import ReportesTrimestrales from "../componentes/ReportesTrimestrales";
+import ReportesTotales from "../componentes/ReportesTotales";
 import Spinner from "../componentes/Spinner";
 import Tarjeta from "../componentes/Tarjeta";
 
@@ -49,11 +51,13 @@ function VerCC() {
   const { miUsuario } = useContext(ContextoAutenticado);
   const [cargando, setCargando] = useState(true);
   const [cc, setCC] = useState(null);
+  const [dataReportes, setDataReportes] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     async function realizarPeticion() {
-      const url = "http://localhost:4000/ccs/" + id;
+      const url1 = "http://localhost:4000/ccs/" + id;
+      const url2 = `http://localhost:4000/reportes/estadisticas?cc=${id}&periodo=${new Date().getFullYear()}`;
       const peticion = {
         headers: new Headers({
           Authorization: `Bearer ${miUsuario.token}`,
@@ -62,13 +66,19 @@ function VerCC() {
       };
 
       try {
-        const respuesta = await fetch(url, peticion);
-        if (respuesta.ok) {
-          const recibido = await respuesta.json();
-          setCC(recibido);
+        const [respuesta1, respuesta2] = await Promise.all([
+          fetch(url1, peticion),
+          fetch(url2, peticion),
+        ]);
+        if (respuesta1.ok && respuesta2.ok) {
+          const [recibido1, recibido2] = await Promise.all([
+            respuesta1.json(),
+            respuesta2.json(),
+          ]);
+          setCC(recibido1);
+          setDataReportes(recibido2);
         } else {
-          const recibido = await respuesta.json();
-          setError(recibido.error);
+          throw new Error("Fallo la peticion al servidor");
         }
       } catch (errorPeticion) {
         setError(errorPeticion);
@@ -86,7 +96,7 @@ function VerCC() {
     <Error error={error} />
   ) : (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={6} xl={12}>
         <Card elevation={6}>
           <CardHeader
             action={
@@ -224,49 +234,67 @@ function VerCC() {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={3}>
-        {cc.estaRenovado && !cc.estaRenovado.vencido ? (
-          <Tarjeta
-            color="#2e7d32"
-            Icono={EventAvailableRoundedIcon}
-            titulo={cc.estaRenovado.desde}
-            url={`/reportes/${cc.estaRenovado.idReporte}`}
-          >
-            <Typography variant="h6">Renovado</Typography>
-          </Tarjeta>
-        ) : (
-          <Tarjeta
-            color="#d32f2f"
-            Icono={EventBusyRoundedIcon}
-            titulo={cc.estaRenovado ? cc.estaRenovado.desde : "Sin fecha"}
-            url={
-              cc.estaRenovado ? `/reportes/${cc.estaRenovado.idReporte}` : ""
-            }
-          >
-            <Typography variant="h6">No renovado</Typography>
-          </Tarjeta>
-        )}
-      </Grid>
-      <Grid item xs={12} md={3}>
-        {cc.estaVigente && !cc.estaVigente.vencido ? (
-          <Tarjeta
-            color="#2e7d32"
-            Icono={VerifiedRoundedIcon}
-            titulo={cc.estaVigente.desde}
-            url={`/reportes/${cc.estaVigente.idReporte}`}
-          >
-            <Typography variant="h6">Vigente</Typography>
-          </Tarjeta>
-        ) : (
-          <Tarjeta
-            color="#d32f2f"
-            Icono={NewReleasesRoundedIcon}
-            titulo={cc.estaVigente ? cc.estaVigente.desde : "Sin fecha"}
-            url={cc.estaVigente ? `/reportes/${cc.estaVigente.idReporte}` : ""}
-          >
-            <Typography variant="h6">No vigente</Typography>
-          </Tarjeta>
-        )}
+      <Grid
+        container
+        item
+        xs={12}
+        md={6}
+        xl={12}
+        spacing={3}
+        alignContent={"flex-start"}
+      >
+        <Grid item xs={12}>
+          <ReportesTotales data={dataReportes} filtro="cc" id={cc._id} />
+        </Grid>
+        <Grid item xs={12}>
+          <ReportesTrimestrales data={dataReportes} filtro="cc" id={cc._id} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          {cc.estaRenovado && !cc.estaRenovado.vencido ? (
+            <Tarjeta
+              color="#2e7d32"
+              Icono={EventAvailableRoundedIcon}
+              titulo={cc.estaRenovado.desde}
+              url={`/reportes/${cc.estaRenovado.idReporte}`}
+            >
+              <Typography variant="h6">Renovado</Typography>
+            </Tarjeta>
+          ) : (
+            <Tarjeta
+              color="#d32f2f"
+              Icono={EventBusyRoundedIcon}
+              titulo={cc.estaRenovado ? cc.estaRenovado.desde : "Sin fecha"}
+              url={
+                cc.estaRenovado ? `/reportes/${cc.estaRenovado.idReporte}` : ""
+              }
+            >
+              <Typography variant="h6">No renovado</Typography>
+            </Tarjeta>
+          )}
+        </Grid>
+        <Grid item xs={12} md={6}>
+          {cc.estaVigente && !cc.estaVigente.vencido ? (
+            <Tarjeta
+              color="#2e7d32"
+              Icono={VerifiedRoundedIcon}
+              titulo={cc.estaVigente.desde}
+              url={`/reportes/${cc.estaVigente.idReporte}`}
+            >
+              <Typography variant="h6">Vigente</Typography>
+            </Tarjeta>
+          ) : (
+            <Tarjeta
+              color="#d32f2f"
+              Icono={NewReleasesRoundedIcon}
+              titulo={cc.estaVigente ? cc.estaVigente.desde : "Sin fecha"}
+              url={
+                cc.estaVigente ? `/reportes/${cc.estaVigente.idReporte}` : ""
+              }
+            >
+              <Typography variant="h6">No vigente</Typography>
+            </Tarjeta>
+          )}
+        </Grid>
       </Grid>
     </Grid>
   );

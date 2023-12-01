@@ -34,18 +34,22 @@ import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Error from "../componentes/Error";
+import ReportesTrimestrales from "../componentes/ReportesTrimestrales";
+import ReportesTotales from "../componentes/ReportesTotales";
 import Spinner from "../componentes/Spinner";
 
 function VerUsuario() {
   const { id } = useParams();
   const { miUsuario } = useContext(ContextoAutenticado);
   const [cargando, setCargando] = useState(true);
+  const [dataReportes, setDataReportes] = useState([]);
   const [error, setError] = useState(null);
   const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
     async function realizarPeticion() {
-      const url = "http://localhost:4000/usuarios/" + id;
+      const url1 = "http://localhost:4000/usuarios/" + id;
+      const url2 = `http://localhost:4000/reportes/estadisticas?usuario=${id}&periodo=${new Date().getFullYear()}`;
       const peticion = {
         headers: new Headers({
           Authorization: `Bearer ${miUsuario.token}`,
@@ -54,13 +58,19 @@ function VerUsuario() {
       };
 
       try {
-        const respuesta = await fetch(url, peticion);
-        if (respuesta.ok) {
-          const recibido = await respuesta.json();
-          setUsuario(recibido);
+        const [respuesta1, respuesta2] = await Promise.all([
+          fetch(url1, peticion),
+          fetch(url2, peticion),
+        ]);
+        if (respuesta1.ok && respuesta2.ok) {
+          const [recibido1, recibido2] = await Promise.all([
+            respuesta1.json(),
+            respuesta2.json(),
+          ]);
+          setUsuario(recibido1);
+          setDataReportes(recibido2);
         } else {
-          const recibido = await respuesta.json();
-          setError(recibido.error);
+          throw new Error("Fallo la peticion al servidor");
         }
       } catch (errorPeticion) {
         setError(errorPeticion);
@@ -77,8 +87,8 @@ function VerUsuario() {
   ) : error ? (
     <Error error={error} />
   ) : (
-    <Grid container>
-      <Grid item xs={12} md={5}>
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={6} xl={12}>
         <Card elevation={6}>
           <CardHeader
             action={
@@ -214,6 +224,30 @@ function VerUsuario() {
             </List>
           </CardContent>
         </Card>
+      </Grid>
+      <Grid
+        container
+        item
+        xs={12}
+        md={6}
+        xl={12}
+        spacing={3}
+        alignContent={"flex-start"}
+      >
+        <Grid item xs={12}>
+          <ReportesTotales
+            data={dataReportes}
+            filtro="usuario"
+            id={usuario._id}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <ReportesTrimestrales
+            data={dataReportes}
+            filtro="usuario"
+            id={usuario._id}
+          />
+        </Grid>
       </Grid>
     </Grid>
   );
