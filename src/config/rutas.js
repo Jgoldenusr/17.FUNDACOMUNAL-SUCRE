@@ -1,6 +1,5 @@
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import AddLocationAltRoundedIcon from "@mui/icons-material/AddLocationAltRounded";
-import ContentPasteSearchRoundedIcon from "@mui/icons-material/ContentPasteSearchRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
@@ -14,12 +13,6 @@ const rutasGET = [
     ruta: "/",
     nombre: "Inicio",
     icono: HomeRoundedIcon,
-    listaNegra: [],
-  },
-  {
-    ruta: "/",
-    nombre: "Buscar",
-    icono: ContentPasteSearchRoundedIcon,
     listaNegra: [],
   },
   {
