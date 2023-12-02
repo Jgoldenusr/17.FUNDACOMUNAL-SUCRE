@@ -58,7 +58,7 @@ const rutasPOST = [
 
 const rutasETC = [
   {
-    ruta: "/",
+    ruta: "/cuenta",
     nombre: "Mi cuenta",
     icono: AccountCircleRoundedIcon,
     listaNegra: [],

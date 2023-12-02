@@ -62,6 +62,10 @@ function VerReporte() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [reporte, setReporte] = useState(null);
+  const excepcionPromotor =
+    miUsuario.rol !== "ADMINISTRADOR" &&
+    reporte &&
+    miUsuario.id === reporte.usuario._id;
 
   useEffect(() => {
     async function realizarPeticion() {
@@ -105,8 +109,8 @@ function VerReporte() {
               <BotonMenu
                 id={reporte._id}
                 opciones={{
-                  ocultar: ["PROMOTOR"],
-                  editar: [""],
+                  ocultar: excepcionPromotor ? [] : ["PROMOTOR"],
+                  editar: excepcionPromotor ? [] : ["PROMOTOR"],
                 }}
                 ruta="reportes"
               />

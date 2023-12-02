@@ -38,6 +38,9 @@ function MostrarReportes() {
   const [parametros, setParametros] = useSearchParams();
   const [reportes, setReportes] = useState(null);
   const [saltarConsulta, setSaltarConsulta] = useState(false);
+  const excepcionPromotor =
+    miUsuario.rol !== "ADMINISTRADOR" &&
+    miUsuario.id === parametros.get("usuario");
 
   const agregarParametrosURL = function (url) {
     let nuevaURL = url;
@@ -246,7 +249,7 @@ function MostrarReportes() {
                       id={reporte._id}
                       opciones={{
                         verMas: [],
-                        editar: ["PROMOTOR"],
+                        editar: excepcionPromotor ? [] : ["PROMOTOR"],
                       }}
                     />
                   }

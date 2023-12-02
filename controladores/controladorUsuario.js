@@ -252,6 +252,21 @@ exports.listarUsuarios = asyncHandler(async function (req, res, next) {
   }
 });
 
+exports.miCuenta = asyncHandler(async function (req, res, next) {
+  //Se busca el usuario por la id del token
+  const usr = await Usuario.findById(req.user._id, "-clave").exec();
+  //La funcion anterior no falla cuando no encuentra nada, sino que regresa null
+  if (usr === null) {
+    //Si el usuario es nulo
+    return res
+      .status(404)
+      .json({ error: { message: "No se encontro el usuario" } });
+  } else {
+    //Si no es nulo
+    return res.status(200).json(usr);
+  }
+});
+
 exports.registrarUsuario =
   //Se validan los campos
   [

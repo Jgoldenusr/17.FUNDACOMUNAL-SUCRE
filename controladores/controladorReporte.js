@@ -61,7 +61,12 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
     parametros.fecha = { $gte: inicioPeriodo, $lt: finPeriodo };
   }
   if (usuario) {
-    parametros.usuario = { $eq: new mongoose.Types.ObjectId(usuario) };
+    //Si el que las pide no es admin, le mandamos las suyas
+    if (req.user.rol === "ADMINISTRADOR") {
+      parametros.usuario = { $eq: new mongoose.Types.ObjectId(usuario) };
+    } else {
+      parametros.usuario = { $eq: new mongoose.Types.ObjectId(req.user._id) };
+    }
   }
   //se construye la consulta
   const conteoReportes = await Reporte.aggregate()

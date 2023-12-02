@@ -7,6 +7,8 @@ enrutador.post("/ingresar", controladorUsuario.iniciarSesion);
 
 enrutador.use(permisos.autenticarToken);
 
+enrutador.get("/cuenta", controladorUsuario.miCuenta);
+
 enrutador.use(permisos.autorizarRol);
 
 enrutador.delete("/:id", controladorUsuario.borrarUsuario);
