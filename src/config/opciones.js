@@ -370,6 +370,16 @@ const OpcionesReporte = {
     "interno",
     "participacion",
   ],
+  tipoFiltro: [
+    "casoadmin",
+    "comunicaciones",
+    "formacion",
+    "fortalecimiento",
+    "incidencias",
+    "interno",
+    "participacion",
+    "renovacion",
+  ],
   participacion: {
     acompanamiento: [
       "ASAMBLEAS INFORMATIVAS PARA LA CONFORMACION DEL CONSEJO COMUNAL",

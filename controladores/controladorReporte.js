@@ -204,7 +204,13 @@ exports.listarReportes = asyncHandler(async function (req, res, next) {
   }
   if (tipo) {
     //Se agrega el filtro de tipo
-    parametros.tipo = tipo;
+    if (tipo === "renovacion") {
+      //Para buscar renovaciones
+      parametros.tipo = "participacion";
+      parametros.acompanamiento = "PROCESO DE ELECCIONES DE VOCERIAS";
+    } else {
+      parametros.tipo = tipo;
+    }
   }
 
   //Se buscan todos los reportes segun los mas recientes
