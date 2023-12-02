@@ -260,24 +260,48 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
 });
 
 exports.listarCC = asyncHandler(async function (req, res, next) {
-  const { municipios, renovados, norenovados, vigentes, novigentes } =
-    req.query; //se extraen los parametros de la consulta
+  const fechaDeAhora = new Date();
+  const { comuna, estatus, municipios, parroquias, situr, tipo } = req.query; //se extraen los parametros de la consulta
   let parametros = {};
 
+  if (comuna) {
+    parametros.comuna = comuna;
+  }
+  if (estatus === "norenovado") {
+    parametros.$or = [
+      { renovado: { $exists: false } },
+      { "renovado.hasta": { $lt: fechaDeAhora } },
+    ];
+  }
+  if (estatus === "novigente") {
+    parametros.$or = [
+      { vigente: { $exists: false } },
+      { "vigente.hasta": { $lt: fechaDeAhora } },
+    ];
+  }
+  if (estatus === "renovado") {
+    parametros.$and = [
+      { renovado: { $exists: true } },
+      { "renovado.hasta": { $gt: fechaDeAhora } },
+    ];
+  }
+  if (estatus === "vigente") {
+    parametros.$and = [
+      { vigente: { $exists: true } },
+      { "vigente.hasta": { $gt: fechaDeAhora } },
+    ];
+  }
   if (municipios) {
     parametros.municipios = municipios;
   }
-  if (renovados) {
-    parametros.estaRenovado = { $eq: true };
+  if (parroquias) {
+    parametros.parroquias = parroquias;
   }
-  if (norenovados) {
-    parametros.estaRenovado = { $eq: false };
+  if (situr) {
+    parametros.situr = situr;
   }
-  if (vigentes) {
-    parametros.estaVigente = { $eq: true };
-  }
-  if (novigentes) {
-    parametros.estaVigente = { $eq: false };
+  if (tipo) {
+    parametros.tipo = tipo;
   }
   //Busca todos los CC segun los parametros y los regresa en un arreglo
   const listaCC = await CC.find(parametros).exec();
@@ -287,7 +311,9 @@ exports.listarCC = asyncHandler(async function (req, res, next) {
     return res.status(200).json(listaCC);
   } else {
     //Si el arreglo esta vacio
-    return res.status(1002).json({ error: { message: "Lista vacia" } });
+    return res
+      .status(502)
+      .json({ error: { message: "No se encontro ningun resultado" } });
   }
 });
 

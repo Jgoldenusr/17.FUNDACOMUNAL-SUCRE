@@ -21,7 +21,6 @@ import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 
 function ReportesTotales({ data, filtro, id }) {
-  console.log(data);
   /* jshint ignore:start */
   return (
     <Card elevation={6}>

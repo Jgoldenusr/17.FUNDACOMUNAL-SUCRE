@@ -28,6 +28,7 @@ const OpcionesCC = {
     "VALDEZ",
   ],
   parroquias: {
+    ["VACIO"]: [],
     ["ANDRES ELOY BLANCO"]: ["MARIÑO", "ROMULO GALLEGOS"],
     ["ANDRES MATA"]: ["SAN JOSE DE AEROCUAR", "TAVERA ACOSTA"],
     ["ARISMENDI"]: [
@@ -91,6 +92,7 @@ const OpcionesCC = {
     ["VALDEZ"]: ["CRISTOBAL COLON", "BIDEAU", "PUNTA DE PIEDRAS", "GUIRIA"],
   },
   comuna: {
+    ["VACIO"]: [],
     ["ALTAGRACIA"]: [
       "AGROECOLOGICA Y MINERA GRAN MARISCAL DE AYACUCHO",
       "SOCIOPRODUCTIVA Y DE SERVICIO ALIANZA REVOLUCIONARIA 2 Y 3",

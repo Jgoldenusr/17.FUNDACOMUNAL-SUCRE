@@ -215,17 +215,40 @@ exports.iniciarSesion = asyncHandler(async function (req, res, next) {
 });
 
 exports.listarUsuarios = asyncHandler(async function (req, res, next) {
-  //Se buscan todos los usuarios y se meten en un arreglo
-  const listaDeUsuarios = await Usuario.find({
-    _id: { $ne: req.user._id },
-  }).exec();
+  const { apellido, cedula, nombre, rol, usuario } = req.query; //se extraen los parametros de la consulta
+  let parametros = { _id: { $ne: req.user._id } };
+
+  if (apellido) {
+    //Se agrega el filtro de apellido
+    parametros.apellido = apellido;
+  }
+  if (cedula) {
+    //Se agrega el filtro de cedula
+    parametros.cedula = cedula;
+  }
+  if (nombre) {
+    //Se agrega el filtro de nombre
+    parametros.nombre = nombre;
+  }
+  if (rol) {
+    //Se agrega el filtro de rol
+    parametros.rol = rol;
+  }
+  if (usuario) {
+    //Se agrega el filtro de usuario
+    parametros.usuario = usuario;
+  }
+  //Se buscan segun los parametros
+  const listaDeUsuarios = await Usuario.find(parametros, "-clave").exec();
 
   if (listaDeUsuarios.length > 0) {
     //Si el arreglo no esta vacio
     return res.status(200).json(listaDeUsuarios);
   } else {
     //Si el arreglo esta vacio
-    return res.status(502).json({ error: { message: "Lista vacia" } });
+    return res
+      .status(502)
+      .json({ error: { message: "No se encontro ningun resultado" } });
   }
 });
 

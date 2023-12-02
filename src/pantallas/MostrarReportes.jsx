@@ -2,11 +2,23 @@
 import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 //Componentes MUI
-import { Avatar, Card, CardHeader, Grid, Typography } from "@mui/material";
+import {
+  Avatar,
+  Card,
+  CardContent,
+  CardHeader,
+  FilledInput,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 //Componentes endogenos
+import AlertaError from "../componentes/AlertaError";
 import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
-import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
 //Iconos MUI
 import AssignmentLateRoundedIcon from "@mui/icons-material/AssignmentLateRounded";
@@ -16,6 +28,8 @@ import FmdBadRoundedIcon from "@mui/icons-material/FmdBadRounded";
 import RssFeedRoundedIcon from "@mui/icons-material/RssFeedRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
+//Otros
+import { OpcionesReporte } from "../config/opciones";
 
 function MostrarReportes() {
   const { miUsuario } = useContext(ContextoAutenticado);
@@ -23,37 +37,98 @@ function MostrarReportes() {
   const [error, setError] = useState(null);
   const [parametros, setParametros] = useSearchParams();
   const [reportes, setReportes] = useState(null);
+  const [saltarConsulta, setSaltarConsulta] = useState(false);
+
+  const agregarParametrosURL = function (url) {
+    let nuevaURL = url;
+
+    if (parametros.get("cc")) {
+      nuevaURL += `cc=${parametros.get("cc")}&`;
+    }
+    if (parametros.get("desde") && parametros.get("hasta")) {
+      nuevaURL += `desde=${parametros.get("desde")}&hasta=${parametros.get(
+        "hasta"
+      )}&`;
+    }
+    if (parametros.get("dia")) {
+      nuevaURL += `dia=${parametros.get("dia")}&`;
+    }
+    if (parametros.get("periodo")) {
+      nuevaURL += `periodo=${parametros.get("periodo")}&`;
+    }
+    if (parametros.get("tipo")) {
+      nuevaURL += `tipo=${parametros.get("tipo")}&`;
+    }
+    if (parametros.get("usuario")) {
+      nuevaURL += `usuario=${parametros.get("usuario")}`;
+    }
+
+    return nuevaURL;
+  };
+
+  const actualizarParametros = function (campo, noConsultar) {
+    return function (evento) {
+      evento.preventDefault();
+      let valorCampo = evento.target.value;
+
+      //Logica de algunos campos
+      if (campo === "dia") {
+        parametros.delete("desde");
+        parametros.delete("hasta");
+        parametros.delete("periodo");
+      }
+      if (campo === "desde" || campo === "hasta") {
+        parametros.delete("dia");
+        parametros.delete("periodo");
+      }
+      if (campo === "periodo") {
+        parametros.delete("desde");
+        parametros.delete("hasta");
+        parametros.delete("dia");
+      }
+      if (!valorCampo && campo === "desde") {
+        parametros.delete("hasta");
+      }
+      if (!valorCampo && campo === "hasta") {
+        parametros.delete("desde");
+      }
+      if (noConsultar) {
+        setSaltarConsulta(true);
+      }
+      parametros.set(campo, valorCampo);
+
+      let miConsulta = {};
+      for (let [clave, valor] of parametros) {
+        if (clave && valor) miConsulta[clave] = valor;
+      }
+      setParametros(miConsulta);
+    };
+  };
+
+  const obtenerPeriodos = function () {
+    let periodos = [];
+    let fechaActual = new Date();
+    let anioActual = fechaActual.getFullYear();
+
+    for (let i = 0; i < 10; i++) {
+      periodos.push(anioActual - i);
+    }
+
+    return periodos;
+  };
 
   useEffect(() => {
     async function realizarPeticion() {
-      let url = "http://localhost:4000/reportes?";
+      setCargando(true);
+      setError(null);
+
+      const url = agregarParametrosURL("http://localhost:4000/reportes?");
       const peticion = {
         headers: new Headers({
           Authorization: `Bearer ${miUsuario.token}`,
         }),
         mode: "cors",
       };
-
-      if (parametros.get("cc")) {
-        url += `cc=${parametros.get("cc")}&`;
-      }
-      if (parametros.get("desde") && parametros.get("hasta")) {
-        url += `desde=${parametros.get("desde")}&hasta=${parametros.get(
-          "hasta"
-        )}&`;
-      }
-      if (parametros.get("dia")) {
-        url += `dia=${parametros.get("dia")}&`;
-      }
-      if (parametros.get("periodo")) {
-        url += `periodo=${parametros.get("periodo")}&`;
-      }
-      if (parametros.get("tipo")) {
-        url += `tipo=${parametros.get("tipo")}&`;
-      }
-      if (parametros.get("usuario")) {
-        url += `usuario=${parametros.get("usuario")}`;
-      }
 
       try {
         const respuesta = await fetch(url, peticion);
@@ -63,24 +138,103 @@ function MostrarReportes() {
         } else {
           const recibido = await respuesta.json();
           setError(recibido.error);
+          setReportes(null);
         }
       } catch (errorPeticion) {
         setError(errorPeticion);
+        setReportes(null);
       } finally {
         setCargando(false);
       }
     }
-    realizarPeticion();
+    if (!saltarConsulta) realizarPeticion();
+    else setSaltarConsulta(false);
   }, [parametros]);
 
   /* jshint ignore:start */
-  return cargando ? (
-    <Spinner />
-  ) : error ? (
-    <Error error={error} />
-  ) : (
+  return (
     <Grid container spacing={3}>
-      {reportes &&
+      <Grid item xs={12}>
+        <Card component="form">
+          <CardHeader sx={{ bgcolor: "#1976d2", color: "white", p: 1 }} />
+          <CardContent sx={{ "&:last-child": { pb: 2 } }}>
+            <Grid container spacing={2}>
+              <Grid item xs={2.5}>
+                <FormControl fullWidth size="small" variant="filled">
+                  <InputLabel>Tipo</InputLabel>
+                  <Select
+                    onChange={actualizarParametros("tipo")}
+                    value={parametros.get("tipo") || ""}
+                  >
+                    <MenuItem value="">CUALQUIERA</MenuItem>
+                    {OpcionesReporte.tipoFiltro.map((tipo) => {
+                      return (
+                        <MenuItem key={`TIP-${tipo}`} value={tipo}>
+                          {tipo.toLocaleUpperCase()}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={2.5}>
+                <FormControl fullWidth size="small" variant="filled">
+                  <InputLabel shrink>Dia especifico</InputLabel>
+                  <FilledInput
+                    onChange={actualizarParametros("dia")}
+                    type="date"
+                    value={parametros.get("dia") || ""}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={2}>
+                <FormControl fullWidth size="small" variant="filled">
+                  <InputLabel>Periodo</InputLabel>
+                  <Select
+                    onChange={actualizarParametros("periodo")}
+                    value={parametros.get("periodo") || ""}
+                  >
+                    <MenuItem value="">NINGUNO</MenuItem>
+                    {obtenerPeriodos().map((periodo) => {
+                      return (
+                        <MenuItem key={`PER-${periodo}`} value={periodo}>
+                          {periodo}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={2.5}>
+                <FormControl fullWidth size="small" variant="filled">
+                  <InputLabel shrink>Desde</InputLabel>
+                  <FilledInput
+                    onChange={actualizarParametros("desde", true)}
+                    type="date"
+                    value={parametros.get("desde") || ""}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={2.5}>
+                <FormControl fullWidth size="small" variant="filled">
+                  <InputLabel shrink>Hasta</InputLabel>
+                  <FilledInput
+                    onChange={actualizarParametros("hasta", true)}
+                    type="date"
+                    value={parametros.get("hasta") || ""}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+      </Grid>
+      {cargando ? (
+        <Spinner />
+      ) : error ? (
+        <AlertaError error={error} />
+      ) : (
+        reportes &&
         reportes.map((reporte) => {
           return (
             <Grid item xs={12} md={6} xl={4} key={reporte._id}>
@@ -156,7 +310,8 @@ function MostrarReportes() {
               </Card>
             </Grid>
           );
-        })}
+        })
+      )}
     </Grid>
   );
   /* jshint ignore:end */
