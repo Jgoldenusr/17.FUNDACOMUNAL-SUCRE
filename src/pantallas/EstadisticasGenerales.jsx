@@ -111,7 +111,7 @@ function EstadisticasGenerales() {
           color="#03a9f4"
           Icono={AssignmentTurnedInRoundedIcon}
           titulo="Renovadas"
-          url="/ccs?renovados=true"
+          url="/ccs?estatus=renovado"
         >
           {Math.round(
             (dataCCS.reduce((acc, item) => acc + item.renovados, 0) /
@@ -126,7 +126,7 @@ function EstadisticasGenerales() {
           color="#4caf50"
           Icono={EventAvailableRoundedIcon}
           titulo="Vigentes"
-          url="/ccs?vigentes=true"
+          url="/ccs?estatus=vigente"
         >
           {Math.round(
             (dataCCS.reduce((acc, item) => acc + item.vigentes, 0) /
