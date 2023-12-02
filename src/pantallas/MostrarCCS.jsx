@@ -269,10 +269,12 @@ function MostrarCCS() {
                       etc={{ situr: cc.situr }}
                       id={cc._id}
                       opciones={{
-                        verMas: [],
                         editar: ["PROMOTOR"],
+                        reportes: [],
                         verificar: ["PROMOTOR"],
+                        verMas: [],
                       }}
+                      ruta="ccs"
                     />
                   }
                   avatar={

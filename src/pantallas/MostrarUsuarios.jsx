@@ -206,10 +206,12 @@ function MostrarUsuarios() {
                     <BotonMenu
                       id={usuario._id}
                       opciones={{
+                        editar: [],
                         ocultar: ["PROMOTOR"],
-                        verMas: [""],
-                        editar: [""],
+                        reportes: [],
+                        verMas: [],
                       }}
+                      ruta="usuarios"
                     />
                   }
                   avatar={

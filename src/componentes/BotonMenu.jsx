@@ -14,6 +14,7 @@ import ContextoAutenticado from "./ContextoAutenticado";
 //Iconos MUI
 import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PlagiarismRoundedIcon from "@mui/icons-material/PlagiarismRounded";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 
@@ -26,6 +27,12 @@ function BotonMenu({ etc, id, opciones, ruta }) {
   const clickEditar = function () {
     navegarHasta(`${ruta ? `../${ruta}/` : ""}${id}/editar`, {
       replace: ruta ? true : false,
+    });
+  };
+
+  const clickReportes = function () {
+    navegarHasta(`../reportes?${ruta.slice(0, -1)}=${id}`, {
+      replace: true,
     });
   };
 
@@ -67,13 +74,20 @@ function BotonMenu({ etc, id, opciones, ruta }) {
               <ListItemText>Ver mas</ListItemText>
             </MenuItem>
           )}
-
           {opciones.editar && !opciones.editar.includes(miUsuario.rol) && (
             <MenuItem onClick={clickEditar}>
               <ListItemIcon>
                 <SettingsOutlinedIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>Editar</ListItemText>
+            </MenuItem>
+          )}
+          {opciones.reportes && !opciones.reportes.includes(miUsuario.rol) && (
+            <MenuItem onClick={clickReportes}>
+              <ListItemIcon>
+                <PlagiarismRoundedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Reportes</ListItemText>
             </MenuItem>
           )}
           {opciones.verificar &&

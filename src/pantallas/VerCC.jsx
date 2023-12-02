@@ -104,9 +104,9 @@ function VerCC() {
                 etc={{ situr: cc.situr }}
                 id={cc._id}
                 opciones={{
-                  ocultar: ["PROMOTOR"],
-                  editar: [""],
-                  verificar: [""],
+                  editar: ["PROMOTOR"],
+                  reportes: [],
+                  verificar: ["PROMOTOR"],
                 }}
                 ruta="ccs"
               />
