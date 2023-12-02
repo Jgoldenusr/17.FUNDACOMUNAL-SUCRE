@@ -25,19 +25,19 @@ function GraficoDePastel({ data, colores, nombre }) {
           let url = `/ccs?`;
           switch (n.id) {
             case "No renovados": {
-              url += "norenovados=true";
+              url += "estatus=norenovado";
               break;
             }
             case "No vigentes": {
-              url += "novigentes=true";
+              url += "estatus=novigente";
               break;
             }
             case "Renovados": {
-              url += "renovados=true";
+              url += "estatus=renovado";
               break;
             }
             case "Vigentes": {
-              url += "vigentes=true";
+              url += "estatus=vigente";
               break;
             }
           }
