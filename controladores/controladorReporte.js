@@ -206,6 +206,7 @@ exports.listarReportes = asyncHandler(async function (req, res, next) {
     //Se agrega el filtro de tipo
     parametros.tipo = tipo;
   }
+
   //Se buscan todos los reportes segun los mas recientes
   const listaDeReportes = await Reporte.find(parametros)
     .populate("cc", "nombre")
@@ -218,7 +219,9 @@ exports.listarReportes = asyncHandler(async function (req, res, next) {
     return res.status(200).json(listaDeReportes);
   } else {
     //El arreglo esta vacio
-    return res.status(502).json({ error: { message: "Lista vacia" } });
+    return res
+      .status(502)
+      .json({ error: { message: "No se encontro ningun resultado" } });
   }
 });
 
