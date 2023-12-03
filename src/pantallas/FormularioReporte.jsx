@@ -67,11 +67,21 @@ function FormularioReporte() {
         const respuesta = await fetch(url, peticion);
         if (respuesta.ok) {
           const recibido = await respuesta.json();
-          setFormulario({
-            ...recibido,
-            situr: recibido.tipo === "interno" ? recibido.cc.situr : undefined,
-          });
-          setTipo(recibido.tipo);
+          if (
+            miUsuario !== "ADMINISTRADOR" &&
+            miUsuario.id !== recibido.usuario._id
+          ) {
+            setError({
+              message: "No tienes permisos para editar este reporte",
+            });
+          } else {
+            setFormulario({
+              ...recibido,
+              situr:
+                recibido.tipo === "interno" ? recibido.cc.situr : undefined,
+            });
+            setTipo(recibido.tipo);
+          }
         } else {
           const recibido = await respuesta.json();
           setError(recibido.error);
