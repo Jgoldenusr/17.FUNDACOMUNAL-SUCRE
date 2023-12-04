@@ -13,16 +13,22 @@ const EsquemaCC = new Esquema(
   {
     comuna: { type: String, default: "" },
     estados: { type: String, required: true },
-    renovado: new Esquema({
-      desde: { type: Date },
-      hasta: { type: Date },
-      idReporte: { type: Esquema.Types.ObjectId },
-    }),
-    vigente: new Esquema({
-      desde: { type: Date },
-      hasta: { type: Date },
-      idReporte: { type: Esquema.Types.ObjectId },
-    }),
+    renovado: new Esquema(
+      {
+        desde: { type: Date, required: true },
+        hasta: { type: Date, required: true },
+        idReporte: { type: Esquema.Types.ObjectId, required: true },
+      },
+      { _id: false }
+    ),
+    vigente: new Esquema(
+      {
+        desde: { type: Date, required: true },
+        hasta: { type: Date, required: true },
+        idReporte: { type: Esquema.Types.ObjectId, required: true },
+      },
+      { _id: false }
+    ),
     localidad: { type: String, required: true },
     municipios: { type: String, required: true },
     nombre: { type: String, required: true },
