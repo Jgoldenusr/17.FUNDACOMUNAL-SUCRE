@@ -32,10 +32,10 @@ const limite = limitador({
 const app = express();
 
 //Middleware o procesos auxiliares
-app.use(logger("dev")); //Para registrar en consola las peticiones HTTP
 //app.use(helmet()); //Asegura la API verificando las cabeceras HTTP
 app.use(cors()); //Ajusta el CORS, de momento está ajustado para que todos puedan hacer peticiones
 //app.use(limite); //Limita las peticiones de una ip dada
+app.use(logger("dev")); //Para registrar en consola las peticiones HTTP
 app.use(express.json()); //Reconoce datosDelJWT enviados en .json y los asigna a req.body convenientemente
 //app.use(compresion()); //Para comprimir las respuestas
 passport.use(autenticarConJWT);
