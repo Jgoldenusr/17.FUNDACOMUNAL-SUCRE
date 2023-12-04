@@ -68,7 +68,7 @@ function FormularioReporte() {
         if (respuesta.ok) {
           const recibido = await respuesta.json();
           if (
-            miUsuario !== "ADMINISTRADOR" &&
+            miUsuario.rol !== "ADMINISTRADOR" &&
             miUsuario.id !== recibido.usuario._id
           ) {
             setError({

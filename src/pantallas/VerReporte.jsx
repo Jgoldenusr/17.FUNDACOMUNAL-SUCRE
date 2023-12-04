@@ -515,34 +515,36 @@ function VerReporte() {
                         <AccordionDetails sx={{ p: 0 }}>
                           {reporte.redes.map((info, i) => {
                             let par = i % 2 === 0;
-                            return (
-                              <List
-                                dense
-                                disablePadding
-                                key={`RED-${i}`}
-                                sx={{ bgcolor: par ? "#f5f5f5" : "white" }}
-                              >
-                                <Divider />
-                                <ListItem divider>
-                                  <ListItemIcon>
-                                    <AccountCircleRoundedIcon />
-                                  </ListItemIcon>
-                                  <ListItemText
-                                    primary="CUENTA"
-                                    secondary={info.cuenta}
-                                  />
-                                </ListItem>
-                                <ListItem>
-                                  <ListItemIcon>
-                                    <FeedRoundedIcon />
-                                  </ListItemIcon>
-                                  <ListItemText
-                                    primary="PUBLICACIONES"
-                                    secondary={info.publicaciones}
-                                  />
-                                </ListItem>
-                              </List>
-                            );
+                            if (info.cuenta && info.publicaciones) {
+                              return (
+                                <List
+                                  dense
+                                  disablePadding
+                                  key={`RED-${i}`}
+                                  sx={{ bgcolor: par ? "#f5f5f5" : "white" }}
+                                >
+                                  <Divider />
+                                  <ListItem divider>
+                                    <ListItemIcon>
+                                      <AccountCircleRoundedIcon />
+                                    </ListItemIcon>
+                                    <ListItemText
+                                      primary="CUENTA"
+                                      secondary={info.cuenta}
+                                    />
+                                  </ListItem>
+                                  <ListItem>
+                                    <ListItemIcon>
+                                      <FeedRoundedIcon />
+                                    </ListItemIcon>
+                                    <ListItemText
+                                      primary="PUBLICACIONES"
+                                      secondary={info.publicaciones}
+                                    />
+                                  </ListItem>
+                                </List>
+                              );
+                            }
                           })}
                         </AccordionDetails>
                       </Accordion>
