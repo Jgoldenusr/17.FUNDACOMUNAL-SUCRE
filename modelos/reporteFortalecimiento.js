@@ -10,8 +10,8 @@ const ReporteFortalecimiento = new Esquema({
   tipoOSP: { type: String, required: true },
   proyectoCFG: new Esquema(
     {
-      etapa: { type: String },
-      tipo: { type: String },
+      etapa: { type: String, required: true },
+      tipo: { type: String, required: true },
     },
     { _id: false }
   ),
