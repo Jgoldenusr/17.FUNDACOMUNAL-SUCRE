@@ -104,7 +104,7 @@ function FormularioIngreso() {
             left: "0",
             height: "100%",
             width: "100%",
-            backgroundColor: "rgba(39, 157, 245, 0.5)",
+            backgroundColor: "rgba(25,118,210, 0.3)",
           }}
         />
       </Grid>
