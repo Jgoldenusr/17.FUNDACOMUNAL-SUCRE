@@ -96,6 +96,7 @@ function VerUsuario() {
               <BotonMenu
                 id={usuario._id}
                 opciones={{
+                  editar: ["PROMOTOR"],
                   reportes: [],
                 }}
                 ruta="usuarios"
