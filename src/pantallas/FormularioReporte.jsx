@@ -1052,7 +1052,13 @@ function FormularioReporte() {
                   </Grid>
                 </>
               )}
-              <Grid container item xs={12} md={6} spacing={3}>
+              <Grid
+                container
+                item
+                xs={12}
+                md={tipo === "participacion" || tipo === "interno" ? 12 : 6}
+                spacing={3}
+              >
                 <Grid item xs={id ? 6 : 12}>
                   <Button
                     fullWidth
