@@ -70,7 +70,9 @@ function VerUsuario() {
           setUsuario(recibido1);
           setDataReportes(recibido2);
         } else {
-          throw new Error("Fallo la peticion al servidor");
+          setError({
+            message: "Error procesando su solicitud",
+          });
         }
       } catch (errorPeticion) {
         setError(errorPeticion);
