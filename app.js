@@ -53,9 +53,10 @@ app.use(function (req, res, next) {
 //Maneja los errores
 app.use(function (err, req, res, next) {
   //El stack se envia solo en desarrollo
+  /* prettier-ignore */
   return res.status(err.status || 500).json({
     error: {
-      message: err.message,
+      message: req.app.get("env") === "development" ? err.message : "Error interno del servidor",
       stack: req.app.get("env") === "development" ? err.stack : "",
     },
   });
