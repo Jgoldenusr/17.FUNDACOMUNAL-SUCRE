@@ -339,6 +339,10 @@ function FormularioReporte() {
                 <FormControl fullWidth variant="filled">
                   <InputLabel shrink>Fecha del reporte</InputLabel>
                   <FilledInput
+                    inputProps={{
+                      min: "2020-01-01",
+                      max: new Date().toISOString().substring(0, 10),
+                    }}
                     onChange={actualizarFormulario("fecha")}
                     type="date"
                     value={formulario.fecha.substring(0, 10)}
@@ -1044,6 +1048,10 @@ function FormularioReporte() {
                         Fecha de entrada en vigencia
                       </InputLabel>
                       <FilledInput
+                        inputProps={{
+                          min: "2020-01-01",
+                          max: new Date().toISOString().substring(0, 10),
+                        }}
                         onChange={actualizarFormulario("fechaRegistro")}
                         type="date"
                         value={formulario.fechaRegistro.substring(0, 10)}
