@@ -237,7 +237,11 @@ exports.listarReportes = asyncHandler(async function (req, res, next) {
 });
 
 exports.nuevoParticipacion = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -327,7 +331,11 @@ exports.nuevoParticipacion = [
 ];
 
 exports.actualizarParticipacion = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -431,7 +439,11 @@ exports.actualizarParticipacion = [
 ];
 
 exports.nuevoFormacion = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -537,7 +549,11 @@ exports.nuevoFormacion = [
 ];
 
 exports.actualizarFormacion = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -644,7 +660,11 @@ exports.actualizarFormacion = [
 ];
 
 exports.nuevoFortalecimiento = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -781,7 +801,11 @@ exports.nuevoFortalecimiento = [
 ];
 
 exports.actualizarFortalecimiento = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -919,7 +943,11 @@ exports.actualizarFortalecimiento = [
 ];
 
 exports.nuevoIncidencias = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -983,7 +1011,11 @@ exports.nuevoIncidencias = [
 ];
 
 exports.actualizarIncidencias = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -1048,7 +1080,11 @@ exports.actualizarIncidencias = [
 ];
 
 exports.nuevoCasoAdmin = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -1110,7 +1146,11 @@ exports.nuevoCasoAdmin = [
 ];
 
 exports.actualizarCasoAdmin = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -1173,7 +1213,11 @@ exports.actualizarCasoAdmin = [
 ];
 
 exports.nuevoComunicaciones = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -1256,7 +1300,11 @@ exports.nuevoComunicaciones = [
 ];
 
 exports.actualizarComunicaciones = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -1340,8 +1388,16 @@ exports.actualizarComunicaciones = [
 ];
 
 exports.nuevoInterno = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("fechaRegistro").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
+  body("fechaRegistro")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("situr").trim().custom(Validar.siturExiste),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
@@ -1386,8 +1442,16 @@ exports.nuevoInterno = [
 ];
 
 exports.actualizarInterno = [
-  body("fecha").optional({ values: "falsy" }).isISO8601().toDate(),
-  body("fechaRegistro").optional({ values: "falsy" }).isISO8601().toDate(),
+  body("fecha")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
+  body("fechaRegistro")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .custom(Validar.fechaValida)
+    .toDate(),
   body("situr").trim().custom(Validar.siturExiste),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {

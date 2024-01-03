@@ -1,5 +1,6 @@
 const CC = require("../modelos/cc");
 const Usuario = require("../modelos/usuario");
+const { DateTime } = require("luxon");
 
 exports.cedulaExiste = async function (valorCedula) {
   const cedulaExiste = await Usuario.findOne({ cedula: valorCedula });
@@ -50,6 +51,19 @@ exports.emailNuevo = async function (valorEmail) {
   } else {
     return true;
   }
+};
+
+exports.fechaValida = function (valorFecha) {
+  const miFecha = DateTime.fromISO(valorFecha);
+  const fechaMinima = DateTime.fromISO("2020-01-01").startOf("day");
+  const fechaMaxima = DateTime.now().endOf("day");
+  if (miFecha < fechaMinima) {
+    throw new Error("La fecha no puede ser anterior al 2020");
+  }
+  if (miFecha > fechaMaxima) {
+    throw new Error("La fecha excede el limite permitido");
+  }
+  return true;
 };
 
 exports.nombreUsuarioNoRepetido = async function (valorUsuario, { req }) {

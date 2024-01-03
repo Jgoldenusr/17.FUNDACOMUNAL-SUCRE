@@ -339,6 +339,7 @@ function FormularioReporte() {
                 <FormControl fullWidth variant="filled">
                   <InputLabel shrink>Fecha del reporte</InputLabel>
                   <FilledInput
+                    error={esInvalido("fecha")}
                     inputProps={{
                       min: "2020-01-01",
                       max: new Date().toISOString().substring(0, 10),
@@ -347,6 +348,9 @@ function FormularioReporte() {
                     type="date"
                     value={formulario.fecha.substring(0, 10)}
                   />
+                  <FormHelperText error>
+                    {mostrarMsjInvalido("fecha")}
+                  </FormHelperText>
                 </FormControl>
               </Grid>
               {tipo === "participacion" ? (
@@ -1048,6 +1052,7 @@ function FormularioReporte() {
                         Fecha de entrada en vigencia
                       </InputLabel>
                       <FilledInput
+                        error={esInvalido("fechaRegistro")}
                         inputProps={{
                           min: "2020-01-01",
                           max: new Date().toISOString().substring(0, 10),
@@ -1056,6 +1061,9 @@ function FormularioReporte() {
                         type="date"
                         value={formulario.fechaRegistro.substring(0, 10)}
                       />
+                      <FormHelperText error>
+                        {mostrarMsjInvalido("fechaRegistro")}
+                      </FormHelperText>
                     </FormControl>
                   </Grid>
                 </>
