@@ -13,17 +13,6 @@ const diasDelTrimestre = function (trimestre) {
   return dias;
 };
 
-const mostrarISODate = function (fecha, plus) {
-  const miFecha = DateTime.fromISO(fecha, {
-    setZone: true,
-  });
-  if (plus) {
-    return miFecha.plus({ days: plus }).toISODate();
-  } else {
-    return miFecha.toISODate();
-  }
-};
-
 const mostrarFechaConFormato = function (fecha) {
   return DateTime.fromISO(fecha, {
     setZone: true,
