@@ -33,7 +33,7 @@ exports.cedulaNueva = async function (valorCedula) {
 };
 
 exports.cedulaTienePatronValido = function (valorCedula) {
-  const expresionRegular = new RegExp(`^[V|E|J|P]-[0-9]{5,9}$`);
+  const expresionRegular = new RegExp(`^[V|E]-[0-9]{5,9}$`);
 
   if (expresionRegular.test(valorCedula)) {
     return true;
