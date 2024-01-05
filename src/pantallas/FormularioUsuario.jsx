@@ -203,7 +203,7 @@ function FormularioUsuario() {
                   <InputLabel>Cedula</InputLabel>
                   <FilledInput
                     error={esInvalido("cedula")}
-                    inputProps={{ maxLength: 9 }}
+                    inputProps={{ maxLength: 11 }}
                     onChange={actualizarFormulario("cedula")}
                     value={formulario.cedula}
                   />

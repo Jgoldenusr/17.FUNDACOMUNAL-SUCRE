@@ -347,7 +347,7 @@ function FormularioCC() {
                   <InputLabel>Cedula del usuario asociado</InputLabel>
                   <FilledInput
                     error={esInvalido("usuario.cedula")}
-                    inputProps={{ maxLength: 9 }}
+                    inputProps={{ maxLength: 11 }}
                     onChange={actualizarFormulario("cedula", "usuario")}
                     value={formulario.usuario.cedula}
                   />
