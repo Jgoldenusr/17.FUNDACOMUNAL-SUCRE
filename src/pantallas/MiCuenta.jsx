@@ -121,10 +121,7 @@ function VerUsuario() {
                 <ListItemIcon>
                   <BadgeRoundedIcon />
                 </ListItemIcon>
-                <ListItemText
-                  primary="CEDULA"
-                  secondary={`V-${usuario.cedula}`}
-                />
+                <ListItemText primary="CEDULA" secondary={usuario.cedula} />
               </ListItem>
               <ListItem divider>
                 <ListItemIcon>

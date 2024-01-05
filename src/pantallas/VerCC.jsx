@@ -224,7 +224,7 @@ function VerCC() {
                           </ListItemIcon>
                           <ListItemText
                             primary="CEDULA"
-                            secondary={`V-${cc.usuario.cedula}`}
+                            secondary={cc.usuario.cedula}
                           />
                         </ListItem>
                       </List>

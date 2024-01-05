@@ -243,7 +243,7 @@ function MostrarUsuarios() {
                       textOverflow={"ellipsis"}
                       variant="body2"
                     >
-                      {`V-${usuario.cedula}`}
+                      {usuario.cedula}
                     </Typography>
                   }
                   title={
