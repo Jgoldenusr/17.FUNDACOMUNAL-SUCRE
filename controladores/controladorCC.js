@@ -9,11 +9,7 @@ exports.actualizarCC =
   [
     body("usuario.cedula")
       .trim()
-      .isInt({ min: 1 })
-      .withMessage("La cedula debe ser un numero entero mayor que 0")
-      .bail()
-      .isInt({ max: 999999999 })
-      .withMessage("La cedula excede la cifra maxima")
+      .custom(Validar.cedulaTienePatronValido)
       .bail()
       .custom(Validar.cedulaExiste),
     body("comuna")
@@ -322,11 +318,7 @@ exports.nuevoCC =
   [
     body("usuario.cedula")
       .trim()
-      .isInt({ min: 1 })
-      .withMessage("La cedula debe ser un numero entero mayor que 0")
-      .bail()
-      .isInt({ max: 999999999 })
-      .withMessage("La cedula excede la cifra maxima")
+      .custom(Validar.cedulaTienePatronValido)
       .bail()
       .custom(Validar.cedulaExiste),
     body("comuna")
