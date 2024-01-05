@@ -10,7 +10,7 @@ const opcionesDeEsquema = {
 const EsquemaUsuario = new Esquema(
   {
     apellido: { type: String, required: true },
-    cedula: { type: Number, required: true, unique: true },
+    cedula: { type: String, required: true, unique: true },
     clave: { type: String, required: true },
     email: { type: String, required: true },
     nombre: { type: String, required: true },

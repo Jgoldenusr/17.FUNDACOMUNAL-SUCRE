@@ -38,7 +38,7 @@ const EsquemaCC = new Esquema(
     tipo: { type: String, required: true },
     usuario: new Esquema({
       apellido: { type: String },
-      cedula: { type: Number },
+      cedula: { type: String },
       _id: { type: Esquema.Types.ObjectId },
       nombre: { type: String },
       rol: { type: String },
