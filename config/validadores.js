@@ -32,6 +32,16 @@ exports.cedulaNueva = async function (valorCedula) {
   }
 };
 
+exports.cedulaTienePatronValido = function (valorCedula) {
+  const expresionRegular = new RegExp(`^[V|E|J|P][0-9]{5,9}$`);
+
+  if (expresionRegular.test(valorCedula)) {
+    return true;
+  } else {
+    throw new Error(`La cedula tiene un patron invalido`);
+  }
+};
+
 exports.emailNoRepetido = async function (valorEmail, { req }) {
   const emailExiste = await Usuario.findOne({
     email: valorEmail,
