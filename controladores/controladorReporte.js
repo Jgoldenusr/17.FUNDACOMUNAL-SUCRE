@@ -237,11 +237,7 @@ exports.listarReportes = asyncHandler(async function (req, res, next) {
 });
 
 exports.nuevoParticipacion = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -293,11 +289,10 @@ exports.nuevoParticipacion = [
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
     const errores = validationResult(req);
-    const miFecha = req.body.fecha || new Date();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: miFecha,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
       acompanamiento: req.body.acompanamiento,
@@ -321,7 +316,10 @@ exports.nuevoParticipacion = [
       if (req.body.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS") {
         //Si lo hace, entonces se busca y se actualiza
         const miCC = await CC.findById(req.body.cc._id).exec();
-        miCC.estaRenovado = { desde: miFecha, idReporte: reporteFinal._id };
+        miCC.estaRenovado = {
+          desde: req.body.fecha,
+          idReporte: reporteFinal._id,
+        };
         await miCC.save();
       }
       //Exito
@@ -331,11 +329,7 @@ exports.nuevoParticipacion = [
 ];
 
 exports.actualizarParticipacion = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -387,11 +381,10 @@ exports.actualizarParticipacion = [
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
     const errores = validationResult(req);
-    const miFecha = req.body.fecha || new Date();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: miFecha,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       acompanamiento: req.body.acompanamiento,
       familiasBeneficiadas: req.body.familiasBeneficiadas,
@@ -415,7 +408,10 @@ exports.actualizarParticipacion = [
       if (req.body.acompanamiento === "PROCESO DE ELECCIONES DE VOCERIAS") {
         //Si lo hace, entonces se busca y se actualiza
         const miCC = await CC.findById(req.body.cc._id).exec();
-        miCC.estaRenovado = { desde: miFecha, idReporte: reporteViejo._id };
+        miCC.estaRenovado = {
+          desde: req.body.fecha,
+          idReporte: reporteViejo._id,
+        };
         await miCC.save();
       }
       if (
@@ -439,11 +435,7 @@ exports.actualizarParticipacion = [
 ];
 
 exports.nuevoFormacion = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -516,7 +508,7 @@ exports.nuevoFormacion = [
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: req.body.fecha || undefined,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
       beneficiados: {
@@ -549,11 +541,7 @@ exports.nuevoFormacion = [
 ];
 
 exports.actualizarFormacion = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -626,7 +614,7 @@ exports.actualizarFormacion = [
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: req.body.fecha || undefined,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       beneficiados: {
         hombres: req.body.beneficiados.hombres,
@@ -660,11 +648,7 @@ exports.actualizarFormacion = [
 ];
 
 exports.nuevoFortalecimiento = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -768,7 +752,7 @@ exports.nuevoFortalecimiento = [
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: req.body.fecha || undefined,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
       acompanamiento: req.body.acompanamiento,
@@ -801,11 +785,7 @@ exports.nuevoFortalecimiento = [
 ];
 
 exports.actualizarFortalecimiento = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -909,7 +889,7 @@ exports.actualizarFortalecimiento = [
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: req.body.fecha || undefined,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       acompanamiento: req.body.acompanamiento,
       nombreOSP: req.body.nombreOSP,
@@ -943,11 +923,7 @@ exports.actualizarFortalecimiento = [
 ];
 
 exports.nuevoIncidencias = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -984,7 +960,7 @@ exports.nuevoIncidencias = [
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: req.body.fecha || undefined,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
       areaSustantiva: req.body.areaSustantiva,
@@ -1011,11 +987,7 @@ exports.nuevoIncidencias = [
 ];
 
 exports.actualizarIncidencias = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -1052,7 +1024,7 @@ exports.actualizarIncidencias = [
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: req.body.fecha || undefined,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       areaSustantiva: req.body.areaSustantiva,
       tipoIncidencia: req.body.tipoIncidencia,
@@ -1080,11 +1052,7 @@ exports.actualizarIncidencias = [
 ];
 
 exports.nuevoCasoAdmin = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -1119,7 +1087,7 @@ exports.nuevoCasoAdmin = [
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: req.body.fecha || undefined,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
       caso: req.body.caso,
@@ -1146,11 +1114,7 @@ exports.nuevoCasoAdmin = [
 ];
 
 exports.actualizarCasoAdmin = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -1185,7 +1149,7 @@ exports.actualizarCasoAdmin = [
     //Esto es un objeto, mas no una instancia del modelo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: req.body.fecha || undefined,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       caso: req.body.caso,
       tipoCaso: req.body.tipoCaso,
@@ -1213,11 +1177,7 @@ exports.actualizarCasoAdmin = [
 ];
 
 exports.nuevoComunicaciones = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -1270,7 +1230,7 @@ exports.nuevoComunicaciones = [
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: req.body.fecha || undefined,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       usuario: req.user._id,
       prensa: {
@@ -1300,11 +1260,7 @@ exports.nuevoComunicaciones = [
 ];
 
 exports.actualizarComunicaciones = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
   body("cc._id")
     .trim()
     .isMongoId()
@@ -1357,7 +1313,7 @@ exports.actualizarComunicaciones = [
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
       cc: req.body.cc._id,
-      fecha: req.body.fecha || undefined,
+      fecha: req.body.fecha,
       organosAdscritos: req.body.organosAdscritos,
       prensa: {
         notas: req.body.prensa.notas,
@@ -1388,26 +1344,17 @@ exports.actualizarComunicaciones = [
 ];
 
 exports.nuevoInterno = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
-  body("fechaRegistro")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
+  body("fechaRegistro").customSanitizer(Validar.sanearFecha),
   body("situr").trim().custom(Validar.siturExiste),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
     const errores = validationResult(req);
-    const miFechaRegistro = req.body.fechaRegistro || new Date();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      fecha: req.body.fecha || undefined,
-      fechaRegistro: miFechaRegistro,
+      fecha: req.body.fecha,
+      fechaRegistro: req.body.fechaRegistro,
       situr: req.body.situr,
       usuario: req.user._id,
     };
@@ -1431,7 +1378,7 @@ exports.nuevoInterno = [
       await reporteFinal.save();
       //Modificamos el campo de vigencia del cc
       miCC.estaVigente = {
-        desde: miFechaRegistro,
+        desde: req.body.fechaRegistro,
         idReporte: reporteFinal._id,
       };
       await miCC.save();
@@ -1442,26 +1389,17 @@ exports.nuevoInterno = [
 ];
 
 exports.actualizarInterno = [
-  body("fecha")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
-  body("fechaRegistro")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .custom(Validar.fechaValida)
-    .toDate(),
+  body("fecha").customSanitizer(Validar.sanearFecha),
+  body("fechaRegistro").customSanitizer(Validar.sanearFecha),
   body("situr").trim().custom(Validar.siturExiste),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
     const errores = validationResult(req);
-    const miFechaRegistro = req.body.fechaRegistro || new Date();
     //Se crea un objeto del nuevo reporte
     const nuevoReporte = {
-      fecha: req.body.fecha || undefined,
-      fechaRegistro: miFechaRegistro,
+      fecha: req.body.fecha,
+      fechaRegistro: req.body.fechaRegistro,
       situr: req.body.situr,
     };
 
@@ -1480,7 +1418,7 @@ exports.actualizarInterno = [
       const miCC = await CC.findOne({ situr: req.body.situr }).exec();
       //Modificamos el campo de vigencia del cc
       miCC.estaVigente = {
-        desde: miFechaRegistro,
+        desde: req.body.fechaRegistro,
         idReporte: reporteViejo._id,
       };
       await miCC.save();

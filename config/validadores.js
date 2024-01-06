@@ -76,6 +76,16 @@ exports.fechaValida = function (valorFecha) {
   return true;
 };
 
+exports.sanearFecha = function (valorFecha) {
+  let miFecha = DateTime.fromISO(valorFecha);
+
+  if (!miFecha.isValid) {
+    miFecha = DateTime.fromJSDate(new Date());
+  }
+
+  return miFecha.toISODate();
+};
+
 exports.nombreUsuarioNoRepetido = async function (valorUsuario, { req }) {
   const usuarioExiste = await Usuario.findOne({
     usuario: valorUsuario,

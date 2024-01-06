@@ -21,7 +21,7 @@ const EsquemaReporte = new Esquema(
 );
 
 EsquemaReporte.virtual("fechaConFormato").get(function () {
-  return DateTime.fromJSDate(this.fecha).toFormat("dd/MM/yyyy");
+  return DateTime.fromJSDate(this.fecha).setZone("utc").toFormat("dd/MM/yyyy");
 });
 
 module.exports = mongoose.model("REPORTE", EsquemaReporte);
