@@ -10,7 +10,9 @@ const ReporteInterno = new Esquema({
 });
 
 ReporteInterno.virtual("fechaRegistroConFormato").get(function () {
-  return DateTime.fromJSDate(this.fechaRegistro).toFormat("dd/MM/yyyy");
+  return DateTime.fromJSDate(this.fechaRegistro)
+    .setZone("UTC")
+    .toFormat("dd/MM/yyyy");
 });
 
 module.exports = ReporteBase.discriminator("interno", ReporteInterno);

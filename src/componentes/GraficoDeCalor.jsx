@@ -14,9 +14,7 @@ const diasDelTrimestre = function (trimestre) {
 };
 
 const mostrarFechaConFormato = function (fecha) {
-  return DateTime.fromISO(fecha, {
-    setZone: true,
-  }).toFormat("dd/MM/yyyy");
+  return DateTime.fromISO(fecha).toFormat("dd/MM/yyyy");
 };
 
 function GraficoDeCalor({ data, filtro, id, trimestre }) {

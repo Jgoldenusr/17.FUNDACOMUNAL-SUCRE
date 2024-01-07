@@ -83,7 +83,7 @@ exports.sanearFecha = function (valorFecha) {
     miFecha = DateTime.fromJSDate(new Date());
   }
 
-  return miFecha.toISODate();
+  return miFecha.setZone("UTC").toISODate();
 };
 
 exports.nombreUsuarioNoRepetido = async function (valorUsuario, { req }) {

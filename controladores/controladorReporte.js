@@ -185,14 +185,14 @@ exports.listarReportes = asyncHandler(async function (req, res, next) {
   }
   if (desde && hasta) {
     //Se agrega el filtro de fecha
-    const inicio = DateTime.fromISO(desde).startOf("day").toJSDate();
-    const fin = DateTime.fromISO(hasta).endOf("day").toJSDate();
-    parametros.fecha = { $gte: inicio, $lt: fin };
+    const inicio = DateTime.fromISO(desde).toISODate();
+    const final = DateTime.fromISO(hasta).plus({ days: 1 }).toISODate();
+    parametros.fecha = { $gte: inicio, $lt: final };
   }
   if (dia) {
     //Se agrega el filtro de dia
-    const inicioDia = DateTime.fromISO(dia).startOf("day").toJSDate();
-    const finDia = DateTime.fromISO(dia).endOf("day").toJSDate();
+    const inicioDia = DateTime.fromISO(dia).toISODate();
+    const finDia = DateTime.fromISO(dia).plus({ days: 1 }).toISODate();
     parametros.fecha = { $gte: inicioDia, $lt: finDia };
   }
   if (periodo) {
