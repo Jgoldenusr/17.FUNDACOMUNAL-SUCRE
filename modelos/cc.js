@@ -80,7 +80,7 @@ EsquemaCC.virtual("estaRenovado")
   .set(function (valor) {
     let estaRenovado = {};
     estaRenovado.desde = valor.desde;
-    estaRenovado.hasta = DateTime.fromJSDate(valor.desde)
+    estaRenovado.hasta = DateTime.fromISO(valor.desde)
       .plus({
         years: 3,
       })
@@ -114,7 +114,7 @@ EsquemaCC.virtual("estaVigente")
   .set(function (valor) {
     let estaVigente = {};
     estaVigente.desde = valor.desde;
-    estaVigente.hasta = DateTime.fromJSDate(valor.desde)
+    estaVigente.hasta = DateTime.fromISO(valor.desde)
       .plus({
         years: 3,
       })
