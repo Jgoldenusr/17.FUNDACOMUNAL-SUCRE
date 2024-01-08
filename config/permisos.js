@@ -5,6 +5,7 @@ const asyncHandler = require("express-async-handler");
 const listaNegraPromotor = [
   { ruta: "/ccs", metodos: ["DELETE", "POST", "PUT"] },
   { ruta: "/reportes", metodos: [""] },
+  { ruta: "/reportes/interno", metodos: ["POST", "PUT"] },
   { ruta: "/usuarios", metodos: ["DELETE", "GET", "POST", "PUT"] },
 ];
 
@@ -17,7 +18,8 @@ exports.autorizarRol = function (req, res, next) {
 
   if (req.user.rol === "PROMOTOR") {
     listaNegraPromotor.forEach((permiso) => {
-      if (permiso.ruta === req.baseUrl) {
+      let expresionRegular = new RegExp(permiso.ruta);
+      if (expresionRegular.test(req.originalUrl)) {
         if (permiso.metodos.includes(req.method)) {
           valido = false;
         }
