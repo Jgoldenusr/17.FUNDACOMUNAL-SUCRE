@@ -69,7 +69,7 @@ function MostrarReportes() {
     return nuevaURL;
   };
 
-  const actualizarParametros = function (campo, noConsultar) {
+  const actualizarParametros = function (campo) {
     return function (evento) {
       evento.preventDefault();
       let valorCampo = evento.target.value;
@@ -95,7 +95,10 @@ function MostrarReportes() {
       if (!valorCampo && campo === "hasta") {
         parametros.delete("desde");
       }
-      if (noConsultar) {
+      if (
+        (!parametros.get("desde") && campo === "hasta") ||
+        (!parametros.get("hasta") && campo === "desde")
+      ) {
         setSaltarConsulta(true);
       }
       parametros.set(campo, valorCampo);
@@ -212,7 +215,7 @@ function MostrarReportes() {
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel shrink>Desde</InputLabel>
                   <FilledInput
-                    onChange={actualizarParametros("desde", true)}
+                    onChange={actualizarParametros("desde")}
                     type="date"
                     value={parametros.get("desde") || ""}
                   />
@@ -222,7 +225,7 @@ function MostrarReportes() {
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel shrink>Hasta</InputLabel>
                   <FilledInput
-                    onChange={actualizarParametros("hasta", true)}
+                    onChange={actualizarParametros("hasta")}
                     type="date"
                     value={parametros.get("hasta") || ""}
                   />
