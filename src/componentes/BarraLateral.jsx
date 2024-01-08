@@ -25,7 +25,7 @@ function BarraLateral({ movil, mostrarBarra }) {
   const redirigirHasta = function (ruta) {
     return function () {
       if (movil) mostrarBarra();
-      navegarHasta(ruta, { replace: true });
+      navegarHasta(ruta);
     };
   };
 

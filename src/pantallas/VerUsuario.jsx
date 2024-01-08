@@ -179,7 +179,6 @@ function VerUsuario() {
                           className="no-deco"
                           key={cc._id}
                           to={`/ccs/${cc._id}`}
-                          replace={true}
                         >
                           <List
                             dense

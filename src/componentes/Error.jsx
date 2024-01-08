@@ -42,7 +42,7 @@ function Error({ error }) {
             <Button
               endIcon={<UndoRoundedIcon />}
               onClick={() => {
-                navegarHasta("/", { replace: true });
+                navegarHasta("/");
               }}
               sx={{ m: 1 }}
               variant="contained"

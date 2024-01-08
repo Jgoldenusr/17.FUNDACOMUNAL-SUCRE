@@ -6,7 +6,7 @@ import { Card, CardContent, Typography } from "@mui/material";
 function Tarjeta({ color, children, Icono, titulo, url }) {
   /* jshint ignore:start */
   return (
-    <Link replace className="no-deco" to={url}>
+    <Link className="no-deco" to={url}>
       <Card elevation={6} sx={{ display: "flex" }}>
         <CardContent sx={{ flex: "1 0 auto", textAlign: "center" }}>
           <Typography component="div" variant="h5">

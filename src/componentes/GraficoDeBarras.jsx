@@ -81,9 +81,7 @@ function GraficoDeBarras({ data, colores }) {
               break;
             }
           }
-          navegarHasta(url, {
-            replace: true,
-          });
+          navegarHasta(url);
         }}
         legends={[
           {

@@ -7,9 +7,9 @@ function Bloquear({ roles }) {
 
   /* jshint ignore:start */
   if (!miUsuario) {
-    return <Navigate to="/ingresar" replace />;
+    return <Navigate to="/ingresar" />;
   } else if (roles.includes(miUsuario.rol)) {
-    return <Navigate to="/error" replace />;
+    return <Navigate to="/error" />;
   } else {
     return <Outlet />;
   }

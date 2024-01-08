@@ -69,9 +69,7 @@ function GraficoDeCalor({ data, filtro, id, trimestre }) {
           document.querySelector(`#RTG-${trimestre}`).style.cursor = "default";
         }}
         onClick={(d, e) => {
-          navegarHasta(`/reportes?dia=${d.day}&${filtro}=${id}`, {
-            replace: true,
-          });
+          navegarHasta(`/reportes?dia=${d.day}&${filtro}=${id}`);
         }}
         tooltip={({ day, value, color }) => (
           <BasicTooltip

@@ -41,9 +41,7 @@ function GraficoDePastel({ data, colores, nombre }) {
               break;
             }
           }
-          navegarHasta(url, {
-            replace: true,
-          });
+          navegarHasta(url);
         }}
         legends={[
           {

@@ -196,7 +196,6 @@ function VerCC() {
                     <Link
                       className="no-deco"
                       to={`/usuarios/${cc.usuario._id}`}
-                      replace={true}
                     >
                       <List dense disablePadding>
                         <Divider />

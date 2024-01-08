@@ -48,7 +48,6 @@ function ReportesTotales({ data, filtro, id }) {
           >
             <Link
               to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=casoadmin`}
-              replace
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <AssignmentLateRoundedIcon />
@@ -66,7 +65,6 @@ function ReportesTotales({ data, filtro, id }) {
           >
             <Link
               to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=comunicaciones`}
-              replace
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <RssFeedRoundedIcon />
@@ -84,7 +82,6 @@ function ReportesTotales({ data, filtro, id }) {
           >
             <Link
               to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=fortalecimiento`}
-              replace
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <ConstructionRoundedIcon />
@@ -99,7 +96,6 @@ function ReportesTotales({ data, filtro, id }) {
           >
             <Link
               to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=formacion`}
-              replace
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <SchoolRoundedIcon />
@@ -114,7 +110,6 @@ function ReportesTotales({ data, filtro, id }) {
           >
             <Link
               to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=incidencias`}
-              replace
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <FmdBadRoundedIcon />
@@ -132,7 +127,6 @@ function ReportesTotales({ data, filtro, id }) {
           >
             <Link
               to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=participacion`}
-              replace
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <Diversity3RoundedIcon />
@@ -147,7 +141,6 @@ function ReportesTotales({ data, filtro, id }) {
           >
             <Link
               to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=interno`}
-              replace
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <VerifiedRoundedIcon />

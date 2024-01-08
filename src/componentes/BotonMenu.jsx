@@ -25,27 +25,19 @@ function BotonMenu({ etc, id, opciones, ruta }) {
   const abierto = Boolean(ancla);
 
   const clickEditar = function () {
-    navegarHasta(`${ruta ? `../${ruta}/` : ""}${id}/editar`, {
-      replace: ruta ? true : false,
-    });
+    navegarHasta(`${ruta ? `../${ruta}/` : ""}${id}/editar`);
   };
 
   const clickReportes = function () {
-    navegarHasta(`../reportes?${ruta.slice(0, -1)}=${id}`, {
-      replace: true,
-    });
+    navegarHasta(`../reportes?${ruta.slice(0, -1)}=${id}`);
   };
 
   const clickVerificar = function () {
-    navegarHasta(`../reportes/nuevo?situr=${etc.situr}`, {
-      replace: true,
-    });
+    navegarHasta(`../reportes/nuevo?situr=${etc.situr}`);
   };
 
   const clickVerMas = function () {
-    navegarHasta(`${ruta ? `../${ruta}/` : ""}${id}`, {
-      replace: ruta ? true : false,
-    });
+    navegarHasta(`${ruta ? `../${ruta}/` : ""}${id}`);
   };
 
   const manejarClickAbrir = (evento) => {
