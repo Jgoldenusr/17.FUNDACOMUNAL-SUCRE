@@ -17,16 +17,22 @@ exports.borrarReporte = asyncHandler(async function (req, res, next) {
   //Se busca el reporte a borrar para ver su tipo
   const reporteABorrar = await Reporte.findById(req.params.id).exec();
   //Si es interno
-  if (reporteABorrar.tipo === "interno") {
-    //Se busca el cc al que es alude y se borra su propiedad vigente
-    await CC.findByIdAndUpdate(reporteABorrar.cc, {
-      $unset: { vigente: "" },
-    }).exec();
+  if (reporteABorrar === null) {
+    return res
+      .status(404)
+      .json({ error: { message: "No se encontro el reporte" } });
+  } else {
+    if (reporteABorrar.tipo === "interno") {
+      //Se busca el cc al que es alude y se borra su propiedad vigente
+      await CC.findByIdAndUpdate(reporteABorrar.cc, {
+        $unset: { vigente: "" },
+      }).exec();
+    }
+    //Ahora si se borra el reporte
+    await Reporte.findByIdAndRemove(req.params.id).exec();
+    //Exito
+    return res.status(200).json(req.params.id);
   }
-  //Ahora si se borra el reporte
-  await Reporte.findByIdAndRemove(req.params.id).exec();
-  //Exito
-  return res.status(200).json(req.params.id);
 });
 
 exports.buscarReporte = asyncHandler(async function (req, res, next) {
