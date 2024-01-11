@@ -20,7 +20,7 @@ exports.actualizarCC =
       .withMessage("El campo 'comuna' no debe estar vacio")
       .bail()
       .isLength({ max: 100 })
-      .withMessage("El campo 'comuna' no debe exceder los 50 caracteres")
+      .withMessage("El campo 'comuna' no debe exceder los 100 caracteres")
       .toUpperCase(),
     body("estados")
       .trim()
@@ -47,7 +47,7 @@ exports.actualizarCC =
       .withMessage("El campo 'municipios' no debe estar vacio")
       .bail()
       .isLength({ max: 60 })
-      .withMessage("El campo 'municipios' no debe exceder los 30 caracteres")
+      .withMessage("El campo 'municipios' no debe exceder los 60 caracteres")
       .toUpperCase(),
     body("nombre")
       .trim()
@@ -65,7 +65,7 @@ exports.actualizarCC =
       .withMessage("El campo 'parroquias' no debe estar vacio")
       .bail()
       .isLength({ max: 60 })
-      .withMessage("El campo 'parroquias' no debe exceder los 30 caracteres")
+      .withMessage("El campo 'parroquias' no debe exceder los 60 caracteres")
       .toUpperCase(),
     body("redi", "Redi invalido")
       .trim()
@@ -329,7 +329,7 @@ exports.nuevoCC =
       .withMessage("El campo 'comuna' no debe estar vacio")
       .bail()
       .isLength({ max: 100 })
-      .withMessage("El campo 'comuna' no debe exceder los 50 caracteres")
+      .withMessage("El campo 'comuna' no debe exceder los 100 caracteres")
       .toUpperCase(),
     body("estados")
       .trim()
@@ -356,7 +356,7 @@ exports.nuevoCC =
       .withMessage("El campo 'municipios' no debe estar vacio")
       .bail()
       .isLength({ max: 60 })
-      .withMessage("El campo 'municipios' no debe exceder los 30 caracteres")
+      .withMessage("El campo 'municipios' no debe exceder los 60 caracteres")
       .toUpperCase(),
     body("nombre")
       .trim()
@@ -374,7 +374,7 @@ exports.nuevoCC =
       .withMessage("El campo 'parroquias' no debe estar vacio")
       .bail()
       .isLength({ max: 60 })
-      .withMessage("El campo 'parroquias' no debe exceder los 30 caracteres")
+      .withMessage("El campo 'parroquias' no debe exceder los 60 caracteres")
       .toUpperCase(),
     body("redi", "Redi invalido")
       .trim()
