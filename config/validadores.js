@@ -1,9 +1,10 @@
 const CC = require("../modelos/cc");
 const Usuario = require("../modelos/usuario");
+const Opcion = require("../modelos/opcion");
 const { DateTime } = require("luxon");
 
 exports.cedulaExiste = async function (valorCedula) {
-  const cedulaExiste = await Usuario.findOne({ cedula: valorCedula });
+  const cedulaExiste = await Usuario.findOne({ cedula: valorCedula }).exec();
   if (cedulaExiste) {
     return true;
   } else {
@@ -15,7 +16,7 @@ exports.cedulaNoRepetida = async function (valorCedula, { req }) {
   const cedulaExiste = await Usuario.findOne({
     cedula: valorCedula,
     _id: { $ne: req.params.id },
-  });
+  }).exec();
   if (cedulaExiste) {
     throw new Error("La cedula ya se encuentra en uso");
   } else {
@@ -24,7 +25,7 @@ exports.cedulaNoRepetida = async function (valorCedula, { req }) {
 };
 
 exports.cedulaNueva = async function (valorCedula) {
-  const cedulaExiste = await Usuario.findOne({ cedula: valorCedula });
+  const cedulaExiste = await Usuario.findOne({ cedula: valorCedula }).exec();
   if (cedulaExiste) {
     throw new Error("La cedula ya se encuentra en uso");
   } else {
@@ -46,7 +47,7 @@ exports.emailNoRepetido = async function (valorEmail, { req }) {
   const emailExiste = await Usuario.findOne({
     email: valorEmail,
     _id: { $ne: req.params.id },
-  });
+  }).exec();
   if (emailExiste) {
     throw new Error("El correo electronico ya se encuentra en uso");
   } else {
@@ -55,7 +56,7 @@ exports.emailNoRepetido = async function (valorEmail, { req }) {
 };
 
 exports.emailNuevo = async function (valorEmail) {
-  const emailExiste = await Usuario.findOne({ email: valorEmail });
+  const emailExiste = await Usuario.findOne({ email: valorEmail }).exec();
   if (emailExiste) {
     throw new Error("El correo electronico ya se encuentra en uso");
   } else {
@@ -90,7 +91,7 @@ exports.nombreUsuarioNoRepetido = async function (valorUsuario, { req }) {
   const usuarioExiste = await Usuario.findOne({
     usuario: valorUsuario,
     _id: { $ne: req.params.id },
-  });
+  }).exec();
   if (usuarioExiste) {
     throw new Error("El nombre de usuario ya se encuentra en uso");
   } else {
@@ -99,7 +100,7 @@ exports.nombreUsuarioNoRepetido = async function (valorUsuario, { req }) {
 };
 
 exports.nombreUsuarioNuevo = async function (valorUsuario) {
-  const usuarioExiste = await Usuario.findOne({ usuario: valorUsuario });
+  const usuarioExiste = await Usuario.findOne({ usuario: valorUsuario }).exec();
   if (usuarioExiste) {
     throw new Error("El nombre de usuario ya se encuentra en uso");
   } else {
@@ -108,7 +109,7 @@ exports.nombreUsuarioNuevo = async function (valorUsuario) {
 };
 
 exports.siturExiste = async function (valorSitur) {
-  const siturExiste = await CC.findOne({ situr: valorSitur });
+  const siturExiste = await CC.findOne({ situr: valorSitur }).exec();
   if (siturExiste) {
     return true;
   } else {
@@ -120,7 +121,7 @@ exports.siturNoRepetido = async function (valorSitur, { req }) {
   const siturExiste = await CC.findOne({
     situr: valorSitur,
     _id: { $ne: req.params.id },
-  });
+  }).exec();
   if (siturExiste) {
     throw new Error("El situr ya se encuentra en uso");
   } else {
@@ -129,7 +130,7 @@ exports.siturNoRepetido = async function (valorSitur, { req }) {
 };
 
 exports.siturNuevo = async function (valorSitur) {
-  const siturExiste = await CC.findOne({ situr: valorSitur });
+  const siturExiste = await CC.findOne({ situr: valorSitur }).exec();
   if (siturExiste) {
     throw new Error("El situr ya se encuentra en uso");
   } else {
@@ -159,7 +160,7 @@ exports.tlfNoRepetido = async function (valorTlf, { req }) {
   const tlfExiste = await Usuario.findOne({
     tlf: valorTlf,
     _id: { $ne: req.params.id },
-  });
+  }).exec();
   if (tlfExiste) {
     throw new Error("El telefono ya se encuentra en uso");
   } else {
@@ -168,7 +169,7 @@ exports.tlfNoRepetido = async function (valorTlf, { req }) {
 };
 
 exports.tlfNuevo = async function (valorTlf) {
-  const tlfExiste = await Usuario.findOne({ tlf: valorTlf });
+  const tlfExiste = await Usuario.findOne({ tlf: valorTlf }).exec();
   if (tlfExiste) {
     throw new Error("El telefono ya se encuentra en uso");
   } else {
@@ -188,4 +189,20 @@ exports.usuarioReportaCC = async function (idCC, { req }) {
   } else {
     throw new Error("El usuario no tiene acceso al consejo comunal");
   }
+};
+
+exports.validarCampo = function (uri) {
+  return async function (valorCampo) {
+    //Revisar esto
+    const campoValido = await Opcion.findOne({
+      campo: uri,
+      array: { $in: [valorCampo] },
+    }).exec();
+
+    if (campoValido) {
+      return true;
+    } else {
+      throw new Error("Valor invalido");
+    }
+  };
 };
