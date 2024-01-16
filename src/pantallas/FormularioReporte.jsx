@@ -205,9 +205,20 @@ function FormularioReporte() {
 
   const borrarRedes = function (i) {
     return function () {
+      let misRedes = [...formulario.redes];
+      if (misRedes.length > 1) {
+        misRedes = misRedes.filter((item, itemId) => i !== itemId);
+      } else {
+        misRedes = [
+          {
+            cuenta: "",
+            publicaciones: "",
+          },
+        ];
+      }
       setFormulario({
         ...formulario,
-        redes: formulario.redes.filter((item, itemId) => i !== itemId),
+        redes: misRedes,
       });
       setErroresValidacion(null);
     };
