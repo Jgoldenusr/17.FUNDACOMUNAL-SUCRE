@@ -494,7 +494,7 @@ function VerReporte() {
                       </Accordion>
                     </ListItem>
                   )}
-                  {reporte.redes && reporte.redes.length > 0 && (
+                  {reporte.redes && (
                     <ListItem disablePadding divider>
                       <Accordion square elevation={0} sx={{ width: "100%" }}>
                         <AccordionSummary
