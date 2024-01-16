@@ -6,8 +6,8 @@ const Esquema = mongoose.Schema;
 const ReporteFormacion = new Esquema({
   beneficiados: new Esquema(
     {
-      hombres: { type: Number, required: true },
-      mujeres: { type: Number, required: true },
+      hombres: { type: String, required: true },
+      mujeres: { type: String, required: true },
     },
     { _id: false }
   ),

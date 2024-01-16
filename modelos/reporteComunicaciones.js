@@ -6,8 +6,8 @@ const Esquema = mongoose.Schema;
 const ReporteComunicaciones = new Esquema({
   prensa: new Esquema(
     {
-      notas: { type: Number },
-      resenas: { type: Number },
+      notas: { type: String },
+      resenas: { type: String },
     },
     { _id: false }
   ),
@@ -15,7 +15,7 @@ const ReporteComunicaciones = new Esquema({
     new Esquema(
       {
         cuenta: { type: String },
-        publicaciones: { type: Number },
+        publicaciones: { type: String },
       },
       { _id: false }
     ),

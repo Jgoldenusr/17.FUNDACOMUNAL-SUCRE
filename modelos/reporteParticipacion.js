@@ -5,7 +5,7 @@ const Esquema = mongoose.Schema;
 
 const ReporteParticipacion = new Esquema({
   acompanamiento: { type: String, required: true },
-  familiasBeneficiadas: { type: Number, required: true },
+  familiasBeneficiadas: { type: String, required: true },
 });
 
 module.exports = ReporteBase.discriminator(
