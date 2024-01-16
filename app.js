@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const autenticarConJWT = require("./config/estrategiaJWT");
 const rutasCC = require("./rutas/rutasCC");
+const rutasConfig = require("./rutas/rutasConfig");
 const rutasReporte = require("./rutas/rutasReporte");
 const rutasUsuario = require("./rutas/rutasUsuario");
 require("dotenv").config();
@@ -42,6 +43,7 @@ passport.use(autenticarConJWT);
 
 //Se activan las rutas
 app.use("/ccs", rutasCC);
+app.use("/config", rutasConfig);
 app.use("/reportes", rutasReporte);
 app.use("/usuarios", rutasUsuario);
 
