@@ -348,48 +348,46 @@ function VerReporte() {
                       secondary={reporte.tipoOSP}
                     />
                   </ListItem>
-                  {reporte.proyectoCFG &&
-                    reporte.proyectoCFG.tipo &&
-                    reporte.proyectoCFG.etapa && (
-                      <ListItem disablePadding divider>
-                        <Accordion square elevation={0} sx={{ width: "100%" }}>
-                          <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            sx={{ pr: 2, pl: 0 }}
-                          >
-                            <ListItem dense component="div">
+                  {reporte.proyectoCFG?.tipo && reporte.proyectoCFG?.etapa && (
+                    <ListItem disablePadding divider>
+                      <Accordion square elevation={0} sx={{ width: "100%" }}>
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          sx={{ pr: 2, pl: 0 }}
+                        >
+                          <ListItem dense component="div">
+                            <ListItemIcon>
+                              <ConstructionRoundedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="PROYECTO CONSEJO FEDERAL DE GOBIERNO" />
+                          </ListItem>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ p: 0 }}>
+                          <List dense disablePadding>
+                            <Divider />
+                            <ListItem divider>
                               <ListItemIcon>
-                                <ConstructionRoundedIcon />
+                                <TourRoundedIcon />
                               </ListItemIcon>
-                              <ListItemText primary="PROYECTO CONSEJO FEDERAL DE GOBIERNO" />
+                              <ListItemText
+                                primary="ESTADO"
+                                secondary={reporte.proyectoCFG.etapa}
+                              />
                             </ListItem>
-                          </AccordionSummary>
-                          <AccordionDetails sx={{ p: 0 }}>
-                            <List dense disablePadding>
-                              <Divider />
-                              <ListItem divider>
-                                <ListItemIcon>
-                                  <TourRoundedIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                  primary="ESTADO"
-                                  secondary={reporte.proyectoCFG.etapa}
-                                />
-                              </ListItem>
-                              <ListItem>
-                                <ListItemIcon>
-                                  <WarehouseRoundedIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                  primary="TIPO"
-                                  secondary={reporte.proyectoCFG.tipo}
-                                />
-                              </ListItem>
-                            </List>
-                          </AccordionDetails>
-                        </Accordion>
-                      </ListItem>
-                    )}
+                            <ListItem>
+                              <ListItemIcon>
+                                <WarehouseRoundedIcon />
+                              </ListItemIcon>
+                              <ListItemText
+                                primary="TIPO"
+                                secondary={reporte.proyectoCFG.tipo}
+                              />
+                            </ListItem>
+                          </List>
+                        </AccordionDetails>
+                      </Accordion>
+                    </ListItem>
+                  )}
                 </>
               ) : reporte.tipo === "incidencias" ? (
                 <>
@@ -456,48 +454,46 @@ function VerReporte() {
                       secondary={reporte.organosAdscritos}
                     />
                   </ListItem>
-                  {reporte.prensa &&
-                    reporte.prensa.notas &&
-                    reporte.prensa.resenas && (
-                      <ListItem disablePadding divider>
-                        <Accordion square elevation={0} sx={{ width: "100%" }}>
-                          <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            sx={{ pr: 2, pl: 0 }}
-                          >
-                            <ListItem dense component="div">
+                  {reporte.prensa?.notas && reporte.prensa?.resenas && (
+                    <ListItem disablePadding divider>
+                      <Accordion square elevation={0} sx={{ width: "100%" }}>
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          sx={{ pr: 2, pl: 0 }}
+                        >
+                          <ListItem dense component="div">
+                            <ListItemIcon>
+                              <NewspaperRoundedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="PRENSA" />
+                          </ListItem>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ p: 0 }}>
+                          <List dense disablePadding>
+                            <Divider />
+                            <ListItem divider>
                               <ListItemIcon>
-                                <NewspaperRoundedIcon />
+                                <FeaturedPlayListRoundedIcon />
                               </ListItemIcon>
-                              <ListItemText primary="PRENSA" />
+                              <ListItemText
+                                primary="NOTAS"
+                                secondary={reporte.prensa.notas}
+                              />
                             </ListItem>
-                          </AccordionSummary>
-                          <AccordionDetails sx={{ p: 0 }}>
-                            <List dense disablePadding>
-                              <Divider />
-                              <ListItem divider>
-                                <ListItemIcon>
-                                  <FeaturedPlayListRoundedIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                  primary="NOTAS"
-                                  secondary={reporte.prensa.notas}
-                                />
-                              </ListItem>
-                              <ListItem>
-                                <ListItemIcon>
-                                  <TextsmsRoundedIcon />
-                                </ListItemIcon>
-                                <ListItemText
-                                  primary="RESEÑAS"
-                                  secondary={reporte.prensa.resenas}
-                                />
-                              </ListItem>
-                            </List>
-                          </AccordionDetails>
-                        </Accordion>
-                      </ListItem>
-                    )}
+                            <ListItem>
+                              <ListItemIcon>
+                                <TextsmsRoundedIcon />
+                              </ListItemIcon>
+                              <ListItemText
+                                primary="RESEÑAS"
+                                secondary={reporte.prensa.resenas}
+                              />
+                            </ListItem>
+                          </List>
+                        </AccordionDetails>
+                      </Accordion>
+                    </ListItem>
+                  )}
                   {reporte.redes && reporte.redes.length > 0 && (
                     <ListItem disablePadding divider>
                       <Accordion square elevation={0} sx={{ width: "100%" }}>

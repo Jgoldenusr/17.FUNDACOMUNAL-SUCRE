@@ -195,8 +195,7 @@ function MostrarUsuarios() {
       ) : error ? (
         <AlertaError error={error} />
       ) : (
-        usuarios &&
-        usuarios.map((usuario) => {
+        usuarios?.map((usuario) => {
           return (
             <Grid item xs={12} md={4} xl={3} key={usuario._id}>
               <Card elevation={6}>

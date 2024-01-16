@@ -26,14 +26,13 @@ import CabinRoundedIcon from "@mui/icons-material/CabinRounded";
 import ForestRoundedIcon from "@mui/icons-material/ForestRounded";
 import HomeWorkRoundedIcon from "@mui/icons-material/HomeWorkRounded";
 import TuneIcon from "@mui/icons-material/Tune";
-//Otros
-import { OpcionesCC } from "../config/opciones";
 
 function MostrarCCS() {
   const { miUsuario } = useContext(ContextoAutenticado);
   const [cargando, setCargando] = useState(true);
   const [ccs, setCCS] = useState(null);
   const [error, setError] = useState(null);
+  const [opciones, setOpciones] = useState({});
   const [parametros, setParametros] = useSearchParams();
   const [realizarConsulta, setRealizarConsulta] = useState(true);
 
@@ -64,16 +63,33 @@ function MostrarCCS() {
   };
 
   const actualizarParametros = function (campo) {
-    return function (evento) {
+    return async function (evento) {
       evento.preventDefault();
       let valorCampo = evento.target.value;
       //Logica de algunos campos
       if (campo === "municipios") {
+        const arrayParroquias = await buscarOpcion(
+          `cc/estados/SUCRE/municipios/${evento.target.value}/parroquias`
+        );
         parametros.delete("parroquias");
         parametros.delete("comuna");
+        setOpciones({
+          ...opciones,
+          comuna: [],
+          parroquias: arrayParroquias,
+        });
       }
       if (campo === "parroquias") {
+        const arrayComunas = await buscarOpcion(
+          `cc/estados/SUCRE/municipios/${parametros.get(
+            "municipios"
+          )}/parroquias/${evento.target.value}/comuna`
+        );
         parametros.delete("comuna");
+        setOpciones({
+          ...opciones,
+          comuna: arrayComunas,
+        });
       }
       let miConsulta = {};
       parametros.set(campo, valorCampo);
@@ -84,12 +100,43 @@ function MostrarCCS() {
     };
   };
 
+  const buscarOpcion = async function (uri) {
+    const url = `http://localhost:4000/config?campo=${uri}`;
+    const peticion = {
+      headers: new Headers({
+        Authorization: `Bearer ${miUsuario.token}`,
+      }),
+      mode: "cors",
+    };
+    let arrayDeOpciones;
+    try {
+      const respuesta = await fetch(url, peticion);
+      if (respuesta.ok) {
+        const recibido = await respuesta.json();
+        arrayDeOpciones = recibido[0].array;
+      } else {
+        arrayDeOpciones = [];
+      }
+    } catch (errorPeticion) {
+      arrayDeOpciones = [];
+    }
+    return arrayDeOpciones;
+  };
+
   const manejarConsulta = function (evento) {
     evento.preventDefault();
     setRealizarConsulta(true);
   };
 
   useEffect(() => {
+    async function cargarSelectsBasicos() {
+      const tempOpciones = { ...opciones };
+      tempOpciones.tipo = await buscarOpcion("cc/tipo");
+      tempOpciones.municipios = await buscarOpcion(
+        "cc/estados/SUCRE/municipios"
+      );
+      setOpciones(tempOpciones);
+    }
     async function realizarPeticion() {
       setCargando(true);
       setError(null);
@@ -122,6 +169,8 @@ function MostrarCCS() {
     }
     if (realizarConsulta) {
       realizarPeticion();
+    } else {
+      cargarSelectsBasicos();
     }
   }, [realizarConsulta]);
 
@@ -141,7 +190,7 @@ function MostrarCCS() {
                     value={parametros.get("municipios") || ""}
                   >
                     <MenuItem value="">CUALQUIERA</MenuItem>
-                    {OpcionesCC.municipios.map((opcion) => {
+                    {opciones.municipios?.map((opcion) => {
                       return (
                         <MenuItem key={opcion} value={opcion}>
                           {opcion}
@@ -159,9 +208,7 @@ function MostrarCCS() {
                     value={parametros.get("parroquias") || ""}
                   >
                     <MenuItem value="">CUALQUIERA</MenuItem>
-                    {OpcionesCC.parroquias[
-                      `${parametros.get("municipios") || "VACIO"}`
-                    ].map((opcion) => {
+                    {opciones.parroquias?.map((opcion) => {
                       return (
                         <MenuItem key={opcion} value={opcion}>
                           {opcion}
@@ -179,9 +226,7 @@ function MostrarCCS() {
                     value={parametros.get("comuna") || ""}
                   >
                     <MenuItem value="">SIN COMUNA</MenuItem>
-                    {OpcionesCC.comuna[
-                      `${parametros.get("parroquias") || "VACIO"}`
-                    ].map((opcion) => {
+                    {opciones.comuna?.map((opcion) => {
                       return (
                         <MenuItem key={opcion} value={opcion}>
                           {opcion}
@@ -214,7 +259,7 @@ function MostrarCCS() {
                     value={parametros.get("tipo") || ""}
                   >
                     <MenuItem value="">CUALQUIERA</MenuItem>
-                    {OpcionesCC.tipo.map((opcion) => {
+                    {opciones.tipo?.map((opcion) => {
                       return (
                         <MenuItem key={opcion} value={opcion}>
                           {opcion}
@@ -257,8 +302,7 @@ function MostrarCCS() {
       ) : error ? (
         <AlertaError error={error} />
       ) : (
-        ccs &&
-        ccs.map((cc) => {
+        ccs?.map((cc) => {
           return (
             <Grid item xs={12} md={6} xl={4} key={cc._id}>
               <Card elevation={6}>

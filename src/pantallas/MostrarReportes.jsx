@@ -28,8 +28,6 @@ import FmdBadRoundedIcon from "@mui/icons-material/FmdBadRounded";
 import RssFeedRoundedIcon from "@mui/icons-material/RssFeedRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
-//Otros
-import { OpcionesReporte } from "../config/opciones";
 
 function MostrarReportes() {
   const { miUsuario } = useContext(ContextoAutenticado);
@@ -173,13 +171,14 @@ function MostrarReportes() {
                     value={parametros.get("tipo") || ""}
                   >
                     <MenuItem value="">CUALQUIERA</MenuItem>
-                    {OpcionesReporte.tipoFiltro.map((tipo) => {
-                      return (
-                        <MenuItem key={`TIP-${tipo}`} value={tipo}>
-                          {tipo.toLocaleUpperCase()}
-                        </MenuItem>
-                      );
-                    })}
+                    <MenuItem value="casoadmin">CASOADMIN</MenuItem>
+                    <MenuItem value="comunicaciones">COMUNICACIONES</MenuItem>
+                    <MenuItem value="formacion">FORMACION</MenuItem>
+                    <MenuItem value="fortalecimiento">FORTALECIMIENTO</MenuItem>
+                    <MenuItem value="incidencias">INCIDENCIAS</MenuItem>
+                    <MenuItem value="interno">INTERNO</MenuItem>
+                    <MenuItem value="participacion">PARTICIPACION</MenuItem>
+                    <MenuItem value="renovacion">RENOVACION</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -240,8 +239,7 @@ function MostrarReportes() {
       ) : error ? (
         <AlertaError error={error} />
       ) : (
-        reportes &&
-        reportes.map((reporte) => {
+        reportes?.map((reporte) => {
           return (
             <Grid item xs={12} md={6} xl={4} key={reporte._id}>
               <Card elevation={6}>

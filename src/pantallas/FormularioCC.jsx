@@ -24,7 +24,6 @@ import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
 import { formularioVacioCC } from "../config/plantillas";
-import { OpcionesCC } from "../config/opciones";
 
 function FormularioCC() {
   const navegarHasta = useNavigate();
@@ -34,42 +33,11 @@ function FormularioCC() {
   const [error, setError] = useState(null);
   const [erroresValidacion, setErroresValidacion] = useState(null);
   const [formulario, setFormulario] = useState({ ...formularioVacioCC });
+  const [opciones, setOpciones] = useState({});
   const [subiendo, setSubiendo] = useState(false);
 
-  useEffect(() => {
-    async function buscarCCParaEditar() {
-      const url = "http://localhost:4000/ccs/" + id;
-      const peticion = {
-        headers: new Headers({
-          Authorization: `Bearer ${miUsuario.token}`,
-        }),
-        mode: "cors",
-      };
-
-      try {
-        const respuesta = await fetch(url, peticion);
-        if (respuesta.ok) {
-          const recibido = await respuesta.json();
-          setFormulario(recibido);
-        } else {
-          const recibido = await respuesta.json();
-          setError(recibido.error);
-        }
-      } catch (errorPeticion) {
-        setError(errorPeticion);
-      } finally {
-        setCargando(false);
-      }
-    }
-    if (id) {
-      buscarCCParaEditar();
-    } else {
-      setFormulario({ ...formularioVacioCC });
-    }
-  }, [id]);
-
   const actualizarFormulario = function (campo, propiedad) {
-    return function (evento) {
+    return async function (evento) {
       if (propiedad) {
         setFormulario({
           ...formulario,
@@ -77,17 +45,32 @@ function FormularioCC() {
         });
       } else {
         if (campo === "municipios") {
+          const arrayParroquias = await buscarOpcion(
+            `cc/estados/SUCRE/municipios/${evento.target.value}/parroquias`
+          );
           setFormulario({
             ...formulario,
             comuna: "",
             parroquias: "",
             [campo]: evento.target.value,
           });
+          setOpciones({
+            ...opciones,
+            comuna: [],
+            parroquias: arrayParroquias,
+          });
         } else if (campo === "parroquias") {
+          const arrayComunas = await buscarOpcion(
+            `cc/estados/SUCRE/municipios/${formulario.municipios}/parroquias/${evento.target.value}/comuna`
+          );
           setFormulario({
             ...formulario,
             comuna: "",
             [campo]: evento.target.value,
+          });
+          setOpciones({
+            ...opciones,
+            comuna: arrayComunas,
           });
         } else {
           setFormulario({
@@ -97,6 +80,29 @@ function FormularioCC() {
         }
       }
     };
+  };
+
+  const buscarOpcion = async function (uri) {
+    const url = `http://localhost:4000/config?campo=${uri}`;
+    const peticion = {
+      headers: new Headers({
+        Authorization: `Bearer ${miUsuario.token}`,
+      }),
+      mode: "cors",
+    };
+    let arrayDeOpciones;
+    try {
+      const respuesta = await fetch(url, peticion);
+      if (respuesta.ok) {
+        const recibido = await respuesta.json();
+        arrayDeOpciones = recibido[0].array;
+      } else {
+        arrayDeOpciones = [];
+      }
+    } catch (errorPeticion) {
+      arrayDeOpciones = [];
+    }
+    return arrayDeOpciones;
   };
 
   const esInvalido = function (campo) {
@@ -162,6 +168,63 @@ function FormularioCC() {
     }
   };
 
+  useEffect(() => {
+    async function cargarSelectsBasicos() {
+      const tempOpciones = {};
+      tempOpciones.tipo = await buscarOpcion("cc/tipo");
+      tempOpciones.municipios = await buscarOpcion(
+        "cc/estados/SUCRE/municipios"
+      );
+      setOpciones(tempOpciones);
+    }
+    async function cargarTodosLosSelects(cc) {
+      const tempOpciones = {};
+      tempOpciones.tipo = await buscarOpcion("cc/tipo");
+      tempOpciones.municipios = await buscarOpcion(
+        "cc/estados/SUCRE/municipios"
+      );
+      tempOpciones.parroquias = await buscarOpcion(
+        `cc/estados/SUCRE/municipios/${cc.municipios}/parroquias`
+      );
+      tempOpciones.comuna = await buscarOpcion(
+        `cc/estados/SUCRE/municipios/${cc.municipios}/parroquias/${cc.parroquias}/comuna`
+      );
+      setOpciones(tempOpciones);
+    }
+    async function buscarCCParaEditar() {
+      const url = "http://localhost:4000/ccs/" + id;
+      const peticion = {
+        headers: new Headers({
+          Authorization: `Bearer ${miUsuario.token}`,
+        }),
+        mode: "cors",
+      };
+
+      try {
+        const respuesta = await fetch(url, peticion);
+        if (respuesta.ok) {
+          const recibido = await respuesta.json();
+          cargarTodosLosSelects(recibido);
+          setFormulario(recibido);
+        } else {
+          const recibido = await respuesta.json();
+          setError(recibido.error);
+        }
+      } catch (errorPeticion) {
+        setError(errorPeticion);
+      } finally {
+        setCargando(false);
+      }
+    }
+
+    if (id) {
+      buscarCCParaEditar();
+    } else {
+      setFormulario({ ...formularioVacioCC });
+      cargarSelectsBasicos();
+    }
+  }, [id]);
+
   /* jshint ignore:start */
   return cargando ? (
     <Spinner />
@@ -195,37 +258,17 @@ function FormularioCC() {
               <Grid item xs={12} md={4}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Estado donde se ubica el C.C.</InputLabel>
-                  <Select
-                    disabled
-                    error={esInvalido("estados")}
-                    onChange={actualizarFormulario("estados")}
-                    value={formulario.estados}
-                  >
+                  <Select disabled value={formulario.estados}>
                     <MenuItem value="SUCRE">SUCRE</MenuItem>
                   </Select>
-                  <FormHelperText error>
-                    {mostrarMsjInvalido("estados")}
-                  </FormHelperText>
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Redi del consejo comunal</InputLabel>
-                  <Select
-                    disabled
-                    error={esInvalido("redi")}
-                    onChange={actualizarFormulario("redi")}
-                    value={formulario.redi}
-                  >
-                    {OpcionesCC.redi.map((opcion) => (
-                      <MenuItem key={opcion} value={opcion}>
-                        {opcion}
-                      </MenuItem>
-                    ))}
+                  <Select disabled value={formulario.redi}>
+                    <MenuItem value="ORIENTAL">ORIENTAL</MenuItem>
                   </Select>
-                  <FormHelperText error>
-                    {mostrarMsjInvalido("redi")}
-                  </FormHelperText>
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
@@ -236,7 +279,7 @@ function FormularioCC() {
                     onChange={actualizarFormulario("tipo")}
                     value={formulario.tipo}
                   >
-                    {OpcionesCC.tipo.map((opcion) => (
+                    {opciones.tipo?.map((opcion) => (
                       <MenuItem key={opcion} value={opcion}>
                         {opcion}
                       </MenuItem>
@@ -255,7 +298,7 @@ function FormularioCC() {
                     onChange={actualizarFormulario("municipios")}
                     value={formulario.municipios}
                   >
-                    {OpcionesCC.municipios.map((opcion) => (
+                    {opciones.municipios?.map((opcion) => (
                       <MenuItem key={opcion} value={opcion}>
                         {opcion}
                       </MenuItem>
@@ -274,14 +317,11 @@ function FormularioCC() {
                     onChange={actualizarFormulario("parroquias")}
                     value={formulario.parroquias}
                   >
-                    {formulario.municipios &&
-                      OpcionesCC.parroquias[`${formulario.municipios}`].map(
-                        (opcion) => (
-                          <MenuItem key={opcion} value={opcion}>
-                            {opcion}
-                          </MenuItem>
-                        )
-                      )}
+                    {opciones.parroquias?.map((opcion) => (
+                      <MenuItem key={opcion} value={opcion}>
+                        {opcion}
+                      </MenuItem>
+                    ))}
                   </Select>
                   <FormHelperText error>
                     {mostrarMsjInvalido("parroquias")}
@@ -299,15 +339,11 @@ function FormularioCC() {
                     value={formulario.comuna}
                   >
                     <MenuItem value="">SIN COMUNA</MenuItem>
-                    {formulario.parroquias &&
-                      OpcionesCC.comuna[`${formulario.parroquias}`] &&
-                      OpcionesCC.comuna[`${formulario.parroquias}`].map(
-                        (opcion) => (
-                          <MenuItem key={opcion} value={opcion}>
-                            {opcion}
-                          </MenuItem>
-                        )
-                      )}
+                    {opciones.comuna?.map((opcion) => (
+                      <MenuItem key={opcion} value={opcion}>
+                        {opcion}
+                      </MenuItem>
+                    ))}
                   </Select>
                   <FormHelperText error>
                     {mostrarMsjInvalido("comuna")}

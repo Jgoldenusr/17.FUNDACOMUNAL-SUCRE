@@ -37,7 +37,6 @@ import {
   formularioInterno,
   formularioParticipacion,
 } from "../config/plantillas";
-import { OpcionesReporte } from "../config/opciones";
 
 function FormularioReporte() {
   const navegarHasta = useNavigate();
@@ -47,6 +46,7 @@ function FormularioReporte() {
   const [error, setError] = useState(null);
   const [erroresValidacion, setErroresValidacion] = useState(null);
   const [formulario, setFormulario] = useState(formularioParticipacion);
+  const [opciones, setOpciones] = useState({});
   const [parametros, setParametros] = useSearchParams();
   const [subiendo, setSubiendo] = useState(false);
   const [tipo, setTipo] = useState("participacion");
@@ -80,7 +80,7 @@ function FormularioReporte() {
               situr:
                 recibido.tipo === "interno" ? recibido.cc.situr : undefined,
             });
-            setTipo(recibido.tipo);
+            ajustarTipo(recibido.tipo);
           }
         } else {
           const recibido = await respuesta.json();
@@ -97,10 +97,10 @@ function FormularioReporte() {
       buscarReporteParaEditar();
     } else if (parametros.get("situr")) {
       setFormulario({ ...formularioInterno, situr: parametros.get("situr") });
-      setTipo("interno");
+      ajustarTipo("interno");
     } else {
       setFormulario(formularioParticipacion);
-      setTipo("participacion");
+      ajustarTipo("participacion");
     }
   }, [id]);
 
@@ -146,6 +146,63 @@ function FormularioReporte() {
     });
   };
 
+  const ajustarTipo = async function (tipo) {
+    setTipo(tipo);
+    let tempOpciones = {};
+    switch (tipo) {
+      case "participacion":
+        tempOpciones.acompanamiento = await buscarOpcion(
+          "reporte/tipo/participacion/acompanamiento"
+        );
+        break;
+      case "formacion":
+        tempOpciones.estrategia = await buscarOpcion(
+          "reporte/tipo/formacion/estrategia"
+        );
+        tempOpciones.modalidad = await buscarOpcion(
+          "reporte/tipo/formacion/modalidad"
+        );
+        tempOpciones.tematica = await buscarOpcion(
+          "reporte/tipo/formacion/tematica"
+        );
+        tempOpciones.verificacion = await buscarOpcion(
+          "reporte/tipo/formacion/verificacion"
+        );
+        break;
+      case "fortalecimiento":
+        tempOpciones.proyectoCFG = {};
+        tempOpciones.acompanamiento = await buscarOpcion(
+          "reporte/tipo/fortalecimiento/acompanamiento"
+        );
+        tempOpciones.tipoActividad = await buscarOpcion(
+          "reporte/tipo/fortalecimiento/tipoActividad"
+        );
+        tempOpciones.tipoOSP = await buscarOpcion(
+          "reporte/tipo/fortalecimiento/tipoOSP"
+        );
+        tempOpciones.proyectoCFG.etapa = await buscarOpcion(
+          "reporte/tipo/fortalecimiento/proyectoCFG/etapa"
+        );
+        tempOpciones.proyectoCFG.tipo = await buscarOpcion(
+          "reporte/tipo/fortalecimiento/proyectoCFG/tipo"
+        );
+        break;
+      case "incidencias":
+        tempOpciones.areaSustantiva = await buscarOpcion(
+          "reporte/tipo/incidencias/areaSustantiva"
+        );
+        break;
+      case "casoadmin":
+        tempOpciones.tipoCaso = await buscarOpcion(
+          "reporte/tipo/casoadmin/tipoCaso"
+        );
+        break;
+      default:
+        tempOpciones = {};
+    }
+    setOpciones(tempOpciones);
+  };
+
   const borrarRedes = function (i) {
     return function () {
       setFormulario({
@@ -154,6 +211,29 @@ function FormularioReporte() {
       });
       setErroresValidacion(null);
     };
+  };
+
+  const buscarOpcion = async function (uri) {
+    const url = `http://localhost:4000/config?campo=${uri}`;
+    const peticion = {
+      headers: new Headers({
+        Authorization: `Bearer ${miUsuario.token}`,
+      }),
+      mode: "cors",
+    };
+    let arrayDeOpciones;
+    try {
+      const respuesta = await fetch(url, peticion);
+      if (respuesta.ok) {
+        const recibido = await respuesta.json();
+        arrayDeOpciones = recibido[0].array;
+      } else {
+        arrayDeOpciones = [];
+      }
+    } catch (errorPeticion) {
+      arrayDeOpciones = [];
+    }
+    return arrayDeOpciones;
   };
 
   const cambiarTipoFormulario = function (evento) {
@@ -181,7 +261,7 @@ function FormularioReporte() {
         break;
     }
     setErroresValidacion(null);
-    setTipo(evento.target.value);
+    ajustarTipo(evento.target.value);
   };
 
   const esInvalido = function (campo) {
@@ -319,19 +399,15 @@ function FormularioReporte() {
                     onChange={cambiarTipoFormulario}
                     value={tipo}
                   >
-                    {OpcionesReporte.tipo.map((tipo) => {
-                      if (
-                        tipo === "interno" &&
-                        miUsuario.rol !== "ADMINISTRADOR"
-                      ) {
-                        return "";
-                      } else
-                        return (
-                          <MenuItem key={`TIP-${tipo}`} value={tipo}>
-                            {tipo.toLocaleUpperCase()}
-                          </MenuItem>
-                        );
-                    })}
+                    <MenuItem value="casoadmin">CASOADMIN</MenuItem>
+                    <MenuItem value="comunicaciones">COMUNICACIONES</MenuItem>
+                    <MenuItem value="formacion">FORMACION</MenuItem>
+                    <MenuItem value="fortalecimiento">FORTALECIMIENTO</MenuItem>
+                    <MenuItem value="incidencias">INCIDENCIAS</MenuItem>
+                    <MenuItem value="participacion">PARTICIPACION</MenuItem>
+                    {miUsuario.rol === "ADMINISTRADOR" && (
+                      <MenuItem value="interno">INTERNO</MenuItem>
+                    )}
                   </Select>
                 </FormControl>
               </Grid>
@@ -388,13 +464,11 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("acompanamiento")}
                         value={formulario.acompanamiento}
                       >
-                        {OpcionesReporte.participacion.acompanamiento.map(
-                          (opcion) => (
-                            <MenuItem key={opcion} value={opcion}>
-                              {opcion}
-                            </MenuItem>
-                          )
-                        )}
+                        {opciones.acompanamiento?.map((opcion) => (
+                          <MenuItem key={opcion} value={opcion}>
+                            {opcion}
+                          </MenuItem>
+                        ))}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("acompanamiento")}
@@ -465,7 +539,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("estrategia")}
                         value={formulario.estrategia}
                       >
-                        {OpcionesReporte.formacion.estrategia.map((opcion) => (
+                        {opciones.estrategia?.map((opcion) => (
                           <MenuItem key={opcion} value={opcion}>
                             {opcion}
                           </MenuItem>
@@ -484,7 +558,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("modalidad")}
                         value={formulario.modalidad}
                       >
-                        {OpcionesReporte.formacion.modalidad.map((opcion) => (
+                        {opciones.modalidad?.map((opcion) => (
                           <MenuItem key={opcion} value={opcion}>
                             {opcion}
                           </MenuItem>
@@ -503,7 +577,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("tematica")}
                         value={formulario.tematica}
                       >
-                        {OpcionesReporte.formacion.tematica.map((opcion) => (
+                        {opciones.tematica?.map((opcion) => (
                           <MenuItem key={opcion} value={opcion}>
                             {opcion}
                           </MenuItem>
@@ -522,13 +596,11 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("verificacion")}
                         value={formulario.verificacion}
                       >
-                        {OpcionesReporte.formacion.verificacion.map(
-                          (opcion) => (
-                            <MenuItem key={opcion} value={opcion}>
-                              {opcion}
-                            </MenuItem>
-                          )
-                        )}
+                        {opciones.verificacion?.map((opcion) => (
+                          <MenuItem key={opcion} value={opcion}>
+                            {opcion}
+                          </MenuItem>
+                        ))}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("verificacion")}
@@ -635,13 +707,11 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("acompanamiento")}
                         value={formulario.acompanamiento}
                       >
-                        {OpcionesReporte.fortalecimiento.acompanamiento.map(
-                          (opcion) => (
-                            <MenuItem key={opcion} value={opcion}>
-                              {opcion}
-                            </MenuItem>
-                          )
-                        )}
+                        {opciones.acompanamiento?.map((opcion) => (
+                          <MenuItem key={opcion} value={opcion}>
+                            {opcion}
+                          </MenuItem>
+                        ))}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("acompanamiento")}
@@ -656,13 +726,11 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("tipoActividad")}
                         value={formulario.tipoActividad}
                       >
-                        {OpcionesReporte.fortalecimiento.tipoActividad.map(
-                          (opcion) => (
-                            <MenuItem key={opcion} value={opcion}>
-                              {opcion}
-                            </MenuItem>
-                          )
-                        )}
+                        {opciones.tipoActividad?.map((opcion) => (
+                          <MenuItem key={opcion} value={opcion}>
+                            {opcion}
+                          </MenuItem>
+                        ))}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("tipoActividad")}
@@ -677,13 +745,11 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("tipoOSP")}
                         value={formulario.tipoOSP}
                       >
-                        {OpcionesReporte.fortalecimiento.tipoOSP.map(
-                          (opcion) => (
-                            <MenuItem key={opcion} value={opcion}>
-                              {opcion}
-                            </MenuItem>
-                          )
-                        )}
+                        {opciones.tipoOSP?.map((opcion) => (
+                          <MenuItem key={opcion} value={opcion}>
+                            {opcion}
+                          </MenuItem>
+                        ))}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("tipoOSP")}
@@ -701,13 +767,11 @@ function FormularioReporte() {
                         value={formulario.proyectoCFG.tipo}
                       >
                         <MenuItem value="">SIN TIPO</MenuItem>
-                        {OpcionesReporte.fortalecimiento.proyectoCFG.tipo.map(
-                          (opcion) => (
-                            <MenuItem key={opcion} value={opcion}>
-                              {opcion}
-                            </MenuItem>
-                          )
-                        )}
+                        {opciones.proyectoCFG?.tipo?.map((opcion) => (
+                          <MenuItem key={opcion} value={opcion}>
+                            {opcion}
+                          </MenuItem>
+                        ))}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("proyectoCFG.tipo")}
@@ -725,13 +789,11 @@ function FormularioReporte() {
                         value={formulario.proyectoCFG.etapa}
                       >
                         <MenuItem value="">NINGUNA</MenuItem>
-                        {OpcionesReporte.fortalecimiento.proyectoCFG.etapa.map(
-                          (opcion) => (
-                            <MenuItem key={opcion} value={opcion}>
-                              {opcion}
-                            </MenuItem>
-                          )
-                        )}
+                        {opciones.proyectoCFG?.etapa?.map((opcion) => (
+                          <MenuItem key={opcion} value={opcion}>
+                            {opcion}
+                          </MenuItem>
+                        ))}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("proyectoCFG.etapa")}
@@ -788,13 +850,11 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("areaSustantiva")}
                         value={formulario.areaSustantiva}
                       >
-                        {OpcionesReporte.incidencias.areaSustantiva.map(
-                          (opcion) => (
-                            <MenuItem key={opcion} value={opcion}>
-                              {opcion}
-                            </MenuItem>
-                          )
-                        )}
+                        {opciones.areaSustantiva?.map((opcion) => (
+                          <MenuItem key={opcion} value={opcion}>
+                            {opcion}
+                          </MenuItem>
+                        ))}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("areaSustantiva")}
@@ -865,7 +925,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("tipoCaso")}
                         value={formulario.tipoCaso}
                       >
-                        {OpcionesReporte.casoadmin.tipoCaso.map((opcion) => (
+                        {opciones.tipoCaso?.map((opcion) => (
                           <MenuItem key={opcion} value={opcion}>
                             {opcion}
                           </MenuItem>
