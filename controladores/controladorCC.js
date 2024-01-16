@@ -22,15 +22,33 @@ exports.actualizarCC =
       .isLength({ max: 100 })
       .withMessage("El campo 'comuna' no debe exceder los 100 caracteres")
       .toUpperCase(),
-    body("estados")
+    body("estados", "El estado es invalido")
       .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'estados' no debe estar vacio")
-      .bail()
-      .isLength({ max: 30 })
-      .withMessage("El campo 'estados' no debe exceder los 30 caracteres")
-      .toUpperCase(),
+      .isIn([
+        "AMAZONAS",
+        "ANZOATEGUI",
+        "APURE",
+        "ARAGUA",
+        "BARINAS",
+        "BOLIVAR",
+        "CARABOBO",
+        "COJEDES",
+        "DELTA AMACURO",
+        "FALCON",
+        "GUARICO",
+        "LARA",
+        "MERIDA",
+        "MIRANDA",
+        "MONAGAS",
+        "NUEVA ESPARTA",
+        "PORTUGUESA",
+        "SUCRE",
+        "TACHIRA",
+        "TRUJILLO",
+        "LA GUAIRA",
+        "YARACUY",
+        "ZULIA",
+      ]),
     body("localidad")
       .trim()
       .escape()
@@ -84,9 +102,7 @@ exports.actualizarCC =
       .custom(Validar.siturTienePatronValido)
       .bail()
       .custom(Validar.siturNoRepetido),
-    body("tipo", "Tipo invalido")
-      .trim()
-      .isIn(["INDIGENA", "MIXTO", "RURAL", "URBANO"]),
+    body("tipo").trim().custom(Validar.validarCampo("cc/tipo")),
     //Despues de que se chequean los campos, se ejecuta esta funcion
     asyncHandler(async function (req, res, next) {
       //Los errores de la validacion se pasan a esta constante
@@ -331,15 +347,33 @@ exports.nuevoCC =
       .isLength({ max: 100 })
       .withMessage("El campo 'comuna' no debe exceder los 100 caracteres")
       .toUpperCase(),
-    body("estados")
+    body("estados", "El estado es invalido")
       .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'estados' no debe estar vacio")
-      .bail()
-      .isLength({ max: 30 })
-      .withMessage("El campo 'estados' no debe exceder los 30 caracteres")
-      .toUpperCase(),
+      .isIn([
+        "AMAZONAS",
+        "ANZOATEGUI",
+        "APURE",
+        "ARAGUA",
+        "BARINAS",
+        "BOLIVAR",
+        "CARABOBO",
+        "COJEDES",
+        "DELTA AMACURO",
+        "FALCON",
+        "GUARICO",
+        "LARA",
+        "MERIDA",
+        "MIRANDA",
+        "MONAGAS",
+        "NUEVA ESPARTA",
+        "PORTUGUESA",
+        "SUCRE",
+        "TACHIRA",
+        "TRUJILLO",
+        "LA GUAIRA",
+        "YARACUY",
+        "ZULIA",
+      ]),
     body("localidad")
       .trim()
       .escape()
@@ -393,9 +427,7 @@ exports.nuevoCC =
       .custom(Validar.siturTienePatronValido)
       .bail()
       .custom(Validar.siturNuevo),
-    body("tipo", "Tipo invalido")
-      .trim()
-      .isIn(["INDIGENA", "MIXTO", "RURAL", "URBANO"]),
+    body("tipo").trim().custom(Validar.validarCampo("cc/tipo")),
     //Despues de que se chequean los campos, se ejecuta esta funcion
     asyncHandler(async function (req, res, next) {
       //Los errores de la validacion se pasan a esta constante

@@ -259,29 +259,9 @@ exports.nuevoParticipacion = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("acompanamiento", "Acompanamiento invalido")
+  body("acompanamiento")
     .trim()
-    .isIn([
-      "ASAMBLEAS INFORMATIVAS PARA LA CONFORMACION DEL CONSEJO COMUNAL",
-      "ASAMBLEAS PARA LA ESCOGENCIA DE LA COMISION ELECTORAL PERMANENTE",
-      "PROCESO DE POSTULACION DE LAS VOCERIAS DEL CONSEJO COMUNAL",
-      "PROCESO DE ELECCIONES DE VOCERIAS",
-      "ASAMBLEA INFORMATIVA DEL EQUIPO PROMOTOR PROVISIONAL",
-      "ELABORACION MAPA DE PROBLEMAS Y SOLUCIONES",
-      "ASAMBLEA DE RENDICION DE CUENTA",
-      "JURAMENTACION DE VOCERIAS ELECTAS",
-      "ELABORACION DE PLAN DE DESARROLLO INTEGRAL COMUNITARIO O PLAN PATRIA COMUNAL",
-      "ELECCIONES DE COMISIONES PROVISIONALES DE COMUNAS",
-      "PROCESO DEL REFERENDUM DE CARTAS FUNDACIONALES",
-      "MESA DE TRABAJO DE ALGUN COMITE",
-      "ELABORACION DE LA AGENDA CONCRETA DE ACCION (ACA)",
-      "PROCESO FORMATIVO MUNICIPAL A.C.A",
-      "PROCESO FORMATIVO MUNICIPAL PARA EL REGISTRO DE LOS CONSEJOS COMUNALES",
-      "PROCESOS FORMATIVOS MUNICIPAL ELECTORALES",
-      "LEVANTAMIENTO CARTOGRAFICO",
-      "PROCESAMIENTO CARTOGRAFICO (DIGITALIZACION DE MAPA)",
-      "ELABORACION DE LA CARTOGRAFIA COMUNALES",
-    ]),
+    .custom(Validar.validarCampo("reporte/tipo/participacion/acompanamiento")),
   body("familiasBeneficiadas")
     .trim()
     .isInt({ min: 1 })
@@ -351,29 +331,9 @@ exports.actualizarParticipacion = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("acompanamiento", "Acompanamiento invalido")
+  body("acompanamiento")
     .trim()
-    .isIn([
-      "ASAMBLEAS INFORMATIVAS PARA LA CONFORMACION DEL CONSEJO COMUNAL",
-      "ASAMBLEAS PARA LA ESCOGENCIA DE LA COMISION ELECTORAL PERMANENTE",
-      "PROCESO DE POSTULACION DE LAS VOCERIAS DEL CONSEJO COMUNAL",
-      "PROCESO DE ELECCIONES DE VOCERIAS",
-      "ASAMBLEA INFORMATIVA DEL EQUIPO PROMOTOR PROVISIONAL",
-      "ELABORACION MAPA DE PROBLEMAS Y SOLUCIONES",
-      "ASAMBLEA DE RENDICION DE CUENTA",
-      "JURAMENTACION DE VOCERIAS ELECTAS",
-      "ELABORACION DE PLAN DE DESARROLLO INTEGRAL COMUNITARIO O PLAN PATRIA COMUNAL",
-      "ELECCIONES DE COMISIONES PROVISIONALES DE COMUNAS",
-      "PROCESO DEL REFERENDUM DE CARTAS FUNDACIONALES",
-      "MESA DE TRABAJO DE ALGUN COMITE",
-      "ELABORACION DE LA AGENDA CONCRETA DE ACCION (ACA)",
-      "PROCESO FORMATIVO MUNICIPAL A.C.A",
-      "PROCESO FORMATIVO MUNICIPAL PARA EL REGISTRO DE LOS CONSEJOS COMUNALES",
-      "PROCESOS FORMATIVOS MUNICIPAL ELECTORALES",
-      "LEVANTAMIENTO CARTOGRAFICO",
-      "PROCESAMIENTO CARTOGRAFICO (DIGITALIZACION DE MAPA)",
-      "ELABORACION DE LA CARTOGRAFIA COMUNALES",
-    ]),
+    .custom(Validar.validarCampo("reporte/tipo/participacion/acompanamiento")),
   body("familiasBeneficiadas")
     .trim()
     .isInt({ min: 1 })
@@ -471,42 +431,18 @@ exports.nuevoFormacion = [
     .bail()
     .isInt({ max: 999999999 })
     .withMessage("El campo 'mujeres' excede la cifra maxima"),
-  body("estrategia", "Estrategia invalida")
+  body("estrategia")
     .trim()
-    .isIn([
-      "TALLER",
-      "CHARLA",
-      "CONVERSATORIO",
-      "CAPACITACION",
-      "MESA DE TRABAJO",
-      "FORO",
-      "SEMINARIO",
-      "INDUCCION",
-      "VIDEO CONFERENCIA",
-    ]),
-  body("modalidad", "Modalidad invalida")
+    .custom(Validar.validarCampo("reporte/tipo/formacion/estrategia")),
+  body("modalidad")
     .trim()
-    .isIn(["PRESENCIAL", "VIRTUAL", "MIXTA"]),
-  body("tematica", "Tematica invalida")
+    .custom(Validar.validarCampo("reporte/tipo/formacion/modalidad")),
+  body("tematica")
     .trim()
-    .isIn([
-      "3R.NETS",
-      "COLECTIVO DE COORDINACION COMUNITARIA",
-      "PLAN PATRIA COMUNAL O PLAN DE DESARROLLO COMUNITARIO",
-      "SISTEMA ECONOMICO COMUNAL",
-      "REGISTRO DE CONSEJOS COMUNALES",
-      "CARTOGRAFIA COMUNAL",
-      "COMISION ELECTORAL PERMANENTE",
-      "COMISION ELECTORAL PROVISIONAL",
-      "FUNCIONES DE VOCERIAS, COMITES Y MESAS TECNICAS",
-      "LEYES DE ORGANIZACION COMUNAL",
-      "PROCESO FORMATIVO MUNICIPAL A.C.A",
-      "PROCESO FORMATIVO MUNICIPAL PARA EL REGISTROS DE LOS CONSEJOS COMUNALES",
-      "PROCESOS FORMATIVOS MUNICIPAL ELECTORALES",
-    ]),
-  body("verificacion", "Verificacion invalida")
+    .custom(Validar.validarCampo("reporte/tipo/formacion/tematica")),
+  body("verificacion")
     .trim()
-    .isIn(["LISTA DE ASISTENCIA", "FOTOGRAFIA", "AMBOS", "NINGUNO"]),
+    .custom(Validar.validarCampo("reporte/tipo/formacion/verificacion")),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -577,42 +513,18 @@ exports.actualizarFormacion = [
     .bail()
     .isInt({ max: 999999999 })
     .withMessage("El campo 'mujeres' excede la cifra maxima"),
-  body("estrategia", "Estrategia invalida")
+  body("estrategia")
     .trim()
-    .isIn([
-      "TALLER",
-      "CHARLA",
-      "CONVERSATORIO",
-      "CAPACITACION",
-      "MESA DE TRABAJO",
-      "FORO",
-      "SEMINARIO",
-      "INDUCCION",
-      "VIDEO CONFERENCIA",
-    ]),
-  body("modalidad", "Modalidad invalida")
+    .custom(Validar.validarCampo("reporte/tipo/formacion/estrategia")),
+  body("modalidad")
     .trim()
-    .isIn(["PRESENCIAL", "VIRTUAL", "MIXTA"]),
-  body("tematica", "Tematica invalida")
+    .custom(Validar.validarCampo("reporte/tipo/formacion/modalidad")),
+  body("tematica")
     .trim()
-    .isIn([
-      "3R.NETS",
-      "COLECTIVO DE COORDINACION COMUNITARIA",
-      "PLAN PATRIA COMUNAL O PLAN DE DESARROLLO COMUNITARIO",
-      "SISTEMA ECONOMICO COMUNAL",
-      "REGISTRO DE CONSEJOS COMUNALES",
-      "CARTOGRAFIA COMUNAL",
-      "COMISION ELECTORAL PERMANENTE",
-      "COMISION ELECTORAL PROVISIONAL",
-      "FUNCIONES DE VOCERIAS, COMITES Y MESAS TECNICAS",
-      "LEYES DE ORGANIZACION COMUNAL",
-      "PROCESO FORMATIVO MUNICIPAL A.C.A",
-      "PROCESO FORMATIVO MUNICIPAL PARA EL REGISTROS DE LOS CONSEJOS COMUNALES",
-      "PROCESOS FORMATIVOS MUNICIPAL ELECTORALES",
-    ]),
-  body("verificacion", "Verificacion invalida")
+    .custom(Validar.validarCampo("reporte/tipo/formacion/tematica")),
+  body("verificacion")
     .trim()
-    .isIn(["LISTA DE ASISTENCIA", "FOTOGRAFIA", "AMBOS", "NINGUNO"]),
+    .custom(Validar.validarCampo("reporte/tipo/formacion/verificacion")),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -670,26 +582,11 @@ exports.nuevoFortalecimiento = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("acompanamiento", "Acompanamiento invalido")
+  body("acompanamiento")
     .trim()
-    .isIn([
-      "COMITE DE ECONOMIA COMUNAL PARA LA ACTIVACION DE (OSP)",
-      "MESAS DEL CONSEJO DE ECONOMIA",
-      "ELABORACION DE PLANES PRODUCTIVOS",
-      "FUNCIONAMIENTO O REIMPULSO DE (UPF)",
-      "FUNCIONAMIENTO O REIMPULSO DE (EPS)",
-      "PROYECTOS DEL CONSEJO FEDERAL DE GOBIERNO (CFG)",
-      "FUNCIONAMIENTO O REIMPULSO DE EMPRENDEDORES",
-      "FUNCIONAMIENTO O REIMPULSO DE COOPERATIVAS",
-      "GRUPO DE INTERCAMBIO SOLIDARIO",
-      "PROCESO DE ASAMBLEA PARA APROBACION DE PROYECTO",
-      "PLAN SIEMBRA",
-      "PROYECTOS DE VIVEROS",
-      "PLAN TESTIL",
-      "PLAN CONUCO Y CEREALES",
-      "CONSTRUCCION DEL CIRCUITO ECONOMICO ESTADAL",
-      "IDENTIFICACION DE LAS EXPERIENCIAS PRODUCTIVAS",
-    ]),
+    .custom(
+      Validar.validarCampo("reporte/tipo/fortalecimiento/acompanamiento")
+    ),
   body("nombreOSP")
     .trim()
     .escape()
@@ -699,58 +596,24 @@ exports.nuevoFortalecimiento = [
     .isLength({ max: 100 })
     .withMessage("El campo 'nombreOSP' no debe exceder los 100 caracteres")
     .toUpperCase(),
-  body("tipoActividad", "Tipo de actividad economica invalido")
+  body("tipoActividad")
     .trim()
-    .isIn([
-      "AGROPECUARIA",
-      "SERVICIO DE ADMINISTRACION PUBLICA",
-      "INDUSTRIA MANU FACTURERA",
-      "ESTABLECIMIENTO FINANCIERO",
-      "CONSTRUCCION",
-      "ELECTRICIDAD, GAS Y AGUA",
-      "MINERALES METALICOS Y NO METALICOS",
-      "PETROLEO CRUDO Y GAS NATURAL",
-      "COMERCIO",
-      "OTROS SERVICIOS",
-      "COMUNICACIONES",
-      "TRANSPORTE Y ALMACENAMIENTO",
-    ]),
-  body("tipoOSP", "Tipo de organizacion socioproductiva invalido")
+    .custom(Validar.validarCampo("reporte/tipo/fortalecimiento/tipoActividad")),
+  body("tipoOSP")
     .trim()
-    .isIn([
-      "CONSEJO COMUNAL",
-      "UNIDAD DE PRODUCCION FAMILIAR",
-      "EMPRESA DE PRODUCCION SOCIAL DIRECTA",
-      "EMPRESA DE PRODUCCION SOCIAL INDIRECTA",
-      "EMPRESA DE PRODUCCION SOCIAL MIXTA",
-      "EMPRENDEDORES",
-      "GRUPO DE INTERCAMBIO SOLIDARIO",
-      "COOPERATIVAS",
-    ]),
-  body("proyectoCFG.tipo", "Tipo de proyecto CFG invalido")
+    .custom(Validar.validarCampo("reporte/tipo/fortalecimiento/tipoOSP")),
+  body("proyectoCFG.tipo")
     .optional({ values: "falsy" })
     .trim()
-    .isIn([
-      "AMBIENTAL",
-      "CULTURAL",
-      "DEPORTIVO",
-      "EDUCACION",
-      "ELECTRICIDAD",
-      "INFRAESTRUCTURA MARITIMA, FLUVIAL Y LA ACUICULTURA",
-      "MANEJO INTEGRAL DEL AGUA",
-      "MUROS",
-      "PROCESOS INDUSTRIALES",
-      "SALUD",
-      "SERVICIOS PRODUCTIVOS",
-      "SISTEMA DE PRODUCCION AGRICOLA",
-      "SISTEMAS AGROPECUARIOS",
-      "VIALIDAD",
-      "VIVIENDA",
-    ]),
-  body("proyectoCFG.etapa", "Etapa del proyecto CFG invalida")
+    .custom(
+      Validar.validarCampo("reporte/tipo/fortalecimiento/proyectoCFG/tipo")
+    ),
+  body("proyectoCFG.etapa")
     .optional({ values: "falsy" })
     .trim()
-    .isIn(["ETAPA 1", "ETAPA 2", "ETAPA 3", "CULMINADO"]),
+    .custom(
+      Validar.validarCampo("reporte/tipo/fortalecimiento/proyectoCFG/etapa")
+    ),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -807,26 +670,11 @@ exports.actualizarFortalecimiento = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("acompanamiento", "Acompanamiento invalido")
+  body("acompanamiento")
     .trim()
-    .isIn([
-      "COMITE DE ECONOMIA COMUNAL PARA LA ACTIVACION DE (OSP)",
-      "MESAS DEL CONSEJO DE ECONOMIA",
-      "ELABORACION DE PLANES PRODUCTIVOS",
-      "FUNCIONAMIENTO O REIMPULSO DE (UPF)",
-      "FUNCIONAMIENTO O REIMPULSO DE (EPS)",
-      "PROYECTOS DEL CONSEJO FEDERAL DE GOBIERNO (CFG)",
-      "FUNCIONAMIENTO O REIMPULSO DE EMPRENDEDORES",
-      "FUNCIONAMIENTO O REIMPULSO DE COOPERATIVAS",
-      "GRUPO DE INTERCAMBIO SOLIDARIO",
-      "PROCESO DE ASAMBLEA PARA APROBACION DE PROYECTO",
-      "PLAN SIEMBRA",
-      "PROYECTOS DE VIVEROS",
-      "PLAN TESTIL",
-      "PLAN CONUCO Y CEREALES",
-      "CONSTRUCCION DEL CIRCUITO ECONOMICO ESTADAL",
-      "IDENTIFICACION DE LAS EXPERIENCIAS PRODUCTIVAS",
-    ]),
+    .custom(
+      Validar.validarCampo("reporte/tipo/fortalecimiento/acompanamiento")
+    ),
   body("nombreOSP")
     .trim()
     .escape()
@@ -836,58 +684,24 @@ exports.actualizarFortalecimiento = [
     .isLength({ max: 100 })
     .withMessage("El campo 'nombreOSP' no debe exceder los 100 caracteres")
     .toUpperCase(),
-  body("tipoActividad", "Tipo de actividad economica invalido")
+  body("tipoActividad")
     .trim()
-    .isIn([
-      "AGROPECUARIA",
-      "SERVICIO DE ADMINISTRACION PUBLICA",
-      "INDUSTRIA MANU FACTURERA",
-      "ESTABLECIMIENTO FINANCIERO",
-      "CONSTRUCCION",
-      "ELECTRICIDAD, GAS Y AGUA",
-      "MINERALES METALICOS Y NO METALICOS",
-      "PETROLEO CRUDO Y GAS NATURAL",
-      "COMERCIO",
-      "OTROS SERVICIOS",
-      "COMUNICACIONES",
-      "TRANSPORTE Y ALMACENAMIENTO",
-    ]),
-  body("tipoOSP", "Tipo de organizacion socioproductiva invalido")
+    .custom(Validar.validarCampo("reporte/tipo/fortalecimiento/tipoActividad")),
+  body("tipoOSP")
     .trim()
-    .isIn([
-      "CONSEJO COMUNAL",
-      "UNIDAD DE PRODUCCION FAMILIAR",
-      "EMPRESA DE PRODUCCION SOCIAL DIRECTA",
-      "EMPRESA DE PRODUCCION SOCIAL INDIRECTA",
-      "EMPRESA DE PRODUCCION SOCIAL MIXTA",
-      "EMPRENDEDORES",
-      "GRUPO DE INTERCAMBIO SOLIDARIO",
-      "COOPERATIVAS",
-    ]),
-  body("proyectoCFG.tipo", "Tipo de proyecto CFG invalido")
+    .custom(Validar.validarCampo("reporte/tipo/fortalecimiento/tipoOSP")),
+  body("proyectoCFG.tipo")
     .optional({ values: "falsy" })
     .trim()
-    .isIn([
-      "AMBIENTAL",
-      "CULTURAL",
-      "DEPORTIVO",
-      "EDUCACION",
-      "ELECTRICIDAD",
-      "INFRAESTRUCTURA MARITIMA, FLUVIAL Y LA ACUICULTURA",
-      "MANEJO INTEGRAL DEL AGUA",
-      "MUROS",
-      "PROCESOS INDUSTRIALES",
-      "SALUD",
-      "SERVICIOS PRODUCTIVOS",
-      "SISTEMA DE PRODUCCION AGRICOLA",
-      "SISTEMAS AGROPECUARIOS",
-      "VIALIDAD",
-      "VIVIENDA",
-    ]),
-  body("proyectoCFG.etapa", "Etapa del proyecto CFG invalida")
+    .custom(
+      Validar.validarCampo("reporte/tipo/fortalecimiento/proyectoCFG/tipo")
+    ),
+  body("proyectoCFG.etapa")
     .optional({ values: "falsy" })
     .trim()
-    .isIn(["ETAPA 1", "ETAPA 2", "ETAPA 3", "CULMINADO"]),
+    .custom(
+      Validar.validarCampo("reporte/tipo/fortalecimiento/proyectoCFG/etapa")
+    ),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -945,9 +759,9 @@ exports.nuevoIncidencias = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("areaSustantiva", "Area sustantiva invalida")
+  body("areaSustantiva")
     .trim()
-    .isIn(["PARTICIPACION", "FORMACION", "FORTALECIMIENTO", "CARTOGRAFIA"]),
+    .custom(Validar.validarCampo("reporte/tipo/incidencias/areaSustantiva")),
   body("tipoIncidencia")
     .trim()
     .escape()
@@ -1009,9 +823,9 @@ exports.actualizarIncidencias = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("areaSustantiva", "Area sustantiva invalida")
+  body("areaSustantiva")
     .trim()
-    .isIn(["PARTICIPACION", "FORMACION", "FORTALECIMIENTO", "CARTOGRAFIA"]),
+    .custom(Validar.validarCampo("reporte/tipo/incidencias/areaSustantiva")),
   body("tipoIncidencia")
     .trim()
     .escape()
@@ -1083,9 +897,10 @@ exports.nuevoCasoAdmin = [
     .isLength({ max: 100 })
     .withMessage("El campo 'caso' debe ser menor a 100 caracteres")
     .toUpperCase(),
-  body("tipoCaso", "Tipo de caso administrativo invalido")
+  body("tipoCaso")
     .trim()
-    .isIn(["CASO", "DENUNCIA", "ADMINISTRATIVO", "ASESORIA"]),
+    .custom(Validar.validarCampo("reporte/tipo/casoadmin/tipoCaso")),
+
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -1145,9 +960,9 @@ exports.actualizarCasoAdmin = [
     .isLength({ max: 100 })
     .withMessage("El campo 'caso' debe ser menor a 100 caracteres")
     .toUpperCase(),
-  body("tipoCaso", "Tipo de caso administrativo invalido")
+  body("tipoCaso")
     .trim()
-    .isIn(["CASO", "DENUNCIA", "ADMINISTRATIVO", "ASESORIA"]),
+    .custom(Validar.validarCampo("reporte/tipo/casoadmin/tipoCaso")),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
