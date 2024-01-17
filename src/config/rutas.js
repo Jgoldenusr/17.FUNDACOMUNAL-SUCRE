@@ -7,6 +7,7 @@ import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import NoteAddRoundedIcon from "@mui/icons-material/NoteAddRounded";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 
 const rutasGET = [
   {
@@ -57,6 +58,12 @@ const rutasPOST = [
 ];
 
 const rutasETC = [
+  {
+    ruta: "/config",
+    nombre: "Configuraciones",
+    icono: SettingsRoundedIcon,
+    listaNegra: ["PROMOTOR"],
+  },
   {
     ruta: "/cuenta",
     nombre: "Mi cuenta",
