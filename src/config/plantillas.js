@@ -11,6 +11,12 @@ const formularioVacioCC = {
   tipo: "URBANO",
 };
 
+const formularioVacioOpcion = {
+  array: [""],
+  campo: "",
+  coleccion: "",
+};
+
 const formularioVacioUsuario = {
   apellido: "",
   cedula: "",
@@ -94,6 +100,7 @@ const formularioParticipacion = {
 
 export {
   formularioVacioCC,
+  formularioVacioOpcion,
   formularioVacioUsuario,
   formularioReporteBase,
   formularioCasoAdmin,
