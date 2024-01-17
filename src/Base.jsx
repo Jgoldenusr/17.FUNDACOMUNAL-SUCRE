@@ -7,10 +7,12 @@ import Envoltorio from "./pantallas/Envoltorio.jsx";
 import EstadisticasGenerales from "./pantallas/EstadisticasGenerales.jsx";
 import FormularioCC from "./pantallas/FormularioCC.jsx";
 import FormularioIngreso from "./pantallas/FormularioIngreso.jsx";
+import FormularioOpcion from "./pantallas/FormularioOpcion.jsx";
 import FormularioReporte from "./pantallas/FormularioReporte.jsx";
 import FormularioUsuario from "./pantallas/FormularioUsuario.jsx";
 import MiCuenta from "./pantallas/MiCuenta.jsx";
 import MostrarCCS from "./pantallas/MostrarCCS.jsx";
+import MostrarOpciones from "./pantallas/MostrarOpciones.jsx";
 import MostrarReportes from "./pantallas/MostrarReportes.jsx";
 import MostrarUsuarios from "./pantallas/MostrarUsuarios.jsx";
 import VerCC from "./pantallas/VerCC.jsx";
@@ -52,6 +54,8 @@ function Base() {
               <Route element={<Envoltorio />}>
                 <Route path="ccs/nuevo" element={<FormularioCC />} />
                 <Route path="ccs/:id/editar" element={<FormularioCC />} />
+                <Route path="config" element={<MostrarOpciones />} />
+                <Route path="config/:id/editar" element={<FormularioOpcion />} />
                 <Route path="usuarios" element={<MostrarUsuarios />} />
                 <Route path="usuarios/nuevo" element={<FormularioUsuario />}/>
                 <Route path="usuarios/:id" element={<VerUsuario />} />
@@ -63,7 +67,7 @@ function Base() {
                 <Route path="/" element={<EstadisticasGenerales />} />
                 <Route path="ccs" element={<MostrarCCS />} />
                 <Route path="ccs/:id" element={<VerCC />} />
-                <Route path="/cuenta" element={<MiCuenta />} />
+                <Route path="cuenta" element={<MiCuenta />} />
                 <Route path="reportes" element={<MostrarReportes />} />
                 <Route path="reportes/nuevo" element={<FormularioReporte />} />
                 <Route path="reportes/:id" element={<VerReporte />} /> 
