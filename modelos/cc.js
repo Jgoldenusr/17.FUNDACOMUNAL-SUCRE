@@ -55,25 +55,27 @@ EsquemaCC.virtual("estaRenovado")
   .get(function () {
     let estaRenovado = false;
     if (this.renovado) {
-      if (DateTime.now() < DateTime.fromJSDate(this.renovado.hasta)) {
+      if (
+        DateTime.now() < DateTime.fromJSDate(this.renovado.hasta).setZone("UTC")
+      ) {
         estaRenovado = {
-          desde: DateTime.fromJSDate(this.renovado.desde).toFormat(
-            "dd/MM/yyyy"
-          ),
-          hasta: DateTime.fromJSDate(this.renovado.hasta).toFormat(
-            "dd/MM/yyyy"
-          ),
+          desde: DateTime.fromJSDate(this.renovado.desde)
+            .setZone("UTC")
+            .toFormat("dd/MM/yyyy"),
+          hasta: DateTime.fromJSDate(this.renovado.hasta)
+            .setZone("UTC")
+            .toFormat("dd/MM/yyyy"),
           idReporte: this.renovado.idReporte,
           vencido: false,
         };
       } else {
         estaRenovado = {
-          desde: DateTime.fromJSDate(this.renovado.desde).toFormat(
-            "dd/MM/yyyy"
-          ),
-          hasta: DateTime.fromJSDate(this.renovado.hasta).toFormat(
-            "dd/MM/yyyy"
-          ),
+          desde: DateTime.fromJSDate(this.renovado.desde)
+            .setZone("UTC")
+            .toFormat("dd/MM/yyyy"),
+          hasta: DateTime.fromJSDate(this.renovado.hasta)
+            .setZone("UTC")
+            .toFormat("dd/MM/yyyy"),
           idReporte: this.renovado.idReporte,
           vencido: true,
         };
@@ -99,15 +101,23 @@ EsquemaCC.virtual("estaVigente")
     if (this.vigente) {
       if (DateTime.now() < DateTime.fromJSDate(this.vigente.hasta)) {
         estaVigente = {
-          desde: DateTime.fromJSDate(this.vigente.desde).toFormat("dd/MM/yyyy"),
-          hasta: DateTime.fromJSDate(this.vigente.hasta).toFormat("dd/MM/yyyy"),
+          desde: DateTime.fromJSDate(this.vigente.desde)
+            .setZone("UTC")
+            .toFormat("dd/MM/yyyy"),
+          hasta: DateTime.fromJSDate(this.vigente.hasta)
+            .setZone("UTC")
+            .toFormat("dd/MM/yyyy"),
           idReporte: this.vigente.idReporte,
           vencido: false,
         };
       } else {
         estaVigente = {
-          desde: DateTime.fromJSDate(this.vigente.desde).toFormat("dd/MM/yyyy"),
-          hasta: DateTime.fromJSDate(this.vigente.hasta).toFormat("dd/MM/yyyy"),
+          desde: DateTime.fromJSDate(this.vigente.desde)
+            .setZone("UTC")
+            .toFormat("dd/MM/yyyy"),
+          hasta: DateTime.fromJSDate(this.vigente.hasta)
+            .setZone("UTC")
+            .toFormat("dd/MM/yyyy"),
           idReporte: this.vigente.idReporte,
           vencido: true,
         };
