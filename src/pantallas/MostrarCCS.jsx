@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 //Componentes MUI
 import {
   Avatar,
+  Box,
   Button,
   Card,
   CardContent,
@@ -13,6 +14,7 @@ import {
   Grid,
   InputLabel,
   MenuItem,
+  Pagination,
   Select,
   Typography,
 } from "@mui/material";
@@ -55,17 +57,19 @@ function MostrarCCS() {
       nuevaURL += `situr=${parametros.get("situr")}&`;
     }
     if (parametros.get("tipo")) {
-      nuevaURL += `tipo=${parametros.get("tipo")}`;
+      nuevaURL += `tipo=${parametros.get("tipo")}&`;
+    }
+    if (parametros.get("p")) {
+      nuevaURL += `p=${parametros.get("p")}`;
     }
 
-    console.log(nuevaURL);
     return nuevaURL;
   };
 
   const actualizarParametros = function (campo) {
-    return async function (evento) {
+    return async function (evento, valorPag) {
       evento.preventDefault();
-      let valorCampo = evento.target.value;
+      let valorCampo = campo === "p" ? valorPag : evento.target.value;
       //Logica de algunos campos
       if (campo === "municipios") {
         const arrayParroquias = await buscarOpcion(
@@ -91,12 +95,18 @@ function MostrarCCS() {
           comuna: arrayComunas,
         });
       }
-      let miConsulta = {};
+      if (campo !== "p") {
+        parametros.delete("p");
+      }
       parametros.set(campo, valorCampo);
+      let miConsulta = {};
       for (let [clave, valor] of parametros) {
         if (clave && valor) miConsulta[clave] = valor;
       }
       setParametros(miConsulta);
+      if (campo === "p") {
+        setRealizarConsulta(true);
+      }
     };
   };
 
@@ -302,90 +312,102 @@ function MostrarCCS() {
       ) : error ? (
         <AlertaError error={error} />
       ) : (
-        ccs?.map((cc) => {
-          return (
-            <Grid item xs={12} md={6} xl={4} key={cc._id}>
-              <Card elevation={6}>
-                <CardHeader
-                  disableTypography
-                  action={
-                    <BotonMenu
-                      etc={{ situr: cc.situr }}
-                      id={cc._id}
-                      opciones={{
-                        editar: ["PROMOTOR"],
-                        reportes: [],
-                        verificar: ["PROMOTOR"],
-                        verMas: [],
-                      }}
-                      ruta="ccs"
-                    />
-                  }
-                  avatar={
-                    <Avatar
-                      sx={{
-                        bgcolor:
-                          cc.estaRenovado &&
-                          !cc.estaRenovado.vencido &&
-                          cc.estaVigente &&
-                          !cc.estaVigente.vencido
-                            ? "#2e7d32"
-                            : (!cc.estaRenovado || cc.estaRenovado.vencido) &&
-                              (!cc.estaVigente || cc.estaVigente.vencido)
-                            ? "#d32f2f"
-                            : "#ff9800",
-                      }}
-                    >
-                      {cc.tipo === "URBANO" ? (
-                        <HomeWorkRoundedIcon />
-                      ) : cc.tipo === "RURAL" ? (
-                        <CabinRoundedIcon />
-                      ) : (
-                        <ForestRoundedIcon />
-                      )}
-                    </Avatar>
-                  }
-                  sx={{
-                    "& .MuiCardHeader-content": {
-                      display: "block",
-                      overflow: "hidden",
-                    },
-                  }}
-                  subheader={
-                    <Typography
-                      noWrap
-                      color="text.secondary"
-                      textOverflow={"ellipsis"}
-                      variant="body2"
-                    >
-                      {cc.situr}
-                    </Typography>
-                  }
-                  title={
-                    <>
+        <>
+          {ccs?.docs?.map((cc) => {
+            return (
+              <Grid item xs={12} md={6} xl={4} key={cc._id}>
+                <Card elevation={6}>
+                  <CardHeader
+                    disableTypography
+                    action={
+                      <BotonMenu
+                        etc={{ situr: cc.situr }}
+                        id={cc._id}
+                        opciones={{
+                          editar: ["PROMOTOR"],
+                          reportes: [],
+                          verificar: ["PROMOTOR"],
+                          verMas: [],
+                        }}
+                        ruta="ccs"
+                      />
+                    }
+                    avatar={
+                      <Avatar
+                        sx={{
+                          bgcolor:
+                            cc.estaRenovado &&
+                            !cc.estaRenovado.vencido &&
+                            cc.estaVigente &&
+                            !cc.estaVigente.vencido
+                              ? "#2e7d32"
+                              : (!cc.estaRenovado || cc.estaRenovado.vencido) &&
+                                (!cc.estaVigente || cc.estaVigente.vencido)
+                              ? "#d32f2f"
+                              : "#ff9800",
+                        }}
+                      >
+                        {cc.tipo === "URBANO" ? (
+                          <HomeWorkRoundedIcon />
+                        ) : cc.tipo === "RURAL" ? (
+                          <CabinRoundedIcon />
+                        ) : (
+                          <ForestRoundedIcon />
+                        )}
+                      </Avatar>
+                    }
+                    sx={{
+                      "& .MuiCardHeader-content": {
+                        display: "block",
+                        overflow: "hidden",
+                      },
+                    }}
+                    subheader={
                       <Typography
                         noWrap
-                        sx={{ fontWeight: "bold", lineHeight: 1.5 }}
+                        color="text.secondary"
                         textOverflow={"ellipsis"}
-                        variant="subtitle1"
+                        variant="body2"
                       >
-                        {cc.nombre}
+                        {cc.situr}
                       </Typography>
-                      <Typography
-                        noWrap
-                        sx={{ fontStyle: "italic" }}
-                        textOverflow={"ellipsis"}
-                        variant="body1"
-                      >
-                        {`${cc.municipios}, ${cc.parroquias}`}
-                      </Typography>
-                    </>
-                  }
-                />
-              </Card>
-            </Grid>
-          );
-        })
+                    }
+                    title={
+                      <>
+                        <Typography
+                          noWrap
+                          sx={{ fontWeight: "bold", lineHeight: 1.5 }}
+                          textOverflow={"ellipsis"}
+                          variant="subtitle1"
+                        >
+                          {cc.nombre}
+                        </Typography>
+                        <Typography
+                          noWrap
+                          sx={{ fontStyle: "italic" }}
+                          textOverflow={"ellipsis"}
+                          variant="body1"
+                        >
+                          {`${cc.municipios}, ${cc.parroquias}`}
+                        </Typography>
+                      </>
+                    }
+                  />
+                </Card>
+              </Grid>
+            );
+          })}
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
+              <Pagination
+                count={ccs.totalPages}
+                page={ccs.page}
+                color="primary"
+                onChange={actualizarParametros("p")}
+              />
+            </Box>
+          </Grid>
+        </>
       )}
     </Grid>
   );

@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 //Componentes MUI
 import {
   Avatar,
+  Box,
   Badge,
   Button,
   Card,
@@ -14,6 +15,7 @@ import {
   Grid,
   InputLabel,
   MenuItem,
+  Pagination,
   Select,
   Typography,
 } from "@mui/material";
@@ -51,22 +53,32 @@ function MostrarUsuarios() {
       nuevaURL += `rol=${parametros.get("rol")}&`;
     }
     if (parametros.get("usuario")) {
-      nuevaURL += `usuario=${parametros.get("usuario")}`;
+      nuevaURL += `usuario=${parametros.get("usuario")}&`;
+    }
+    if (parametros.get("p")) {
+      nuevaURL += `p=${parametros.get("p")}`;
     }
 
     return nuevaURL;
   };
 
   const actualizarParametros = function (campo) {
-    return function (evento) {
+    return function (evento, valorPag) {
       evento.preventDefault();
-      let valorCampo = evento.target.value;
-      let miConsulta = {};
+      let valorCampo = campo === "p" ? valorPag : evento.target.value;
+      //Logica de algunos campos
+      if (campo !== "p") {
+        parametros.delete("p");
+      }
       parametros.set(campo, valorCampo);
+      let miConsulta = {};
       for (let [clave, valor] of parametros) {
         if (clave && valor) miConsulta[clave] = valor;
       }
       setParametros(miConsulta);
+      if (campo === "p") {
+        setRealizarConsulta(true);
+      }
     };
   };
 
@@ -195,70 +207,82 @@ function MostrarUsuarios() {
       ) : error ? (
         <AlertaError error={error} />
       ) : (
-        usuarios?.map((usuario) => {
-          return (
-            <Grid item xs={12} md={4} xl={3} key={usuario._id}>
-              <Card elevation={6}>
-                <CardHeader
-                  disableTypography
-                  action={
-                    <BotonMenu
-                      id={usuario._id}
-                      opciones={{
-                        editar: [],
-                        ocultar: ["PROMOTOR"],
-                        reportes: [],
-                        verMas: [],
-                      }}
-                      ruta="usuarios"
-                    />
-                  }
-                  avatar={
-                    <Badge
-                      badgeContent={usuario.cc.length}
-                      color="error"
-                      max={999}
-                      overlap="circular"
-                    >
-                      <Avatar sx={{ bgcolor: "#1976d2" }}>
-                        {usuario.rol === "ADMINISTRADOR" ? (
-                          <AdminPanelSettingsIcon />
-                        ) : (
-                          <PersonRoundedIcon />
-                        )}
-                      </Avatar>
-                    </Badge>
-                  }
-                  sx={{
-                    "& .MuiCardHeader-content": {
-                      display: "block",
-                      overflow: "hidden",
-                    },
-                  }}
-                  subheader={
-                    <Typography
-                      noWrap
-                      color="text.secondary"
-                      textOverflow={"ellipsis"}
-                      variant="body2"
-                    >
-                      {usuario.cedula}
-                    </Typography>
-                  }
-                  title={
-                    <Typography
-                      noWrap
-                      textOverflow={"ellipsis"}
-                      variant="body1"
-                    >
-                      {`${usuario.apellido} ${usuario.nombre}`}
-                    </Typography>
-                  }
-                />
-              </Card>
-            </Grid>
-          );
-        })
+        <>
+          {usuarios?.docs?.map((usuario) => {
+            return (
+              <Grid item xs={12} md={4} xl={3} key={usuario._id}>
+                <Card elevation={6}>
+                  <CardHeader
+                    disableTypography
+                    action={
+                      <BotonMenu
+                        id={usuario._id}
+                        opciones={{
+                          editar: [],
+                          ocultar: ["PROMOTOR"],
+                          reportes: [],
+                          verMas: [],
+                        }}
+                        ruta="usuarios"
+                      />
+                    }
+                    avatar={
+                      <Badge
+                        badgeContent={usuario.cc.length}
+                        color="error"
+                        max={999}
+                        overlap="circular"
+                      >
+                        <Avatar sx={{ bgcolor: "#1976d2" }}>
+                          {usuario.rol === "ADMINISTRADOR" ? (
+                            <AdminPanelSettingsIcon />
+                          ) : (
+                            <PersonRoundedIcon />
+                          )}
+                        </Avatar>
+                      </Badge>
+                    }
+                    sx={{
+                      "& .MuiCardHeader-content": {
+                        display: "block",
+                        overflow: "hidden",
+                      },
+                    }}
+                    subheader={
+                      <Typography
+                        noWrap
+                        color="text.secondary"
+                        textOverflow={"ellipsis"}
+                        variant="body2"
+                      >
+                        {usuario.cedula}
+                      </Typography>
+                    }
+                    title={
+                      <Typography
+                        noWrap
+                        textOverflow={"ellipsis"}
+                        variant="body1"
+                      >
+                        {`${usuario.apellido} ${usuario.nombre}`}
+                      </Typography>
+                    }
+                  />
+                </Card>
+              </Grid>
+            );
+          })}
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
+              <Pagination
+                count={usuarios.totalPages}
+                page={usuarios.page}
+                color="primary"
+                onChange={actualizarParametros("p")}
+              />
+            </Box>
+          </Grid>
+        </>
       )}
     </Grid>
   );

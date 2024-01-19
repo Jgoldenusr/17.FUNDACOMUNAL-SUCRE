@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 //Componentes MUI
 import {
   Avatar,
+  Box,
   Card,
   CardContent,
   CardHeader,
@@ -12,6 +13,7 @@ import {
   Grid,
   InputLabel,
   MenuItem,
+  Pagination,
   Select,
   Typography,
 } from "@mui/material";
@@ -61,17 +63,19 @@ function MostrarReportes() {
       nuevaURL += `tipo=${parametros.get("tipo")}&`;
     }
     if (parametros.get("usuario")) {
-      nuevaURL += `usuario=${parametros.get("usuario")}`;
+      nuevaURL += `usuario=${parametros.get("usuario")}&`;
+    }
+    if (parametros.get("p")) {
+      nuevaURL += `p=${parametros.get("p")}`;
     }
 
     return nuevaURL;
   };
 
   const actualizarParametros = function (campo) {
-    return function (evento) {
+    return function (evento, valorPag) {
       evento.preventDefault();
-      let valorCampo = evento.target.value;
-
+      let valorCampo = campo === "p" ? valorPag : evento.target.value;
       //Logica de algunos campos
       if (campo === "dia") {
         parametros.delete("desde");
@@ -99,8 +103,10 @@ function MostrarReportes() {
       ) {
         setSaltarConsulta(true);
       }
+      if (campo !== "p") {
+        parametros.delete("p");
+      }
       parametros.set(campo, valorCampo);
-
       let miConsulta = {};
       for (let [clave, valor] of parametros) {
         if (clave && valor) miConsulta[clave] = valor;
@@ -239,82 +245,94 @@ function MostrarReportes() {
       ) : error ? (
         <AlertaError error={error} />
       ) : (
-        reportes?.map((reporte) => {
-          return (
-            <Grid item xs={12} md={6} xl={4} key={reporte._id}>
-              <Card elevation={6}>
-                <CardHeader
-                  disableTypography
-                  action={
-                    <BotonMenu
-                      id={reporte._id}
-                      opciones={{
-                        verMas: [],
-                        editar: excepcionPromotor ? [] : ["PROMOTOR"],
-                      }}
-                    />
-                  }
-                  avatar={
-                    <Avatar sx={{ bgcolor: "#1976d2" }}>
-                      {reporte.tipo === "casoadmin" ? (
-                        <AssignmentLateRoundedIcon />
-                      ) : reporte.tipo === "comunicaciones" ? (
-                        <RssFeedRoundedIcon />
-                      ) : reporte.tipo === "fortalecimiento" ? (
-                        <ConstructionRoundedIcon />
-                      ) : reporte.tipo === "formacion" ? (
-                        <SchoolRoundedIcon />
-                      ) : reporte.tipo === "incidencias" ? (
-                        <FmdBadRoundedIcon />
-                      ) : reporte.tipo === "participacion" ? (
-                        <Diversity3RoundedIcon />
-                      ) : (
-                        <VerifiedRoundedIcon />
-                      )}
-                    </Avatar>
-                  }
-                  sx={{
-                    "& .MuiCardHeader-content": {
-                      display: "block",
-                      overflow: "hidden",
-                    },
-                  }}
-                  subheader={
-                    <Typography
-                      noWrap
-                      color="text.secondary"
-                      textOverflow={"ellipsis"}
-                      variant="body2"
-                    >
-                      {reporte.fechaConFormato}
-                    </Typography>
-                  }
-                  title={
-                    <>
+        <>
+          {reportes?.docs?.map((reporte, i) => {
+            return (
+              <Grid item xs={12} md={6} xl={4} key={reporte._id}>
+                <Card elevation={6}>
+                  <CardHeader
+                    disableTypography
+                    action={
+                      <BotonMenu
+                        id={reporte._id}
+                        opciones={{
+                          verMas: [],
+                          editar: excepcionPromotor ? [] : ["PROMOTOR"],
+                        }}
+                      />
+                    }
+                    avatar={
+                      <Avatar sx={{ bgcolor: "#1976d2" }}>
+                        {reporte.tipo === "casoadmin" ? (
+                          <AssignmentLateRoundedIcon />
+                        ) : reporte.tipo === "comunicaciones" ? (
+                          <RssFeedRoundedIcon />
+                        ) : reporte.tipo === "fortalecimiento" ? (
+                          <ConstructionRoundedIcon />
+                        ) : reporte.tipo === "formacion" ? (
+                          <SchoolRoundedIcon />
+                        ) : reporte.tipo === "incidencias" ? (
+                          <FmdBadRoundedIcon />
+                        ) : reporte.tipo === "participacion" ? (
+                          <Diversity3RoundedIcon />
+                        ) : (
+                          <VerifiedRoundedIcon />
+                        )}
+                      </Avatar>
+                    }
+                    sx={{
+                      "& .MuiCardHeader-content": {
+                        display: "block",
+                        overflow: "hidden",
+                      },
+                    }}
+                    subheader={
                       <Typography
                         noWrap
-                        sx={{ fontWeight: "bold", lineHeight: 1.5 }}
+                        color="text.secondary"
                         textOverflow={"ellipsis"}
-                        variant="subtitle1"
+                        variant="body2"
                       >
-                        {reporte.cc.nombre}
+                        {reporte.fechaConFormato}
                       </Typography>
-                      <Typography
-                        noWrap
-                        sx={{ fontStyle: "italic" }}
-                        textOverflow={"ellipsis"}
-                        variant="body1"
-                      >
-                        {`${reporte.usuario.apellido} \
+                    }
+                    title={
+                      <>
+                        <Typography
+                          noWrap
+                          sx={{ fontWeight: "bold", lineHeight: 1.5 }}
+                          textOverflow={"ellipsis"}
+                          variant="subtitle1"
+                        >
+                          {reporte.cc.nombre}
+                        </Typography>
+                        <Typography
+                          noWrap
+                          sx={{ fontStyle: "italic" }}
+                          textOverflow={"ellipsis"}
+                          variant="body1"
+                        >
+                          {`${reporte.usuario.apellido} \
                     ${reporte.usuario.nombre}`}
-                      </Typography>
-                    </>
-                  }
-                />
-              </Card>
-            </Grid>
-          );
-        })
+                        </Typography>
+                      </>
+                    }
+                  />
+                </Card>
+              </Grid>
+            );
+          })}
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
+              <Pagination
+                count={reportes.totalPages}
+                page={reportes.page}
+                color="primary"
+                onChange={actualizarParametros("p")}
+              />
+            </Box>
+          </Grid>
+        </>
       )}
     </Grid>
   );
