@@ -273,7 +273,7 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
 
 exports.listarCC = asyncHandler(async function (req, res, next) {
   const fechaDeAhora = new Date();
-  const { comuna, estatus, municipios, parroquias, situr, tipo } = req.query; //se extraen los parametros de la consulta
+  const { comuna, estatus, municipios, p, parroquias, situr, tipo } = req.query; //se extraen los parametros de la consulta
   let parametros = {};
 
   if (comuna) {
@@ -316,9 +316,12 @@ exports.listarCC = asyncHandler(async function (req, res, next) {
     parametros.tipo = tipo;
   }
   //Busca todos los CC segun los parametros y los regresa en un arreglo
-  const listaCC = await CC.find(parametros).exec();
+  const listaCC = await CC.paginate(parametros, {
+    limit: 10,
+    page: parseInt(p, 10) || 1,
+  });
 
-  if (listaCC.length > 0) {
+  if (listaCC.docs.length > 0) {
     //Si el arreglo no esta vacio
     return res.status(200).json(listaCC);
   } else {

@@ -208,7 +208,7 @@ exports.iniciarSesion = asyncHandler(async function (req, res, next) {
 });
 
 exports.listarUsuarios = asyncHandler(async function (req, res, next) {
-  const { apellido, cedula, nombre, rol, usuario } = req.query; //se extraen los parametros de la consulta
+  const { apellido, cedula, nombre, p, rol, usuario } = req.query; //se extraen los parametros de la consulta
   let parametros = { _id: { $ne: req.user._id } };
 
   if (apellido) {
@@ -232,9 +232,13 @@ exports.listarUsuarios = asyncHandler(async function (req, res, next) {
     parametros.usuario = usuario;
   }
   //Se buscan segun los parametros
-  const listaDeUsuarios = await Usuario.find(parametros, "-clave").exec();
+  const listaDeUsuarios = await Usuario.paginate(parametros, {
+    limit: 10,
+    page: parseInt(p, 10) || 1,
+    projection: "-clave",
+  });
 
-  if (listaDeUsuarios.length > 0) {
+  if (listaDeUsuarios.docs.length > 0) {
     //Si el arreglo no esta vacio
     return res.status(200).json(listaDeUsuarios);
   } else {

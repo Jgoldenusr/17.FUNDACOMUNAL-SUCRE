@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const Esquema = mongoose.Schema;
 
 const opcionesDeEsquema = {
   collection: "Usuarios",
+  id: false,
   timestamps: true,
 };
 
@@ -29,5 +31,7 @@ const EsquemaUsuario = new Esquema(
   },
   opcionesDeEsquema
 );
+
+EsquemaUsuario.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("USUARIO", EsquemaUsuario);

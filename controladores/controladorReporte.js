@@ -182,7 +182,7 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
 });
 
 exports.listarReportes = asyncHandler(async function (req, res, next) {
-  const { cc, desde, dia, hasta, usuario, periodo, tipo } = req.query; //se extraen los parametros de la consulta
+  const { cc, desde, dia, hasta, usuario, p, periodo, tipo } = req.query; //se extraen los parametros de la consulta
   let parametros = {};
 
   if (cc) {
@@ -223,15 +223,18 @@ exports.listarReportes = asyncHandler(async function (req, res, next) {
       parametros.tipo = tipo;
     }
   }
-
   //Se buscan todos los reportes segun los mas recientes
-  const listaDeReportes = await Reporte.find(parametros)
-    .populate("cc", "nombre")
-    .populate("usuario", "nombre apellido")
-    .sort({ fecha: -1 })
-    .exec();
+  const listaDeReportes = await Reporte.paginate(parametros, {
+    limit: 10,
+    page: parseInt(p, 10) || 1,
+    populate: [
+      { path: "cc", select: "nombre" },
+      { path: "usuario", select: "apellido nombre" },
+    ],
+    sort: { fecha: -1 },
+  });
   //Los resultados de la busqueda se meten en un arreglo
-  if (listaDeReportes.length > 0) {
+  if (listaDeReportes.docs.length > 0) {
     //El arreglo no esta vacio
     return res.status(200).json(listaDeReportes);
   } else {

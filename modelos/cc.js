@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 const { DateTime } = require("luxon");
 
 const Esquema = mongoose.Schema;
 
 const opcionesDeEsquema = {
   collection: "CCS",
+  id: false,
   timestamps: true,
-  toJSON: { virtuals: true },
+  toJSON: {
+    virtuals: true,
+  },
 };
 
 const EsquemaCC = new Esquema(
@@ -122,5 +126,7 @@ EsquemaCC.virtual("estaVigente")
     estaVigente.idReporte = valor.idReporte;
     this.set({ vigente: estaVigente });
   });
+
+EsquemaCC.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("CC", EsquemaCC);
