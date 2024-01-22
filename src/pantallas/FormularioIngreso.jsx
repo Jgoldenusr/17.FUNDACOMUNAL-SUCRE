@@ -108,7 +108,18 @@ function FormularioIngreso() {
           }}
         />
       </Grid>
-      <Grid item xs={12} sm={8} md={5} className="gradiente" component={Paper}>
+      <Grid
+        item
+        xs={12}
+        sm={8}
+        md={5}
+        sx={{
+          backgroundImage: "url('/body.png')",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+        }}
+        component={Paper}
+      >
         <Box
           sx={{
             alignItems: "center",
@@ -118,8 +129,13 @@ function FormularioIngreso() {
         >
           <Box
             component="img"
-            sx={{ width: "100%", justifySelf: "flex-start" }}
-            src="/membrete.png"
+            sx={{
+              backgroundColor: "#1976d2",
+              width: "100%",
+              height: "8vh",
+              justifySelf: "flex-start",
+            }}
+            src="/cintillo.png"
           />
           <Box component="img" src="/logo.png" sx={{ mt: 4 }} />
           <Box
