@@ -20,6 +20,7 @@
     "@nivo/core": "^0.83.0",
     "@nivo/pie": "^0.83.0",
     "@nivo/tooltip": "^0.83.0",
+    "@react-pdf/renderer": "^3.3.1",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
