@@ -108,9 +108,11 @@ function VerReporte() {
             action={
               <BotonMenu
                 id={reporte._id}
+                etc={reporte}
                 opciones={{
-                  ocultar: excepcionPromotor ? [] : ["PROMOTOR"],
                   editar: excepcionPromotor ? [] : ["PROMOTOR"],
+                  descargar: [""],
+                  ocultar: [""],
                 }}
                 ruta="reportes"
               />

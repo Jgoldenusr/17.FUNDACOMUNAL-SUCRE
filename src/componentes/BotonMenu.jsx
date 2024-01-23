@@ -11,12 +11,16 @@ import {
 } from "@mui/material";
 //Componentes endogenos
 import ContextoAutenticado from "./ContextoAutenticado";
+import ReportePDF from "../componentes/reportePDF";
 //Iconos MUI
+import FilePresentRoundedIcon from "@mui/icons-material/FilePresentRounded";
 import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PlagiarismRoundedIcon from "@mui/icons-material/PlagiarismRounded";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
+//Etc
+import { pdf } from "@react-pdf/renderer";
 
 function BotonMenu({ etc, id, opciones, ruta }) {
   const navegarHasta = useNavigate();
@@ -27,6 +31,19 @@ function BotonMenu({ etc, id, opciones, ruta }) {
   const clickEditar = function () {
     navegarHasta(`${ruta ? `../${ruta}/` : ""}${id}/editar`);
   };
+
+  /* jshint ignore:start */
+  const clickImprimir = async function () {
+    const blob = await pdf(<ReportePDF reporte={etc} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "REP-" + id + ".pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  /* jshint ignore:end */
 
   const clickReportes = function () {
     navegarHasta(`../reportes?${ruta.slice(0, -1)}=${id}`);
@@ -91,6 +108,15 @@ function BotonMenu({ etc, id, opciones, ruta }) {
                 <ListItemText>Verificar</ListItemText>
               </MenuItem>
             )}
+          {opciones.descargar &&
+            !opciones.descargar.includes(miUsuario.rol) && (
+              <MenuItem onClick={clickImprimir}>
+                <ListItemIcon>
+                  <FilePresentRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Imprimir</ListItemText>
+              </MenuItem>
+            )}
         </Menu>
       </>
     );
@@ -98,4 +124,7 @@ function BotonMenu({ etc, id, opciones, ruta }) {
   /* jshint ignore:end */
 }
 
+/*
+<PDFDownloadLink document={}>
+*/
 export default BotonMenu;
