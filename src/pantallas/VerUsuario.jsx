@@ -38,7 +38,7 @@ import ReportesTrimestrales from "../componentes/ReportesTrimestrales";
 import ReportesTotales from "../componentes/ReportesTotales";
 import Spinner from "../componentes/Spinner";
 
-function VerUsuario() {
+function VerUsuario({ miCuenta }) {
   const { id } = useParams();
   const { miUsuario } = useContext(ContextoAutenticado);
   const [cargando, setCargando] = useState(true);
@@ -48,8 +48,12 @@ function VerUsuario() {
 
   useEffect(() => {
     async function realizarPeticion() {
-      const url1 = "http://localhost:4000/usuarios/" + id;
-      const url2 = `http://localhost:4000/reportes/estadisticas?usuario=${id}&periodo=${new Date().getFullYear()}`;
+      const url1 = miCuenta
+        ? "http://localhost:4000/usuarios/cuenta"
+        : `http://localhost:4000/usuarios/${id}`;
+      const url2 = `http://localhost:4000/reportes/estadisticas?usuario=${
+        miCuenta ? miUsuario.id : id
+      }&periodo=${new Date().getFullYear()}`;
       const peticion = {
         headers: new Headers({
           Authorization: `Bearer ${miUsuario.token}`,
@@ -97,8 +101,7 @@ function VerUsuario() {
               <BotonMenu
                 id={usuario._id}
                 opciones={{
-                  editar: [],
-                  ocultar: ["PROMOTOR"],
+                  editar: ["PROMOTOR"],
                   reportes: [],
                 }}
                 ruta="usuarios"

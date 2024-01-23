@@ -10,7 +10,6 @@ import FormularioIngreso from "./pantallas/FormularioIngreso.jsx";
 import FormularioOpcion from "./pantallas/FormularioOpcion.jsx";
 import FormularioReporte from "./pantallas/FormularioReporte.jsx";
 import FormularioUsuario from "./pantallas/FormularioUsuario.jsx";
-import MiCuenta from "./pantallas/MiCuenta.jsx";
 import MostrarCCS from "./pantallas/MostrarCCS.jsx";
 import MostrarOpciones from "./pantallas/MostrarOpciones.jsx";
 import MostrarReportes from "./pantallas/MostrarReportes.jsx";
@@ -67,7 +66,7 @@ function Base() {
                 <Route path="/" element={<EstadisticasGenerales />} />
                 <Route path="ccs" element={<MostrarCCS />} />
                 <Route path="ccs/:id" element={<VerCC />} />
-                <Route path="cuenta" element={<MiCuenta />} />
+                <Route path="cuenta" element={<VerUsuario miCuenta={true} />} />
                 <Route path="reportes" element={<MostrarReportes />} />
                 <Route path="reportes/nuevo" element={<FormularioReporte />} />
                 <Route path="reportes/:id" element={<VerReporte />} /> 
