@@ -233,7 +233,7 @@ exports.listarUsuarios = asyncHandler(async function (req, res, next) {
   }
   //Se buscan segun los parametros
   const listaDeUsuarios = await Usuario.paginate(parametros, {
-    limit: 10,
+    limit: 15,
     page: parseInt(p, 10) || 1,
     projection: "-clave",
   });
