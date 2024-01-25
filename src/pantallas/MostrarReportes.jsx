@@ -322,16 +322,18 @@ function MostrarReportes() {
               </Grid>
             );
           })}
-          <Grid item xs={12}>
-            <Box display="flex" justifyContent="center">
-              <Pagination
-                count={reportes.totalPages}
-                page={reportes.page}
-                color="primary"
-                onChange={actualizarParametros("p")}
-              />
-            </Box>
-          </Grid>
+          {reportes?.totalPages > 1 && (
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <Pagination
+                  count={reportes.totalPages}
+                  page={reportes.page}
+                  color="primary"
+                  onChange={actualizarParametros("p")}
+                />
+              </Box>
+            </Grid>
+          )}
         </>
       )}
     </Grid>

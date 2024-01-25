@@ -397,16 +397,18 @@ function MostrarCCS() {
               </Grid>
             );
           })}
-          <Grid item xs={12}>
-            <Box display="flex" justifyContent="center">
-              <Pagination
-                count={ccs.totalPages}
-                page={ccs.page}
-                color="primary"
-                onChange={actualizarParametros("p")}
-              />
-            </Box>
-          </Grid>
+          {ccs?.totalPages > 1 && (
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <Pagination
+                  count={ccs.totalPages}
+                  page={ccs.page}
+                  color="primary"
+                  onChange={actualizarParametros("p")}
+                />
+              </Box>
+            </Grid>
+          )}
         </>
       )}
     </Grid>
