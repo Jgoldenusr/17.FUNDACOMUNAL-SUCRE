@@ -14,6 +14,7 @@ import {
   InputAdornment,
   InputLabel,
   Paper,
+  Typography,
 } from "@mui/material";
 //Componentes endogenos
 import AlertaError from "../componentes/AlertaError";
@@ -21,11 +22,11 @@ import ContextoAutenticado from "../componentes/ContextoAutenticado";
 //Iconos MUI
 import FacebookRounded from "@mui/icons-material/FacebookRounded";
 import GitHub from "@mui/icons-material/GitHub";
+import InstagramIcon from "@mui/icons-material/Instagram";
 import Send from "@mui/icons-material/Send";
-import Twitter from "@mui/icons-material/Twitter";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import Youtube from "@mui/icons-material/Youtube";
+import XIcon from "@mui/icons-material/X";
 
 function FormularioIngreso() {
   const [cargando, setCargando] = useState(false);
@@ -142,7 +143,7 @@ function FormularioIngreso() {
             noValidate
             component="form"
             onSubmit={realizarPeticion}
-            sx={{ mx: 4 }}
+            sx={{ mx: 3 }}
           >
             <FormControl fullWidth margin="normal" variant="filled">
               <InputLabel>Usuario</InputLabel>
@@ -191,19 +192,36 @@ function FormularioIngreso() {
               Ingresar
             </Button>
           </Box>
-          <Box sx={{ mt: 4 }}>
-            <IconButton>
+          <Box sx={{ mt: 3 }}>
+            <IconButton href="https://www.facebook.com/fundacomunalsucre">
               <FacebookRounded />
             </IconButton>
-            <IconButton>
-              <Twitter />
+            <IconButton href="https://www.twitter.com/fundacomunalsu2">
+              <XIcon />
             </IconButton>
-            <IconButton>
-              <Youtube />
+            <IconButton href="https://www.instagram.com/fundacomunalsucre">
+              <InstagramIcon />
             </IconButton>
-            <IconButton>
+            <IconButton href="https://github.com/Jgoldenusr/17.FUNDACOMUNAL-SUCRE">
               <GitHub />
             </IconButton>
+          </Box>
+          <Box sx={{ px: 3 }}>
+            <Typography
+              align="center"
+              variant="subtitle2"
+              sx={{ color: "gray" }}
+            >
+              Final de la Avenida Humbold, cruce con calle Araya, Cumana -
+              Estado Sucre © FUNDACOMUNAL. Todos los derechos reservados.
+            </Typography>
+            <Typography
+              align="center"
+              variant="subtitle2"
+              sx={{ color: "gray" }}
+            >
+              CONTACTO AL: cyefundasucre@gmail.com
+            </Typography>
           </Box>
           {error ? <AlertaError error={error} /> : ""}
         </Box>
