@@ -3,22 +3,24 @@ import { BasicTooltip } from "@nivo/tooltip";
 import { useNavigate } from "react-router-dom";
 import { DateTime, Interval } from "luxon";
 
-const diasDelTrimestre = function (trimestre) {
-  const inicio = DateTime.fromFormat(trimestre.toString(), "q");
-  const fin = inicio.endOf("quarter").plus({ days: 1 });
-  const intervaloFechas = Interval.fromDateTimes(inicio, fin);
-  const dias = Array.from(intervaloFechas.splitBy({ days: 1 }), (dt) =>
-    dt.start.toISODate()
-  );
-  return dias;
-};
-
-const mostrarFechaConFormato = function (fecha) {
-  return DateTime.fromISO(fecha).toFormat("dd/MM/yyyy");
-};
-
-function GraficoDeCalor({ data, filtro, id, trimestre }) {
+function GraficoDeCalor({ data, filtro, id, periodo, trimestre }) {
   const navegarHasta = useNavigate();
+
+  const diasDelTrimestre = function (trimestre) {
+    const inicio = DateTime.fromFormat(trimestre.toString(), "q").set({
+      year: periodo,
+    });
+    const fin = inicio.endOf("quarter").plus({ days: 1 });
+    const intervaloFechas = Interval.fromDateTimes(inicio, fin);
+    const dias = Array.from(intervaloFechas.splitBy({ days: 1 }), (dt) =>
+      dt.start.toISODate()
+    );
+    return dias;
+  };
+
+  const mostrarFechaConFormato = function (fecha) {
+    return DateTime.fromISO(fecha).toFormat("dd/MM/yyyy");
+  };
 
   const fechas = diasDelTrimestre(trimestre).map((dia) => {
     const fechaEncontrada = data.find((otraFecha) => dia === otraFecha.fecha);
