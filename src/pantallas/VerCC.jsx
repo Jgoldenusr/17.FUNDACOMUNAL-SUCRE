@@ -53,11 +53,12 @@ function VerCC() {
   const [cc, setCC] = useState(null);
   const [dataReportes, setDataReportes] = useState([]);
   const [error, setError] = useState(null);
+  const [periodo, setPeriodo] = useState(new Date().getFullYear());
 
   useEffect(() => {
     async function realizarPeticion() {
       const url1 = "http://localhost:4000/ccs/" + id;
-      const url2 = `http://localhost:4000/reportes/estadisticas?cc=${id}&periodo=${new Date().getFullYear()}`;
+      const url2 = `http://localhost:4000/reportes/estadisticas?cc=${id}&periodo=${periodo}`;
       const peticion = {
         headers: new Headers({
           Authorization: `Bearer ${miUsuario.token}`,
@@ -89,7 +90,14 @@ function VerCC() {
       }
     }
     realizarPeticion();
-  }, []);
+  }, [periodo]);
+
+  const cambiarPeriodo = function (anio) {
+    return function (e) {
+      e.preventDefault();
+      setPeriodo(anio);
+    };
+  };
 
   /* jshint ignore:start */
   return cargando ? (
@@ -245,10 +253,21 @@ function VerCC() {
         alignContent={"flex-start"}
       >
         <Grid item xs={12}>
-          <ReportesTotales data={dataReportes} filtro="cc" id={cc._id} />
+          <ReportesTotales
+            cb={cambiarPeriodo}
+            data={dataReportes}
+            filtro="cc"
+            id={cc._id}
+            periodo={periodo}
+          />
         </Grid>
         <Grid item xs={12}>
-          <ReportesTrimestrales data={dataReportes} filtro="cc" id={cc._id} />
+          <ReportesTrimestrales
+            data={dataReportes}
+            filtro="cc"
+            id={cc._id}
+            periodo={periodo}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           {cc.estaRenovado && !cc.estaRenovado.vencido ? (

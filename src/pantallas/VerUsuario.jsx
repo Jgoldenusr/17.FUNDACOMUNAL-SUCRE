@@ -44,6 +44,7 @@ function VerUsuario({ miCuenta }) {
   const [cargando, setCargando] = useState(true);
   const [dataReportes, setDataReportes] = useState([]);
   const [error, setError] = useState(null);
+  const [periodo, setPeriodo] = useState(new Date().getFullYear());
   const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
@@ -53,7 +54,7 @@ function VerUsuario({ miCuenta }) {
         : `http://localhost:4000/usuarios/${id}`;
       const url2 = `http://localhost:4000/reportes/estadisticas?usuario=${
         miCuenta ? miUsuario.id : id
-      }&periodo=${new Date().getFullYear()}`;
+      }&periodo=${periodo}`;
       const peticion = {
         headers: new Headers({
           Authorization: `Bearer ${miUsuario.token}`,
@@ -85,7 +86,14 @@ function VerUsuario({ miCuenta }) {
       }
     }
     realizarPeticion();
-  }, []);
+  }, [periodo]);
+
+  const cambiarPeriodo = function (anio) {
+    return function (e) {
+      e.preventDefault();
+      setPeriodo(anio);
+    };
+  };
 
   /* jshint ignore:start */
   return cargando ? (
@@ -238,9 +246,11 @@ function VerUsuario({ miCuenta }) {
       >
         <Grid item xs={12}>
           <ReportesTotales
+            cb={cambiarPeriodo}
             data={dataReportes}
             filtro="usuario"
             id={usuario._id}
+            periodo={periodo}
           />
         </Grid>
         <Grid item xs={12}>
@@ -248,6 +258,7 @@ function VerUsuario({ miCuenta }) {
             data={dataReportes}
             filtro="usuario"
             id={usuario._id}
+            periodo={periodo}
           />
         </Grid>
       </Grid>
