@@ -22,7 +22,7 @@ import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 //Etc
 import { pdf } from "@react-pdf/renderer";
 
-function BotonMenu({ etc, id, opciones, ruta }) {
+function BotonMenu({ etc, id, opciones, ruta, cb }) {
   const navegarHasta = useNavigate();
   const { miUsuario } = useContext(ContextoAutenticado);
   const [ancla, setAncla] = useState(null);
@@ -63,6 +63,18 @@ function BotonMenu({ etc, id, opciones, ruta }) {
 
   const manejarCierre = () => {
     setAncla(null);
+  };
+
+  const obtenerPeriodos = function () {
+    let periodos = [];
+    let fechaActual = new Date();
+    let anioActual = fechaActual.getFullYear();
+
+    for (let i = 0; i < 10; i++) {
+      periodos.push(anioActual - i);
+    }
+
+    return periodos;
   };
 
   /* jshint ignore:start */
@@ -117,6 +129,15 @@ function BotonMenu({ etc, id, opciones, ruta }) {
                 <ListItemText>Imprimir</ListItemText>
               </MenuItem>
             )}
+          {opciones.periodos &&
+            !opciones.periodos.includes(miUsuario.rol) &&
+            obtenerPeriodos().map((anio) => {
+              return (
+                <MenuItem key={`PER-${anio}`} onClick={cb(anio)}>
+                  <ListItemText>{anio}</ListItemText>
+                </MenuItem>
+              );
+            })}
         </Menu>
       </>
     );
