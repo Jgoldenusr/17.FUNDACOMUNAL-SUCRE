@@ -33,7 +33,7 @@ function ReportesTotales({ data, filtro, id }) {
         disableTypography
         title={
           <Typography component="div" variant="subtitle1">
-            REPORTES ESTE AÑO
+            REPORTES ESTE PERIODO
           </Typography>
         }
         sx={{ bgcolor: "#1976d2", color: "white", py: 1 }}
