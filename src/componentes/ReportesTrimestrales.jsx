@@ -17,7 +17,7 @@ import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 //Componentes endogenos
 import GraficoDeCalor from "./GraficoDeCalor";
 
-function ReportesTrimestrales({ data, filtro, id }) {
+function ReportesTrimestrales({ data, filtro, id, periodo }) {
   const [miTrimestre, setMiTrimestre] = useState(
     Math.floor((new Date().getMonth() + 3) / 3) - 1
   );
@@ -42,7 +42,7 @@ function ReportesTrimestrales({ data, filtro, id }) {
         disableTypography
         title={
           <Typography component="div" variant="subtitle1">
-            ACTIVIDAD TRIMESTRAL DEL PERIODO
+            {`ACTIVIDAD TRIMESTRAL (${periodo})`}
           </Typography>
         }
         sx={{ bgcolor: "#1976d2", color: "white", py: 1 }}
@@ -52,6 +52,7 @@ function ReportesTrimestrales({ data, filtro, id }) {
           data={data}
           filtro={filtro}
           id={id}
+          periodo={periodo}
           trimestre={miTrimestre + 1}
         />
         <MobileStepper

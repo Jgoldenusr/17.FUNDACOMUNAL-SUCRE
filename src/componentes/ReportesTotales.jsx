@@ -19,12 +19,22 @@ import RssFeedRoundedIcon from "@mui/icons-material/RssFeedRounded";
 import SatelliteAltRoundedIcon from "@mui/icons-material/SatelliteAltRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
+//Componentes endogenos
+import BotonMenu from "../componentes/BotonMenu";
 
-function ReportesTotales({ data, filtro, id }) {
+function ReportesTotales({ cb, data, filtro, id, periodo }) {
   /* jshint ignore:start */
   return (
     <Card elevation={6}>
       <CardHeader
+        action={
+          <BotonMenu
+            cb={cb}
+            opciones={{
+              periodos: [],
+            }}
+          />
+        }
         avatar={
           <Avatar sx={{ bgcolor: "#1976d2" }}>
             <SatelliteAltRoundedIcon />
@@ -33,7 +43,7 @@ function ReportesTotales({ data, filtro, id }) {
         disableTypography
         title={
           <Typography component="div" variant="subtitle1">
-            REPORTES ESTE PERIODO
+            {`REPORTES TOTALES (${periodo})`}
           </Typography>
         }
         sx={{ bgcolor: "#1976d2", color: "white", py: 1 }}
@@ -47,7 +57,7 @@ function ReportesTotales({ data, filtro, id }) {
             overlap="circular"
           >
             <Link
-              to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=casoadmin`}
+              to={`../reportes?${filtro}=${id}&periodo=${periodo}&tipo=casoadmin`}
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <AssignmentLateRoundedIcon />
@@ -64,7 +74,7 @@ function ReportesTotales({ data, filtro, id }) {
             overlap="circular"
           >
             <Link
-              to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=comunicaciones`}
+              to={`../reportes?${filtro}=${id}&periodo=${periodo}&tipo=comunicaciones`}
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <RssFeedRoundedIcon />
@@ -81,7 +91,7 @@ function ReportesTotales({ data, filtro, id }) {
             overlap="circular"
           >
             <Link
-              to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=fortalecimiento`}
+              to={`../reportes?${filtro}=${id}&periodo=${periodo}&tipo=fortalecimiento`}
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <ConstructionRoundedIcon />
@@ -95,7 +105,7 @@ function ReportesTotales({ data, filtro, id }) {
             overlap="circular"
           >
             <Link
-              to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=formacion`}
+              to={`../reportes?${filtro}=${id}&periodo=${periodo}&tipo=formacion`}
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <SchoolRoundedIcon />
@@ -109,7 +119,7 @@ function ReportesTotales({ data, filtro, id }) {
             overlap="circular"
           >
             <Link
-              to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=incidencias`}
+              to={`../reportes?${filtro}=${id}&periodo=${periodo}&tipo=incidencias`}
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <FmdBadRoundedIcon />
@@ -126,7 +136,7 @@ function ReportesTotales({ data, filtro, id }) {
             overlap="circular"
           >
             <Link
-              to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=participacion`}
+              to={`../reportes?${filtro}=${id}&periodo=${periodo}&tipo=participacion`}
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <Diversity3RoundedIcon />
@@ -140,7 +150,7 @@ function ReportesTotales({ data, filtro, id }) {
             overlap="circular"
           >
             <Link
-              to={`../reportes?${filtro}=${id}&periodo=${new Date().getFullYear()}&tipo=interno`}
+              to={`../reportes?${filtro}=${id}&periodo=${periodo}&tipo=interno`}
             >
               <Avatar sx={{ bgcolor: "#1976d2" }}>
                 <VerifiedRoundedIcon />
