@@ -14,7 +14,7 @@ import {
   Toolbar,
 } from "@mui/material";
 //Rutas predefinidas
-import { rutasGET, rutasPOST, rutasETC } from "../config/rutas";
+import { rutas } from "../config/rutas";
 //Modulos endogenos
 import ContextoAutenticado from "./ContextoAutenticado";
 
@@ -60,44 +60,10 @@ function BarraLateral({ movil, mostrarBarra }) {
         </Toolbar>
         <Divider />
         <List>
-          {rutasGET.map((unaRuta, i) => {
+          {rutas.map((unaRuta, i) => {
             if (!unaRuta.listaNegra.includes(miUsuario.rol)) {
               return (
-                <ListItem disablePadding key={`RUG-${i}`}>
-                  <ListItemButton onClick={redirigirHasta(unaRuta.ruta)}>
-                    <ListItemIcon>
-                      <unaRuta.icono />
-                    </ListItemIcon>
-                    <ListItemText primary={unaRuta.nombre} />
-                  </ListItemButton>
-                </ListItem>
-              );
-            }
-          })}
-        </List>
-        <Divider />
-        <List>
-          {rutasPOST.map((unaRuta, i) => {
-            if (!unaRuta.listaNegra.includes(miUsuario.rol)) {
-              return (
-                <ListItem disablePadding key={`RUP-${i}`}>
-                  <ListItemButton onClick={redirigirHasta(unaRuta.ruta)}>
-                    <ListItemIcon>
-                      <unaRuta.icono />
-                    </ListItemIcon>
-                    <ListItemText primary={unaRuta.nombre} />
-                  </ListItemButton>
-                </ListItem>
-              );
-            }
-          })}
-        </List>
-        <Divider />
-        <List>
-          {rutasETC.map((unaRuta, i) => {
-            if (!unaRuta.listaNegra.includes(miUsuario.rol)) {
-              return (
-                <ListItem disablePadding key={`RUE-${i}`}>
+                <ListItem sx={{ py: "2px" }} key={`RUT-${i}`}>
                   <ListItemButton
                     onClick={
                       unaRuta.ruta

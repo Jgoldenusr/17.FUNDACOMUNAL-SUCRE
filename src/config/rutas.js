@@ -9,7 +9,7 @@ import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 
-const rutasGET = [
+const rutas = [
   {
     ruta: "/",
     nombre: "Inicio",
@@ -34,9 +34,6 @@ const rutasGET = [
     icono: DescriptionRoundedIcon,
     listaNegra: [],
   },
-];
-
-const rutasPOST = [
   {
     ruta: "ccs/nuevo",
     nombre: "Nueva ubicacion",
@@ -55,9 +52,6 @@ const rutasPOST = [
     icono: NoteAddRoundedIcon,
     listaNegra: [],
   },
-];
-
-const rutasETC = [
   {
     ruta: "/config",
     nombre: "Configuraciones",
@@ -77,4 +71,4 @@ const rutasETC = [
   },
 ];
 
-export { rutasGET, rutasPOST, rutasETC };
+export { rutas };
