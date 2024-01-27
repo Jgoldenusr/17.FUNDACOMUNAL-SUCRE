@@ -210,7 +210,7 @@ function FormularioIngreso() {
             <Typography
               align="center"
               variant="subtitle2"
-              sx={{ color: "gray" }}
+              sx={{ color: "gray", fontSize: "0.7rem" }}
             >
               Final de la Avenida Humbold, cruce con calle Araya, Cumana -
               Estado Sucre © FUNDACOMUNAL. Todos los derechos reservados.
@@ -218,7 +218,7 @@ function FormularioIngreso() {
             <Typography
               align="center"
               variant="subtitle2"
-              sx={{ color: "gray" }}
+              sx={{ color: "gray", fontSize: "0.7rem" }}
             >
               CONTACTO AL: cyefundasucre@gmail.com
             </Typography>
