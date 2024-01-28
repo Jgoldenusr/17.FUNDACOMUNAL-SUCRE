@@ -17,6 +17,13 @@ import MostrarUsuarios from "./pantallas/MostrarUsuarios.jsx";
 import VerCC from "./pantallas/VerCC.jsx";
 import VerReporte from "./pantallas/VerReporte.jsx";
 import VerUsuario from "./pantallas/VerUsuario.jsx";
+import { createTheme, ThemeProvider } from "@mui/material";
+
+const theme = createTheme({
+  typography: {
+    fontFamily: ["'IBM Plex Sans Condensed'", "Arial"].join(","),
+  },
+});
 
 function Base() {
   const borrarUsuario = function (evento) {
@@ -47,38 +54,40 @@ function Base() {
     <ContextoAutenticado.Provider
       value={{ miUsuario, borrarUsuario, guardarUsuario }}
     >
-      <BrowserRouter>
-          <Routes>
-            <Route element={<Bloquear roles={["PROMOTOR"]} />}>
-              <Route element={<Envoltorio />}>
-                <Route path="ccs/nuevo" element={<FormularioCC />} />
-                <Route path="ccs/:id/editar" element={<FormularioCC />} />
-                <Route path="config" element={<MostrarOpciones />} />
-                <Route path="config/:id/editar" element={<FormularioOpcion />} />
-                <Route path="usuarios" element={<MostrarUsuarios />} />
-                <Route path="usuarios/nuevo" element={<FormularioUsuario />}/>
-                <Route path="usuarios/:id" element={<VerUsuario />} />
-                <Route path="usuarios/:id/editar" element={<FormularioUsuario />}/>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+            <Routes>
+              <Route element={<Bloquear roles={["PROMOTOR"]} />}>
+                <Route element={<Envoltorio />}>
+                  <Route path="ccs/nuevo" element={<FormularioCC />} />
+                  <Route path="ccs/:id/editar" element={<FormularioCC />} />
+                  <Route path="config" element={<MostrarOpciones />} />
+                  <Route path="config/:id/editar" element={<FormularioOpcion />} />
+                  <Route path="usuarios" element={<MostrarUsuarios />} />
+                  <Route path="usuarios/nuevo" element={<FormularioUsuario />}/>
+                  <Route path="usuarios/:id" element={<VerUsuario />} />
+                  <Route path="usuarios/:id/editar" element={<FormularioUsuario />}/>
+                </Route>
               </Route>
-            </Route>
-            <Route element={<Bloquear roles={[""]} />}>
-              <Route element={<Envoltorio />}>
-                <Route path="/" element={<EstadisticasGenerales />} />
-                <Route path="ccs" element={<MostrarCCS />} />
-                <Route path="ccs/:id" element={<VerCC />} />
-                <Route path="cuenta" element={<VerUsuario miCuenta={true} />} />
-                <Route path="reportes" element={<MostrarReportes />} />
-                <Route path="reportes/nuevo" element={<FormularioReporte />} />
-                <Route path="reportes/:id" element={<VerReporte />} /> 
-                <Route path="reportes/:id/editar" element={<FormularioReporte />} />
-                <Route path="*" element={<Error />} />
+              <Route element={<Bloquear roles={[""]} />}>
+                <Route element={<Envoltorio />}>
+                  <Route path="/" element={<EstadisticasGenerales />} />
+                  <Route path="ccs" element={<MostrarCCS />} />
+                  <Route path="ccs/:id" element={<VerCC />} />
+                  <Route path="cuenta" element={<VerUsuario miCuenta={true} />} />
+                  <Route path="reportes" element={<MostrarReportes />} />
+                  <Route path="reportes/nuevo" element={<FormularioReporte />} />
+                  <Route path="reportes/:id" element={<VerReporte />} /> 
+                  <Route path="reportes/:id/editar" element={<FormularioReporte />} />
+                  <Route path="*" element={<Error />} />
+                </Route>
               </Route>
-            </Route>
-            <Route>
-              <Route path="/ingresar" element={<FormularioIngreso />} />
-            </Route>
-          </Routes>
-      </BrowserRouter>
+              <Route>
+                <Route path="/ingresar" element={<FormularioIngreso />} />
+              </Route>
+            </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
     </ContextoAutenticado.Provider>
   );
   /* jshint ignore:end */
