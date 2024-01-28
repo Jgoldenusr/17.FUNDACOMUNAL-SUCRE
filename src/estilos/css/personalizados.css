@@ -1,38 +1,5 @@
-h1,
-h2,
-h3,
-h4,
-h5,
-.Lato {
-  font-family: Lato;
-}
-.gradiente {
-  background: rgb(220, 220, 220);
-  background: -moz-linear-gradient(
-    360deg,
-    rgba(220, 220, 220, 1) 0%,
-    rgba(255, 255, 255, 1) 27%,
-    rgba(255, 255, 255, 1) 100%
-  );
-  background: -webkit-linear-gradient(
-    360deg,
-    rgba(220, 220, 220, 1) 0%,
-    rgba(255, 255, 255, 1) 27%,
-    rgba(255, 255, 255, 1) 100%
-  );
-  background: linear-gradient(
-    360deg,
-    rgba(220, 220, 220, 1) 0%,
-    rgba(255, 255, 255, 1) 27%,
-    rgba(255, 255, 255, 1) 100%
-  );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#dcdcdc",endColorstr="#ffffff",GradientType=1);
-}
 .cursor:hover {
   cursor: pointer;
-}
-.my-icon-btn {
-  font-size: x-large;
 }
 .no-deco {
   text-decoration: none;
@@ -45,25 +12,4 @@ h5,
 .muted {
   color: gray;
   text-decoration: none;
-}
-.spinner:hover {
-  animation: spin 0.5s linear;
-}
-@font-face {
-  font-family: "Lato";
-  src: url("../fuentes/lato-regular-webfont.eot");
-  src: url("../fuentes/lato-regular-webfont.eot?#iefix")
-      format("embedded-opentype"),
-    url("../fuentes/lato-regular-webfont.woff2") format("woff2"),
-    url("../fuentes/lato-regular-webfont.woff") format("woff"),
-    url("../fuentes/lato-regular-webfont.ttf") format("truetype"),
-    url("../fuentes/lato-regular-webfont.svg#latoregular") format("svg");
-}
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
