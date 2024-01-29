@@ -21,7 +21,7 @@ function Envoltorio() {
       sx={{
         backgroundImage: "url('/body.png')",
         minHeight: "100vh",
-        maxWidth: "100vw",
+        display: { sm: "flex" },
       }}
     >
       <BarraLateral mostrarBarra={mostrarBarra} movil={movil} />
@@ -40,6 +40,7 @@ function Envoltorio() {
       <Box
         component="main"
         sx={{
+          flexGrow: { sm: 1 },
           p: 5,
           width: { sm: `calc(100vw - ${250}px)` },
         }}
