@@ -169,7 +169,7 @@ function MostrarReportes() {
           <CardHeader sx={{ bgcolor: "#1976d2", color: "white", p: 1 }} />
           <CardContent sx={{ "&:last-child": { pb: 2 } }}>
             <Grid container spacing={2}>
-              <Grid item xs={2.5}>
+              <Grid item xs={12} md={2.5}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Tipo</InputLabel>
                   <Select
@@ -188,7 +188,7 @@ function MostrarReportes() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={2.5}>
+              <Grid item xs={6} md={2.5}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel shrink>Dia especifico</InputLabel>
                   <FilledInput
@@ -198,7 +198,7 @@ function MostrarReportes() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={6} md={2}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Periodo</InputLabel>
                   <Select
@@ -216,7 +216,7 @@ function MostrarReportes() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={2.5}>
+              <Grid item xs={6} md={2.5}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel shrink>Desde</InputLabel>
                   <FilledInput
@@ -226,7 +226,7 @@ function MostrarReportes() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={2.5}>
+              <Grid item xs={6} md={2.5}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel shrink>Hasta</InputLabel>
                   <FilledInput

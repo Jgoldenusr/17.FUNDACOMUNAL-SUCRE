@@ -131,7 +131,7 @@ function MostrarUsuarios() {
           <CardHeader sx={{ bgcolor: "#1976d2", color: "white", p: 1 }} />
           <CardContent sx={{ "&:last-child": { pb: 2 } }}>
             <Grid container spacing={2}>
-              <Grid item xs={2}>
+              <Grid item xs={6} md={2}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Cedula</InputLabel>
                   <FilledInput
@@ -141,7 +141,7 @@ function MostrarUsuarios() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={6} md={2}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Usuario</InputLabel>
                   <FilledInput
@@ -151,7 +151,7 @@ function MostrarUsuarios() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={6} md={2}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Rol</InputLabel>
                   <Select
@@ -164,7 +164,7 @@ function MostrarUsuarios() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={2.5}>
+              <Grid item xs={6} md={2.5}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Nombre</InputLabel>
                   <FilledInput
@@ -174,7 +174,7 @@ function MostrarUsuarios() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={2.5}>
+              <Grid item xs={6} md={2.5}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Apellido</InputLabel>
                   <FilledInput
@@ -184,7 +184,7 @@ function MostrarUsuarios() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={1}>
+              <Grid item xs={6} md={1}>
                 <Button
                   fullWidth
                   disabled={cargando}
