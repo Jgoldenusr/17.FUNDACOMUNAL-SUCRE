@@ -49,7 +49,13 @@ function ReportesTotales({ cb, data, filtro, id, periodo }) {
         sx={{ bgcolor: "#1976d2", color: "white", py: 1 }}
       />
       <CardContent>
-        <Stack direction="row" justifyContent="center" spacing={3}>
+        <Stack
+          direction="row"
+          justifyContent="center"
+          spacing={3}
+          useFlexGap
+          sx={{ flexWrap: "wrap" }}
+        >
           <Badge
             badgeContent={data.reduce((acc, item) => acc + item.casoadmin, 0)}
             color="error"
