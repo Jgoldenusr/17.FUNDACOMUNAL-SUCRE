@@ -1,7 +1,7 @@
 //Componentes de react y react router
 import { useContext, useEffect, useState } from "react";
 //Componentes MUI
-import { Card, CardContent, Grid } from "@mui/material";
+import { Card, CardContent, Grid2 as Grid } from "@mui/material";
 //Iconos MUI
 import AssignmentTurnedInRoundedIcon from "@mui/icons-material/AssignmentTurnedInRounded";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
@@ -96,7 +96,7 @@ function EstadisticasGenerales() {
     <Error error={error} />
   ) : (
     <Grid container rowSpacing={3} spacing={2}>
-      <Grid item xs={12} md={3}>
+      <Grid size={{ xs: 12, md: 3 }}>
         <Tarjeta
           color="#ed6c02"
           Icono={LocationOnIcon}
@@ -106,7 +106,7 @@ function EstadisticasGenerales() {
           {dataCCS.reduce((acc, item) => acc + item.ccs, 0)}
         </Tarjeta>
       </Grid>
-      <Grid item xs={12} md={3}>
+      <Grid size={{ xs: 12, md: 3 }}>
         <Tarjeta
           color="#03a9f4"
           Icono={AssignmentTurnedInRoundedIcon}
@@ -121,7 +121,7 @@ function EstadisticasGenerales() {
           {"%"}
         </Tarjeta>
       </Grid>
-      <Grid item xs={12} md={3}>
+      <Grid size={{ xs: 12, md: 3 }}>
         <Tarjeta
           color="#4caf50"
           Icono={EventAvailableRoundedIcon}
@@ -136,7 +136,7 @@ function EstadisticasGenerales() {
           {"%"}
         </Tarjeta>
       </Grid>
-      <Grid item xs={12} md={3}>
+      <Grid size={{ xs: 12, md: 3 }}>
         <Tarjeta
           color="#ef5350"
           Icono={FlagRoundedIcon}
@@ -146,7 +146,7 @@ function EstadisticasGenerales() {
           {dataCCS.reduce((acc, item) => acc + item.comunas, 0)}
         </Tarjeta>
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Card elevation={3}>
           <CardContent sx={{ aspectRatio: 4 / 2.5 }}>
             <GraficoDePastel
@@ -157,7 +157,7 @@ function EstadisticasGenerales() {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Card elevation={3}>
           <CardContent sx={{ aspectRatio: 4 / 2.5 }}>
             <GraficoDePastel
@@ -168,7 +168,7 @@ function EstadisticasGenerales() {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={{ xs: 12 }}>
         <Card elevation={3}>
           <CardContent sx={{ aspectRatio: 1 / 2 }}>
             <GraficoDeBarras

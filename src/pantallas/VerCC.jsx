@@ -11,7 +11,7 @@ import {
   CardContent,
   CardHeader,
   Divider,
-  Grid,
+  Grid2 as Grid,
   List,
   ListItem,
   ListItemIcon,
@@ -106,7 +106,7 @@ function VerCC() {
     <Error error={error} />
   ) : (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={6} xl={12}>
+      <Grid size={{ xs: 12, md: 6, xl: 12 }}>
         <Card elevation={6}>
           <CardHeader
             action={
@@ -245,14 +245,12 @@ function VerCC() {
       </Grid>
       <Grid
         container
-        item
-        xs={12}
-        md={6}
-        xl={12}
-        spacing={3}
         alignContent={"flex-start"}
+        display="flex"
+        size={{ xs: 12, md: 6, xl: 12 }}
+        spacing={3}
       >
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <ReportesTotales
             cb={cambiarPeriodo}
             data={dataReportes}
@@ -261,7 +259,7 @@ function VerCC() {
             periodo={periodo}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <ReportesTrimestrales
             data={dataReportes}
             filtro="cc"
@@ -269,7 +267,7 @@ function VerCC() {
             periodo={periodo}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           {cc.estaRenovado && !cc.estaRenovado.vencido ? (
             <Tarjeta
               color="#2e7d32"
@@ -292,7 +290,7 @@ function VerCC() {
             </Tarjeta>
           )}
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           {cc.estaVigente && !cc.estaVigente.vencido ? (
             <Tarjeta
               color="#2e7d32"

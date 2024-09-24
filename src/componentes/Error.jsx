@@ -6,7 +6,7 @@ import {
   Card,
   CardActions,
   CardContent,
-  Grid,
+  Grid2 as Grid,
   Typography,
 } from "@mui/material";
 //Iconos MUI
@@ -18,8 +18,8 @@ function Error({ error }) {
 
   /* jshint ignore:start */
   return (
-    <Grid container justifyContent="center">
-      <Grid item xs={10} md={6}>
+    <Grid container display="flex" justifyContent="center">
+      <Grid size={{ xs: 12, md: 6 }}>
         <Card elevation={6}>
           <CardContent
             sx={{ bgcolor: "#1976d2", color: "white", textAlign: "center" }}

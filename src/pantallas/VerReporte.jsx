@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardContent,
   Divider,
-  Grid,
+  Grid2 as Grid,
   List,
   ListItem,
   ListItemIcon,
@@ -101,8 +101,8 @@ function VerReporte() {
   ) : error ? (
     <Error error={error} />
   ) : (
-    <Grid container justifyContent="center">
-      <Grid item xs={12} md={5}>
+    <Grid container display="flex" justifyContent="center">
+      <Grid size={{ xs: 12, md: 5 }}>
         <Card elevation={6}>
           <CardHeader
             action={

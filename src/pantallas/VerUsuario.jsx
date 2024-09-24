@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardContent,
   Divider,
-  Grid,
+  Grid2 as Grid,
   List,
   ListItem,
   ListItemIcon,
@@ -102,7 +102,7 @@ function VerUsuario({ miCuenta }) {
     <Error error={error} />
   ) : (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={6} xl={12}>
+      <Grid size={{ xs: 12, md: 6, xl: 12 }}>
         <Card elevation={6}>
           <CardHeader
             action={
@@ -237,14 +237,12 @@ function VerUsuario({ miCuenta }) {
       </Grid>
       <Grid
         container
-        item
-        xs={12}
-        md={6}
-        xl={12}
+        alignContent="flex-start"
+        display="flex"
+        size={{ xs: 12, md: 6, xl: 12 }}
         spacing={3}
-        alignContent={"flex-start"}
       >
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <ReportesTotales
             cb={cambiarPeriodo}
             data={dataReportes}
@@ -253,7 +251,7 @@ function VerUsuario({ miCuenta }) {
             periodo={periodo}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <ReportesTrimestrales
             data={dataReportes}
             filtro="usuario"

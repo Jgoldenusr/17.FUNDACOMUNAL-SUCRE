@@ -10,7 +10,7 @@ import {
   CardHeader,
   FilledInput,
   FormControl,
-  Grid,
+  Grid2 as Grid,
   InputLabel,
   MenuItem,
   Pagination,
@@ -164,12 +164,12 @@ function MostrarReportes() {
   /* jshint ignore:start */
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
+      <Grid size={{ xs: 12 }}>
         <Card component="form">
           <CardHeader sx={{ bgcolor: "#1976d2", color: "white", p: 1 }} />
           <CardContent sx={{ "&:last-child": { pb: 2 } }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={2.5}>
+              <Grid size={{ xs: 12, md: 2.5 }}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Tipo</InputLabel>
                   <Select
@@ -188,7 +188,7 @@ function MostrarReportes() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={6} md={2.5}>
+              <Grid size={{ xs: 6, md: 2.5 }}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel shrink>Dia especifico</InputLabel>
                   <FilledInput
@@ -198,7 +198,7 @@ function MostrarReportes() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={6} md={2}>
+              <Grid size={{ xs: 6, md: 2 }}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Periodo</InputLabel>
                   <Select
@@ -216,7 +216,7 @@ function MostrarReportes() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={6} md={2.5}>
+              <Grid size={{ xs: 6, md: 2.5 }}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel shrink>Desde</InputLabel>
                   <FilledInput
@@ -226,7 +226,7 @@ function MostrarReportes() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={6} md={2.5}>
+              <Grid size={{ xs: 6, md: 2.5 }}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel shrink>Hasta</InputLabel>
                   <FilledInput
@@ -248,7 +248,7 @@ function MostrarReportes() {
         <>
           {reportes?.docs?.map((reporte, i) => {
             return (
-              <Grid item xs={12} md={6} xl={4} key={reporte._id}>
+              <Grid key={reporte._id} size={{ xs: 12, md: 6, xl: 4 }}>
                 <Card elevation={6}>
                   <CardHeader
                     disableTypography
@@ -323,7 +323,7 @@ function MostrarReportes() {
             );
           })}
           {reportes?.totalPages > 1 && (
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Box display="flex" justifyContent="center">
                 <Pagination
                   count={reportes.totalPages}

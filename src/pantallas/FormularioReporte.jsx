@@ -9,7 +9,7 @@ import {
   FilledInput,
   FormControl,
   FormHelperText,
-  Grid,
+  Grid2 as Grid,
   IconButton,
   InputLabel,
   MenuItem,
@@ -378,8 +378,8 @@ function FormularioReporte() {
   ) : error ? (
     <Error error={error} />
   ) : (
-    <Grid container justifyContent="center">
-      <Grid item xs={12} md={10}>
+    <Grid container display="flex" justifyContent="center">
+      <Grid size={{ xs: 12, md: 10 }}>
         <Card component="form" elevation={6} onSubmit={realizarPeticion}>
           <CardContent
             sx={{ bgcolor: "#1976d2", color: "white", textAlign: "center" }}
@@ -402,7 +402,7 @@ function FormularioReporte() {
           </CardContent>
           <CardContent sx={{ p: 3 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Tipo de reporte</InputLabel>
                   <Select
@@ -422,7 +422,7 @@ function FormularioReporte() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel shrink>Fecha del reporte</InputLabel>
                   <FilledInput
@@ -442,7 +442,7 @@ function FormularioReporte() {
               </Grid>
               {tipo === "participacion" ? (
                 <>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
@@ -467,7 +467,7 @@ function FormularioReporte() {
                       )}
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Acompañamiento</InputLabel>
                       <Select
@@ -486,7 +486,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Familias beneficiadas</InputLabel>
                       <FilledInput
@@ -500,7 +500,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Organos adscritos</InputLabel>
                       <FilledInput
@@ -517,7 +517,7 @@ function FormularioReporte() {
                 </>
               ) : tipo === "formacion" ? (
                 <>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
@@ -542,7 +542,7 @@ function FormularioReporte() {
                       )}
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Estrategia</InputLabel>
                       <Select
@@ -561,7 +561,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Modalidad</InputLabel>
                       <Select
@@ -580,7 +580,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Tematica</InputLabel>
                       <Select
@@ -599,7 +599,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Verificacion</InputLabel>
                       <Select
@@ -618,7 +618,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Beneficiados (hombres)</InputLabel>
                       <FilledInput
@@ -635,7 +635,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Beneficiados (mujeres)</InputLabel>
                       <FilledInput
@@ -652,7 +652,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Organos adscritos</InputLabel>
                       <FilledInput
@@ -669,7 +669,7 @@ function FormularioReporte() {
                 </>
               ) : tipo === "fortalecimiento" ? (
                 <>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
@@ -694,7 +694,7 @@ function FormularioReporte() {
                       )}
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>
                         Nombre de la organizacion socioproductiva
@@ -710,7 +710,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Acompañamiento</InputLabel>
                       <Select
@@ -729,7 +729,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Actividad economica</InputLabel>
                       <Select
@@ -748,7 +748,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Organizacion socioproductiva</InputLabel>
                       <Select
@@ -767,7 +767,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>
                         Tipo de proyecto C.F.G. (Opcional)
@@ -789,7 +789,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>
                         Etapa del proyecto C.F.G. (Opcional)
@@ -811,7 +811,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Organos adscritos</InputLabel>
                       <FilledInput
@@ -828,7 +828,7 @@ function FormularioReporte() {
                 </>
               ) : tipo === "incidencias" ? (
                 <>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
@@ -853,7 +853,7 @@ function FormularioReporte() {
                       )}
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Area sustantiva</InputLabel>
                       <Select
@@ -872,7 +872,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Tipo de incidencia</InputLabel>
                       <FilledInput
@@ -886,7 +886,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Organos adscritos</InputLabel>
                       <FilledInput
@@ -903,7 +903,7 @@ function FormularioReporte() {
                 </>
               ) : tipo === "casoadmin" ? (
                 <>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
@@ -928,7 +928,7 @@ function FormularioReporte() {
                       )}
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Tipo</InputLabel>
                       <Select
@@ -947,7 +947,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Caso administrativo</InputLabel>
                       <FilledInput
@@ -961,7 +961,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Organos adscritos</InputLabel>
                       <FilledInput
@@ -978,7 +978,7 @@ function FormularioReporte() {
                 </>
               ) : tipo === "comunicaciones" ? (
                 <>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Consejo comunal</InputLabel>
                       <Select
@@ -1003,7 +1003,7 @@ function FormularioReporte() {
                       )}
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Notas de prensa (opcional)</InputLabel>
                       <FilledInput
@@ -1017,7 +1017,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Reseñas de prensa (opcional)</InputLabel>
                       <FilledInput
@@ -1033,8 +1033,8 @@ function FormularioReporte() {
                   </Grid>
                   {formulario.redes.map((red, i) => {
                     return (
-                      <Grid container item key={`RED-${i}`} spacing={3}>
-                        <Grid item xs={4} md={5}>
+                      <Grid container key={`RED-${i}`} size={12} spacing={3}>
+                        <Grid size={{ xs: 4, md: 5 }}>
                           <FormControl fullWidth variant="filled">
                             <InputLabel>Cuenta</InputLabel>
                             <FilledInput
@@ -1051,7 +1051,7 @@ function FormularioReporte() {
                             </FormHelperText>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={4} md={5}>
+                        <Grid size={{ xs: 4, md: 5 }}>
                           <FormControl fullWidth variant="filled">
                             <InputLabel>Publicaciones</InputLabel>
                             <FilledInput
@@ -1070,11 +1070,10 @@ function FormularioReporte() {
                           </FormControl>
                         </Grid>
                         <Grid
-                          item
-                          xs={4}
-                          md={2}
                           alignItems="center"
+                          display="flex"
                           justifyContent="center"
+                          size={{ xs: 4, md: 2 }}
                         >
                           <IconButton color="primary" onClick={agregarRedes}>
                             <AddRoundedIcon />
@@ -1086,7 +1085,7 @@ function FormularioReporte() {
                       </Grid>
                     );
                   })}
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Organos adscritos</InputLabel>
                       <FilledInput
@@ -1103,7 +1102,7 @@ function FormularioReporte() {
                 </>
               ) : (
                 <>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel>Codigo situr del consejo comunal</InputLabel>
                       <FilledInput
@@ -1117,7 +1116,7 @@ function FormularioReporte() {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="filled">
                       <InputLabel shrink>
                         Fecha de entrada en vigencia
@@ -1141,12 +1140,13 @@ function FormularioReporte() {
               )}
               <Grid
                 container
-                item
-                xs={12}
-                md={tipo === "participacion" || tipo === "interno" ? 12 : 6}
+                size={{
+                  xs: 12,
+                  md: tipo === "participacion" || tipo === "interno" ? 12 : 6,
+                }}
                 spacing={3}
               >
-                <Grid item xs={id ? 6 : 12}>
+                <Grid size={id ? 6 : 12}>
                   <Button
                     fullWidth
                     color="primary"
@@ -1161,7 +1161,7 @@ function FormularioReporte() {
                   </Button>
                 </Grid>
                 {id ? (
-                  <Grid item xs={6}>
+                  <Grid size={6}>
                     <Button
                       fullWidth
                       color="error"

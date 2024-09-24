@@ -9,7 +9,7 @@ import {
   FilledInput,
   FormControl,
   FormHelperText,
-  Grid,
+  Grid2 as Grid,
   InputLabel,
   MenuItem,
   Select,
@@ -231,8 +231,8 @@ function FormularioCC() {
   ) : error ? (
     <Error error={error} />
   ) : (
-    <Grid container justifyContent="center">
-      <Grid item xs={12} md={10}>
+    <Grid container display="flex" justifyContent="center">
+      <Grid size={{ xs: 12, md: 10 }}>
         <Card component="form" elevation={6} onSubmit={realizarPeticion}>
           <CardContent
             sx={{ bgcolor: "#1976d2", color: "white", textAlign: "center" }}
@@ -255,7 +255,7 @@ function FormularioCC() {
           </CardContent>
           <CardContent sx={{ p: 3 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Estado donde se ubica el C.C.</InputLabel>
                   <Select disabled value={formulario.estados}>
@@ -263,7 +263,7 @@ function FormularioCC() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Redi del consejo comunal</InputLabel>
                   <Select disabled value={formulario.redi}>
@@ -271,7 +271,7 @@ function FormularioCC() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Tipo de consejo comunal</InputLabel>
                   <Select
@@ -290,7 +290,7 @@ function FormularioCC() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Municipio donde se ubica el C.C.</InputLabel>
                   <Select
@@ -309,7 +309,7 @@ function FormularioCC() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Parroquia donde se ubica el C.C.</InputLabel>
                   <Select
@@ -328,7 +328,7 @@ function FormularioCC() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>
                     Comuna donde se incluye el C.C. (Opcional)
@@ -350,7 +350,7 @@ function FormularioCC() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Localidad donde se ubica el C.C.</InputLabel>
                   <FilledInput
@@ -364,7 +364,7 @@ function FormularioCC() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Nombre del consejo comunal</InputLabel>
                   <FilledInput
@@ -378,7 +378,7 @@ function FormularioCC() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Cedula del usuario asociado</InputLabel>
                   <FilledInput
@@ -392,7 +392,7 @@ function FormularioCC() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Codigo situr del consejo comunal</InputLabel>
                   <FilledInput
@@ -406,7 +406,7 @@ function FormularioCC() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Button
                   fullWidth
                   disabled={subiendo}

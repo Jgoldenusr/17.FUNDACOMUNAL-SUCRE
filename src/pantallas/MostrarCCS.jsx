@@ -11,7 +11,7 @@ import {
   CardHeader,
   FilledInput,
   FormControl,
-  Grid,
+  Grid2 as Grid,
   InputLabel,
   MenuItem,
   Pagination,
@@ -187,12 +187,12 @@ function MostrarCCS() {
   /* jshint ignore:start */
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
+      <Grid size={{ xs: 12 }}>
         <Card component="form" onSubmit={manejarConsulta}>
           <CardHeader sx={{ bgcolor: "#1976d2", color: "white", p: 1 }} />
           <CardContent sx={{ "&:last-child": { pb: 2 } }}>
             <Grid container spacing={2}>
-              <Grid item xs={6} md={4}>
+              <Grid size={{ xs: 6, md: 4 }}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Municipios</InputLabel>
                   <Select
@@ -210,7 +210,7 @@ function MostrarCCS() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={6} md={4}>
+              <Grid size={{ xs: 6, md: 4 }}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Parroquias</InputLabel>
                   <Select
@@ -228,7 +228,7 @@ function MostrarCCS() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={6} md={4}>
+              <Grid size={{ xs: 6, md: 4 }}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Comuna</InputLabel>
                   <Select
@@ -246,7 +246,7 @@ function MostrarCCS() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={6} md={3.5}>
+              <Grid size={{ xs: 6, md: 3.5 }}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Estatus</InputLabel>
                   <Select
@@ -261,7 +261,7 @@ function MostrarCCS() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={6} md={3.5}>
+              <Grid size={{ xs: 6, md: 3.5 }}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Tipo</InputLabel>
                   <Select
@@ -279,7 +279,7 @@ function MostrarCCS() {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={6} md={4}>
+              <Grid size={{ xs: 6, md: 4 }}>
                 <FormControl fullWidth size="small" variant="filled">
                   <InputLabel>Situr</InputLabel>
                   <FilledInput
@@ -289,7 +289,7 @@ function MostrarCCS() {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={1}>
+              <Grid size={{ xs: 12, md: 1 }}>
                 <Button
                   fullWidth
                   disabled={cargando}
@@ -315,7 +315,7 @@ function MostrarCCS() {
         <>
           {ccs?.docs?.map((cc) => {
             return (
-              <Grid item xs={12} md={6} xl={4} key={cc._id}>
+              <Grid size={{ xs: 12, md: 6, xl: 4 }} key={cc._id}>
                 <Card elevation={6}>
                   <CardHeader
                     disableTypography
@@ -398,7 +398,7 @@ function MostrarCCS() {
             );
           })}
           {ccs?.totalPages > 1 && (
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Box display="flex" justifyContent="center">
                 <Pagination
                   count={ccs.totalPages}

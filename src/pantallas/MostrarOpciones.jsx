@@ -2,7 +2,13 @@
 import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 //Componentes MUI
-import { Avatar, Card, CardHeader, Grid, Typography } from "@mui/material";
+import {
+  Avatar,
+  Card,
+  CardHeader,
+  Grid2 as Grid,
+  Typography,
+} from "@mui/material";
 //Componentes endogenos
 import AlertaError from "../componentes/AlertaError";
 import BotonMenu from "../componentes/BotonMenu";
@@ -85,7 +91,7 @@ function MostrarOpciones() {
       ) : (
         opciones?.map((opcion) => {
           return (
-            <Grid item xs={12} key={opcion._id}>
+            <Grid size={{ xs: 12 }} key={opcion._id}>
               <Card elevation={6}>
                 <CardHeader
                   disableTypography

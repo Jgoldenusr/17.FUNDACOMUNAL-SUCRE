@@ -9,7 +9,7 @@ import {
   FilledInput,
   FormControl,
   FormHelperText,
-  Grid,
+  Grid2 as Grid,
   IconButton,
   InputLabel,
   Typography,
@@ -173,8 +173,8 @@ function FormularioOpcion() {
   ) : error ? (
     <Error error={error} />
   ) : (
-    <Grid container justifyContent="center">
-      <Grid item xs={12} md={10}>
+    <Grid container display="flex" justifyContent="center">
+      <Grid size={{ xs: 12, md: 10 }}>
         <Card component="form" elevation={6} onSubmit={realizarPeticion}>
           <CardContent
             sx={{ bgcolor: "#1976d2", color: "white", textAlign: "center" }}
@@ -186,7 +186,7 @@ function FormularioOpcion() {
           </CardContent>
           <CardContent sx={{ p: 3 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Coleccion</InputLabel>
                   <FilledInput
@@ -200,7 +200,7 @@ function FormularioOpcion() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Campo (URI)</InputLabel>
                   <FilledInput
@@ -216,8 +216,8 @@ function FormularioOpcion() {
               </Grid>
               {formulario.array.map((item, i) => {
                 return (
-                  <Grid container item key={`ARR-${i}`} spacing={3}>
-                    <Grid item xs={10}>
+                  <Grid container key={`ARR-${i}`} size={12} spacing={3}>
+                    <Grid size={10}>
                       <FormControl fullWidth variant="filled">
                         <InputLabel>Opcion</InputLabel>
                         <FilledInput
@@ -231,10 +231,10 @@ function FormularioOpcion() {
                       </FormControl>
                     </Grid>
                     <Grid
-                      item
-                      xs={2}
                       alignItems="center"
+                      display="flex"
                       justifyContent="center"
+                      size={2}
                     >
                       <IconButton color="primary" onClick={agregarAlArray}>
                         <AddRoundedIcon />
@@ -246,7 +246,7 @@ function FormularioOpcion() {
                   </Grid>
                 );
               })}
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Button
                   fullWidth
                   color="primary"

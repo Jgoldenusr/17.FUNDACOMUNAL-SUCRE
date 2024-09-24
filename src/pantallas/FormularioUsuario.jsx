@@ -9,7 +9,7 @@ import {
   FilledInput,
   FormControl,
   FormHelperText,
-  Grid,
+  Grid2 as Grid,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -160,8 +160,8 @@ function FormularioUsuario() {
   ) : error ? (
     <Error error={error} />
   ) : (
-    <Grid container justifyContent="center">
-      <Grid item xs={12} md={10}>
+    <Grid container display="flex" justifyContent="center">
+      <Grid size={{ xs: 12, md: 10 }}>
         <Card component="form" elevation={6} onSubmit={realizarPeticion}>
           <CardContent
             sx={{ bgcolor: "#1976d2", color: "white", textAlign: "center" }}
@@ -184,7 +184,7 @@ function FormularioUsuario() {
           </CardContent>
           <CardContent sx={{ p: 3 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Nombre de usuario</InputLabel>
                   <FilledInput
@@ -198,7 +198,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Cedula</InputLabel>
                   <FilledInput
@@ -212,7 +212,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Primer nombre</InputLabel>
                   <FilledInput
@@ -226,7 +226,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Primer apellido</InputLabel>
                   <FilledInput
@@ -240,7 +240,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Clave</InputLabel>
                   <FilledInput
@@ -265,7 +265,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Confirme la clave</InputLabel>
                   <FilledInput
@@ -290,7 +290,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Rol</InputLabel>
                   <Select
@@ -306,7 +306,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Numero telefonico</InputLabel>
                   <FilledInput
@@ -320,7 +320,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>E-mail</InputLabel>
                   <FilledInput
@@ -334,7 +334,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Button
                   fullWidth
                   disabled={subiendo}
