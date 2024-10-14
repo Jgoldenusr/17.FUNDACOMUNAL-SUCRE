@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 function GraficoDePastel({ data, colores, nombre }) {
   const navegarHasta = useNavigate();
+
   const esDispositivoMovil = window.innerWidth < 767;
   /* jshint ignore:start */
   return (

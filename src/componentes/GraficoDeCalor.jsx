@@ -22,6 +22,8 @@ function GraficoDeCalor({ data, filtro, id, periodo, trimestre }) {
     return DateTime.fromISO(fecha).toFormat("dd/MM/yyyy");
   };
 
+  const esDispositivoMovil = window.innerWidth < 767;
+
   const fechas = diasDelTrimestre(trimestre).map((dia) => {
     const fechaEncontrada = data.find((otraFecha) => dia === otraFecha.fecha);
     if (fechaEncontrada) {
@@ -54,7 +56,10 @@ function GraficoDeCalor({ data, filtro, id, periodo, trimestre }) {
 
   /* jshint ignore:start */
   return (
-    <div id={`RTG-${trimestre}`} style={{ height: "100%" }}>
+    <div
+      id={`RTG-${trimestre}`}
+      style={{ height: esDispositivoMovil ? "45vh" : "100%" }}
+    >
       <ResponsiveTimeRange
         data={fechas}
         margin={{ top: 20, right: 40, bottom: 10, left: 40 }}
@@ -64,6 +69,7 @@ function GraficoDeCalor({ data, filtro, id, periodo, trimestre }) {
         weekdayTicks={[]}
         dayRadius={3}
         daySpacing={5}
+        direction={esDispositivoMovil ? "vertical" : "horizontal"}
         onMouseEnter={(e) => {
           document.querySelector(`#RTG-${trimestre}`).style.cursor = "pointer";
         }}

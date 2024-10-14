@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 function GraficoDeBarras({ data, colores }) {
   const navegarHasta = useNavigate();
+
   const esDispositivoMovil = window.innerWidth < 767;
   const truncarTexto = ({ textAnchor, textBaseline, value, x, y }) => {
     const MAX_LINE_LENGTH = 16;
