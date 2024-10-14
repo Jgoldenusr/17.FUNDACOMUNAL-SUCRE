@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 function GraficoDeBarras({ data, colores }) {
   const navegarHasta = useNavigate();
+  const esDispositivoMovil = window.innerWidth < 767;
   const truncarTexto = ({ textAnchor, textBaseline, value, x, y }) => {
     const MAX_LINE_LENGTH = 16;
     const MAX_LINES = 3;
@@ -45,13 +46,19 @@ function GraficoDeBarras({ data, colores }) {
         data={data}
         keys={["Renovados", "No renovados", "Vigentes", "No vigentes"]}
         indexBy="municipio"
-        groupMode="grouped"
+        groupMode="stacked"
         layout="horizontal"
-        margin={{ top: 10, right: 80, bottom: 80, left: 100 }}
+        margin={{
+          top: 10,
+          right: esDispositivoMovil ? 10 : 80,
+          bottom: esDispositivoMovil ? 110 : 80,
+          left: 100,
+        }}
         labelSkipWidth={12}
         labelSkipHeight={12}
         enableGridX={true}
         enableGridY={true}
+        axisBottom={esDispositivoMovil ? null : {}}
         axisLeft={{
           renderTick: truncarTexto,
         }}
@@ -85,11 +92,11 @@ function GraficoDeBarras({ data, colores }) {
         }}
         legends={[
           {
-            anchor: "bottom",
-            direction: "row",
+            anchor: esDispositivoMovil ? "bottom-left" : "bottom",
+            direction: esDispositivoMovil ? "column" : "row",
             translateX: 0,
-            translateY: 55,
-            itemsSpacing: 0,
+            translateY: esDispositivoMovil ? 100 : 55,
+            itemsSpacing: 15,
             itemWidth: 100,
             itemHeight: 10,
             itemTextColor: "#999",
