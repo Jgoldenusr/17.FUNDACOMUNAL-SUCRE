@@ -9,12 +9,13 @@ function GraficoDePastel({ data, colores, nombre }) {
       <ResponsivePie
         data={data}
         colors={colores}
-        margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+        margin={{ top: 40, right: 40, bottom: 80, left: 40 }}
         innerRadius={0.5}
         arcLinkLabelsThickness={2}
         arcLinkLabelsColor={{ from: "color" }}
         arcLabelsSkipAngle={10}
         activeOuterRadiusOffset={10}
+        enableArcLinkLabels={window.innerWidth < 767 ? false : true}
         onMouseEnter={(e) => {
           document.querySelector(`#PC-${nombre}`).style.cursor = "pointer";
         }}
