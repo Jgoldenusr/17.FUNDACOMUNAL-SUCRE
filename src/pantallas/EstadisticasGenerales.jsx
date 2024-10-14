@@ -148,7 +148,7 @@ function EstadisticasGenerales() {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <Card elevation={3}>
-          <CardContent sx={{ aspectRatio: 4 / 2.5 }}>
+          <CardContent sx={{ height: "45vh" }}>
             <GraficoDePastel
               colores={["#54aeff", "#ffc501"]}
               data={renovadosTotales()}
@@ -159,7 +159,7 @@ function EstadisticasGenerales() {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <Card elevation={3}>
-          <CardContent sx={{ aspectRatio: 4 / 2.5 }}>
+          <CardContent sx={{ height: "45vh" }}>
             <GraficoDePastel
               colores={["#40c463", "#ff9800"]}
               data={vigentesTotales()}
@@ -170,7 +170,7 @@ function EstadisticasGenerales() {
       </Grid>
       <Grid size={{ xs: 12 }}>
         <Card elevation={3}>
-          <CardContent sx={{ aspectRatio: 1 / 2 }}>
+          <CardContent sx={{ height: { xs: "100vh", md: "150vh" } }}>
             <GraficoDeBarras
               colores={["#54aeff", "#ffc501", "#40c463", "#ff9800"]}
               data={dataCCSPorMunicipio()}
