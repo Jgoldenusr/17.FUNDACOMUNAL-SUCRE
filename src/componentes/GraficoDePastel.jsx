@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 function GraficoDePastel({ data, colores, nombre }) {
   const navegarHasta = useNavigate();
+  const esDispositivoMovil = window.innerWidth < 767;
   /* jshint ignore:start */
   return (
     <div id={`PC-${nombre}`} style={{ height: "100%" }}>
@@ -15,7 +16,7 @@ function GraficoDePastel({ data, colores, nombre }) {
         arcLinkLabelsColor={{ from: "color" }}
         arcLabelsSkipAngle={10}
         activeOuterRadiusOffset={10}
-        enableArcLinkLabels={window.innerWidth < 767 ? false : true}
+        enableArcLinkLabels={esDispositivoMovil < 767 ? false : true}
         onMouseEnter={(e) => {
           document.querySelector(`#PC-${nombre}`).style.cursor = "pointer";
         }}
