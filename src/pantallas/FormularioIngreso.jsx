@@ -22,6 +22,7 @@ import ContextoAutenticado from "../componentes/ContextoAutenticado";
 //Iconos MUI
 import FacebookRounded from "@mui/icons-material/FacebookRounded";
 import GitHub from "@mui/icons-material/GitHub";
+import GppMaybeIcon from "@mui/icons-material/GppMaybe";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import Send from "@mui/icons-material/Send";
 import Visibility from "@mui/icons-material/Visibility";
@@ -220,7 +221,15 @@ function FormularioIngreso() {
               CONTACTO AL: cyefundasucre@gmail.com
             </Typography>
           </Box>
-          {error ? <AlertaError error={error} /> : ""}
+          {error ? (
+            <AlertaError
+              error={error}
+              icono={GppMaybeIcon}
+              titulo="Autenticacion fallida"
+            />
+          ) : (
+            ""
+          )}
         </Box>
       </Grid>
     </Grid>

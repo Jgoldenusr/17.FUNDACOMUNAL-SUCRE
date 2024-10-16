@@ -27,6 +27,7 @@ import Spinner from "../componentes/Spinner";
 import CabinRoundedIcon from "@mui/icons-material/CabinRounded";
 import ForestRoundedIcon from "@mui/icons-material/ForestRounded";
 import HomeWorkRoundedIcon from "@mui/icons-material/HomeWorkRounded";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 import TuneIcon from "@mui/icons-material/Tune";
 
 function MostrarCCS() {
@@ -310,7 +311,7 @@ function MostrarCCS() {
       {cargando ? (
         <Spinner />
       ) : error ? (
-        <AlertaError error={error} />
+        <AlertaError error={error} icono={SearchOffIcon} titulo="Oops!" />
       ) : (
         <>
           {ccs?.docs?.map((cc) => {

@@ -29,6 +29,7 @@ import Diversity3RoundedIcon from "@mui/icons-material/Diversity3Rounded";
 import FmdBadRoundedIcon from "@mui/icons-material/FmdBadRounded";
 import RssFeedRoundedIcon from "@mui/icons-material/RssFeedRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 
 function MostrarReportes() {
@@ -243,7 +244,7 @@ function MostrarReportes() {
       {cargando ? (
         <Spinner />
       ) : error ? (
-        <AlertaError error={error} />
+        <AlertaError error={error} icono={SearchOffIcon} titulo="Oops!" />
       ) : (
         <>
           {reportes?.docs?.map((reporte, i) => {

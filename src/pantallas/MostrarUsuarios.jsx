@@ -27,6 +27,7 @@ import Spinner from "../componentes/Spinner";
 //Iconos MUI
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 import TuneIcon from "@mui/icons-material/Tune";
 
 function MostrarUsuarios() {
@@ -205,7 +206,7 @@ function MostrarUsuarios() {
       {cargando ? (
         <Spinner />
       ) : error ? (
-        <AlertaError error={error} />
+        <AlertaError error={error} icono={SearchOffIcon} titulo="Oops!" />
       ) : (
         <>
           {usuarios?.docs?.map((usuario) => {
