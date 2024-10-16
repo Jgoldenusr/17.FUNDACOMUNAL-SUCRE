@@ -47,7 +47,13 @@ function ReportesTrimestrales({ data, filtro, id, periodo }) {
         }
         sx={{ bgcolor: "#1976d2", color: "white", py: 1 }}
       />
-      <CardContent sx={{ aspectRatio: { md: 3 / 1.5 }, px: { md: 5 } }}>
+      <CardContent
+        sx={{
+          aspectRatio: { md: 3 / 1.5 },
+          px: { xs: 1, md: 5 },
+          py: { xs: 1, md: 3 },
+        }}
+      >
         <GraficoDeCalor
           data={data}
           filtro={filtro}
