@@ -9,12 +9,13 @@ import {
   DialogContentText,
   DialogTitle,
   Typography,
+  SvgIcon,
 } from "@mui/material";
 //Iconos MUI
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import ThumbUpAltRoundedIcon from "@mui/icons-material/ThumbUpAltRounded";
 
-function AlertaError({ error }) {
+function AlertaError({ error, icono, titulo }) {
   const [visible, setVisible] = useState(error);
 
   const cerrar = function () {
@@ -23,13 +24,13 @@ function AlertaError({ error }) {
 
   /* jshint ignore:start */
   return (
-    <Dialog open={!!visible} onClose={cerrar}>
+    <Dialog fullWidth maxWidth="xs" open={!!visible} onClose={cerrar}>
       <DialogTitle
         sx={{ bgcolor: "#1976d2", color: "white", textAlign: "center" }}
       >
-        <ReportProblemIcon sx={{ fontSize: 72 }} />
+        <SvgIcon component={icono || ReportProblemIcon} sx={{ fontSize: 72 }} />
         <Typography component="div" variant="h5">
-          Ocurrio un error procesando su peticion
+          {titulo || "Ocurrio un error procesando su peticion"}
         </Typography>
       </DialogTitle>
       <DialogContent sx={{ mt: 2, pb: 0 }}>
