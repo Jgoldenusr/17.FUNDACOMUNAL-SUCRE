@@ -41,8 +41,8 @@ import {
 function FormularioReporte() {
   const navegarHasta = useNavigate();
   const { id } = useParams();
-  const [cargando, setCargando] = useState(id ? true : false);
   const [borrar, setBorrar] = useState(false);
+  const [cargando, setCargando] = useState(id ? true : false);
   const [error, setError] = useState(null);
   const [erroresValidacion, setErroresValidacion] = useState(null);
   const [formulario, setFormulario] = useState(formularioParticipacion);
