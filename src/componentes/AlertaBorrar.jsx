@@ -38,7 +38,7 @@ function AlertaBorrar({ realizarPeticion, setBorrar }) {
           Esta accion no se puede deshacer
         </DialogContentText>
         <DialogContentText align="center">
-          ¿Esta seguro de que desea borrar el reporte?
+          ¿Esta seguro de que desea realizar la eliminacion?
         </DialogContentText>
       </DialogContent>
       <DialogActions>
