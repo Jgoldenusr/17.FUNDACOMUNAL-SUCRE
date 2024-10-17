@@ -31,7 +31,7 @@ exports.borrarReporte = asyncHandler(async function (req, res, next) {
     //Ahora si se borra el reporte
     await Reporte.findByIdAndRemove(req.params.id).exec();
     //Exito
-    return res.status(200).json(req.params.id);
+    return res.status(200).json({ id: req.params.id });
   }
 });
 
