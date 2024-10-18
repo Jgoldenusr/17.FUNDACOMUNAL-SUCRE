@@ -64,7 +64,7 @@ exports.actualizarOpcion =
 
 exports.borrarOpcion = asyncHandler(async function (req, res, next) {
   //Ahora si se borra el reporte
-  await Opcion.findByIdAndRemove(req.params.id).exec();
+  await Opcion.findByIdAndDelete(req.params.id).exec();
   //Exito
   return res.status(200).json(req.params.id);
 });
