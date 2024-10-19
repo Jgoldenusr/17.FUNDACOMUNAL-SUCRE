@@ -80,7 +80,8 @@ function VerCC() {
           setDataReportes(recibido2);
         } else {
           setError({
-            message: "Error procesando su solicitud",
+            message:
+              "Error procesando su solicitud, es posible que el recurso no exista  o haya sido eliminado",
           });
         }
       } catch (errorPeticion) {

@@ -159,7 +159,7 @@ function VerReporte() {
                 divider
                 secondaryAction={
                   <BotonMenu
-                    etc={{ situr: reporte.cc.situr }}
+                    etc={{ situr: reporte.cc.situr || "" }}
                     id={reporte.cc._id}
                     opciones={{
                       verMas: [],

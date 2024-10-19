@@ -18,12 +18,14 @@ import {
   Typography,
 } from "@mui/material";
 //Iconos MUI
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import Send from "@mui/icons-material/Send";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 //Componentes endogenos
+import AlertaBorrar from "../componentes/AlertaBorrar";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
@@ -33,6 +35,7 @@ function FormularioUsuario() {
   const navegarHasta = useNavigate();
   const { id } = useParams();
   const { miUsuario } = useContext(ContextoAutenticado);
+  const [borrar, setBorrar] = useState(false);
   const [cargando, setCargando] = useState(id ? true : false);
   const [error, setError] = useState(null);
   const [erroresValidacion, setErroresValidacion] = useState(null);
@@ -99,6 +102,11 @@ function FormularioUsuario() {
     return resultado;
   };
 
+  const mostrarAlertaBorrar = function () {
+    setErroresValidacion(null);
+    setBorrar(true);
+  };
+
   const mostrarMsjInvalido = function (campo) {
     let msj = "";
     if (erroresValidacion && erroresValidacion.array) {
@@ -146,6 +154,35 @@ function FormularioUsuario() {
         } else {
           setError(recibido.error);
         }
+      }
+    } catch (errorPeticion) {
+      setError(errorPeticion);
+    } finally {
+      setSubiendo(false);
+    }
+  };
+
+  const realizarPeticionBorrar = async function () {
+    setSubiendo(true);
+    /* jshint ignore:start */
+    const url = "http://localhost:4000/usuarios/" + formulario._id;
+    /* jshint ignore:end */
+    const peticion = {
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${miUsuario.token}`,
+      }),
+      mode: "cors",
+      method: "DELETE",
+    };
+
+    try {
+      const respuesta = await fetch(url, peticion);
+      if (respuesta.ok) {
+        navegarHasta("/usuarios", { replace: true });
+      } else {
+        const recibido = await respuesta.json();
+        setError(recibido.error);
       }
     } catch (errorPeticion) {
       setError(errorPeticion);
@@ -320,7 +357,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={12}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>E-mail</InputLabel>
                   <FilledInput
@@ -334,7 +371,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={id ? 6 : 12}>
                 <Button
                   fullWidth
                   disabled={subiendo}
@@ -347,8 +384,34 @@ function FormularioUsuario() {
                   {id ? "Actualizar" : "Registrar"}
                 </Button>
               </Grid>
+              {id ? (
+                <Grid size={6}>
+                  <Button
+                    fullWidth
+                    color="error"
+                    disabled={subiendo}
+                    endIcon={<DeleteRoundedIcon />}
+                    onClick={mostrarAlertaBorrar}
+                    size="large"
+                    sx={{ height: 56 }}
+                    variant="contained"
+                  >
+                    Borrar
+                  </Button>
+                </Grid>
+              ) : (
+                ""
+              )}
             </Grid>
           </CardContent>
+          {borrar ? (
+            <AlertaBorrar
+              realizarPeticion={realizarPeticionBorrar}
+              setBorrar={setBorrar}
+            />
+          ) : (
+            ""
+          )}
         </Card>
       </Grid>
     </Grid>

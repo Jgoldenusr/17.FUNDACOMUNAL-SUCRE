@@ -17,9 +17,11 @@ import {
 } from "@mui/material";
 //Iconos MUI
 import AddLocationAltRoundedIcon from "@mui/icons-material/AddLocationAltRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import EditLocationAltRoundedIcon from "@mui/icons-material/EditLocationAltRounded";
 import Send from "@mui/icons-material/Send";
 //Componentes endogenos
+import AlertaBorrar from "../componentes/AlertaBorrar";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
@@ -28,6 +30,7 @@ import { formularioVacioCC } from "../config/plantillas";
 function FormularioCC() {
   const navegarHasta = useNavigate();
   const { id } = useParams();
+  const [borrar, setBorrar] = useState(false);
   const { miUsuario } = useContext(ContextoAutenticado);
   const [cargando, setCargando] = useState(id ? true : false);
   const [error, setError] = useState(null);
@@ -35,6 +38,63 @@ function FormularioCC() {
   const [formulario, setFormulario] = useState({ ...formularioVacioCC });
   const [opciones, setOpciones] = useState({});
   const [subiendo, setSubiendo] = useState(false);
+
+  useEffect(() => {
+    async function cargarSelectsBasicos() {
+      const tempOpciones = {};
+      tempOpciones.tipo = await buscarOpcion("cc/tipo");
+      tempOpciones.municipios = await buscarOpcion(
+        "cc/estados/SUCRE/municipios"
+      );
+      setOpciones(tempOpciones);
+    }
+    async function cargarTodosLosSelects(cc) {
+      const tempOpciones = {};
+      tempOpciones.tipo = await buscarOpcion("cc/tipo");
+      tempOpciones.municipios = await buscarOpcion(
+        "cc/estados/SUCRE/municipios"
+      );
+      tempOpciones.parroquias = await buscarOpcion(
+        `cc/estados/SUCRE/municipios/${cc.municipios}/parroquias`
+      );
+      tempOpciones.comuna = await buscarOpcion(
+        `cc/estados/SUCRE/municipios/${cc.municipios}/parroquias/${cc.parroquias}/comuna`
+      );
+      setOpciones(tempOpciones);
+    }
+    async function buscarCCParaEditar() {
+      const url = "http://localhost:4000/ccs/" + id;
+      const peticion = {
+        headers: new Headers({
+          Authorization: `Bearer ${miUsuario.token}`,
+        }),
+        mode: "cors",
+      };
+
+      try {
+        const respuesta = await fetch(url, peticion);
+        if (respuesta.ok) {
+          const recibido = await respuesta.json();
+          cargarTodosLosSelects(recibido);
+          setFormulario(recibido);
+        } else {
+          const recibido = await respuesta.json();
+          setError(recibido.error);
+        }
+      } catch (errorPeticion) {
+        setError(errorPeticion);
+      } finally {
+        setCargando(false);
+      }
+    }
+
+    if (id) {
+      buscarCCParaEditar();
+    } else {
+      setFormulario({ ...formularioVacioCC });
+      cargarSelectsBasicos();
+    }
+  }, [id]);
 
   const actualizarFormulario = function (campo, propiedad) {
     return async function (evento) {
@@ -117,6 +177,10 @@ function FormularioCC() {
     return resultado;
   };
 
+  const mostrarAlertaBorrar = function () {
+    setErroresValidacion(null);
+    setBorrar(true);
+  };
   const mostrarMsjInvalido = function (campo) {
     let msj = "";
     if (erroresValidacion && erroresValidacion.array) {
@@ -168,62 +232,34 @@ function FormularioCC() {
     }
   };
 
-  useEffect(() => {
-    async function cargarSelectsBasicos() {
-      const tempOpciones = {};
-      tempOpciones.tipo = await buscarOpcion("cc/tipo");
-      tempOpciones.municipios = await buscarOpcion(
-        "cc/estados/SUCRE/municipios"
-      );
-      setOpciones(tempOpciones);
-    }
-    async function cargarTodosLosSelects(cc) {
-      const tempOpciones = {};
-      tempOpciones.tipo = await buscarOpcion("cc/tipo");
-      tempOpciones.municipios = await buscarOpcion(
-        "cc/estados/SUCRE/municipios"
-      );
-      tempOpciones.parroquias = await buscarOpcion(
-        `cc/estados/SUCRE/municipios/${cc.municipios}/parroquias`
-      );
-      tempOpciones.comuna = await buscarOpcion(
-        `cc/estados/SUCRE/municipios/${cc.municipios}/parroquias/${cc.parroquias}/comuna`
-      );
-      setOpciones(tempOpciones);
-    }
-    async function buscarCCParaEditar() {
-      const url = "http://localhost:4000/ccs/" + id;
-      const peticion = {
-        headers: new Headers({
-          Authorization: `Bearer ${miUsuario.token}`,
-        }),
-        mode: "cors",
-      };
+  const realizarPeticionBorrar = async function () {
+    setSubiendo(true);
+    /* jshint ignore:start */
+    const url = "http://localhost:4000/ccs/" + formulario._id;
+    /* jshint ignore:end */
+    const peticion = {
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${miUsuario.token}`,
+      }),
+      mode: "cors",
+      method: "DELETE",
+    };
 
-      try {
-        const respuesta = await fetch(url, peticion);
-        if (respuesta.ok) {
-          const recibido = await respuesta.json();
-          cargarTodosLosSelects(recibido);
-          setFormulario(recibido);
-        } else {
-          const recibido = await respuesta.json();
-          setError(recibido.error);
-        }
-      } catch (errorPeticion) {
-        setError(errorPeticion);
-      } finally {
-        setCargando(false);
+    try {
+      const respuesta = await fetch(url, peticion);
+      if (respuesta.ok) {
+        navegarHasta("/ccs", { replace: true });
+      } else {
+        const recibido = await respuesta.json();
+        setError(recibido.error);
       }
+    } catch (errorPeticion) {
+      setError(errorPeticion);
+    } finally {
+      setSubiendo(false);
     }
-
-    if (id) {
-      buscarCCParaEditar();
-    } else {
-      setFormulario({ ...formularioVacioCC });
-      cargarSelectsBasicos();
-    }
-  }, [id]);
+  };
 
   /* jshint ignore:start */
   return cargando ? (
@@ -328,7 +364,7 @@ function FormularioCC() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={12}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>
                     Comuna donde se incluye el C.C. (Opcional)
@@ -406,7 +442,7 @@ function FormularioCC() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
+              <Grid size={id ? 6 : 12}>
                 <Button
                   fullWidth
                   disabled={subiendo}
@@ -419,8 +455,34 @@ function FormularioCC() {
                   {id ? "Actualizar" : "Registrar"}
                 </Button>
               </Grid>
+              {id ? (
+                <Grid size={6}>
+                  <Button
+                    fullWidth
+                    color="error"
+                    disabled={subiendo}
+                    endIcon={<DeleteRoundedIcon />}
+                    onClick={mostrarAlertaBorrar}
+                    size="large"
+                    sx={{ height: 56 }}
+                    variant="contained"
+                  >
+                    Borrar
+                  </Button>
+                </Grid>
+              ) : (
+                ""
+              )}
             </Grid>
           </CardContent>
+          {borrar ? (
+            <AlertaBorrar
+              realizarPeticion={realizarPeticionBorrar}
+              setBorrar={setBorrar}
+            />
+          ) : (
+            ""
+          )}
         </Card>
       </Grid>
     </Grid>
