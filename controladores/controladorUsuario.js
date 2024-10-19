@@ -103,6 +103,7 @@ exports.actualizarUsuario =
       //Se crea un objeto con los datos del usuario
       const nuevoUsuario = {
         _id: req.params.id,
+        activo: true,
         apellido: req.body.apellido,
         cedula: req.body.cedula,
         email: req.body.email,
@@ -145,7 +146,32 @@ exports.actualizarUsuario =
   ];
 
 exports.borrarUsuario = asyncHandler(async function (req, res, next) {
-  /* NO IMPLEMENTADO AUN*/
+  //Se busca el usuario a borrar
+  const UsuarioABorrar = await Usuario.findById(req.params.id).exec();
+  //Si es interno
+  if (UsuarioABorrar === null) {
+    return res
+      .status(404)
+      .json({ error: { message: "Usuario no encontrado" } });
+  } else if (UsuarioABorrar.activo === false) {
+    //Se verifica si 'UsuarioABorrar' esta eliminado
+    return res.status(404).json({
+      error: { message: "El usuario fue eliminado" },
+    });
+  } else {
+    //Se actualizan TODOS los consejos comunales asociados al usuario
+    await CC.updateMany(
+      { "usuario._id": req.params.id },
+      { $unset: { usuario: "" } }
+    ).exec();
+    //La propiedad activo se cambia a falso
+    await UsuarioABorrar.updateOne({
+      $set: { activo: false },
+      $unset: { cc: "", cedula: "", email: "", tlf: "", usuario: "" },
+    });
+    //Exito
+    return res.status(200).json({ id: req.params.id });
+  }
 });
 
 exports.buscarUsuario = asyncHandler(async function (req, res, next) {
@@ -157,11 +183,24 @@ exports.buscarUsuario = asyncHandler(async function (req, res, next) {
     return res
       .status(404)
       .json({ error: { message: "No se encontro el usuario" } });
+  } else if (usr.activo === false) {
+    //Se verifica si 'usr' esta eliminado
+    return res.status(404).json({
+      error: { message: "El usuario fue eliminado" },
+    });
   } else {
     //Si no es nulo
     return res.status(200).json(usr);
   }
 });
+
+exports.denegado = function (req, res) {
+  return res.status(401).json({
+    error: {
+      message: "Acceso denegado, inicie sesion con credenciales validas",
+    },
+  });
+};
 
 exports.iniciarSesion = asyncHandler(async function (req, res, next) {
   //Se extrae el usuario y la clave del post
@@ -175,6 +214,11 @@ exports.iniciarSesion = asyncHandler(async function (req, res, next) {
       error: {
         message: "Nombre de usuario o clave erronea",
       },
+    });
+  } else if (usr.activo === false) {
+    //Se verifica si 'usr' esta eliminado
+    return res.status(404).json({
+      error: { message: "La cuenta del usuario fue eliminada" },
     });
   } else {
     //Si se encontro un usuario, se comparan las contraseñas
@@ -209,7 +253,7 @@ exports.iniciarSesion = asyncHandler(async function (req, res, next) {
 
 exports.listarUsuarios = asyncHandler(async function (req, res, next) {
   const { apellido, cedula, nombre, p, rol, usuario } = req.query; //se extraen los parametros de la consulta
-  let parametros = { _id: { $ne: req.user._id } };
+  let parametros = { _id: { $ne: req.user._id }, activo: true };
 
   if (apellido) {
     //Se agrega el filtro de apellido
@@ -347,6 +391,7 @@ exports.registrarUsuario =
       const errores = validationResult(req);
       //Se crea un objeto con los datos del usuario
       const nuevoUsuario = {
+        activo: true,
         apellido: req.body.apellido,
         cedula: req.body.cedula,
         email: req.body.email,

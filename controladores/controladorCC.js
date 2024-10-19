@@ -110,6 +110,7 @@ exports.actualizarCC =
       //Se crea un objeto con los datos del CC
       const nuevoCC = {
         _id: req.params.id, //Es importante incluir la id original
+        activo: true,
         comuna: req.body.comuna,
         estados: req.body.estados,
         localidad: req.body.localidad,
@@ -157,7 +158,7 @@ exports.actualizarCC =
         nuevoCC.usuario = usuarioAsociado;
         //Se guardan el usuario asociado
         await usuarioAsociado.save();
-        //Se actualiza el C
+        //Se actualiza el CC
         await miCC.updateOne({ $set: nuevoCC });
         //Si todo tuvo exito se retorna la id del CC actualizado
         return res.status(200).json({ id: req.params.id });
@@ -166,25 +167,57 @@ exports.actualizarCC =
   ];
 
 exports.borrarCC = asyncHandler(async function (req, res, next) {
-  /* NO IMPLEMENTADO AUN*/
+  //Se busca el CC a borrar
+  const CCABorrar = await CC.findById(req.params.id).exec();
+  //Si es interno
+  if (CCABorrar === null) {
+    return res.status(404).json({ error: { message: "No se encontro el CC" } });
+  } else if (CCABorrar.activo === false) {
+    //Se verifica si 'CCABorrar' esta eliminado
+    return res.status(404).json({
+      error: { message: "El consejo comunal fue eliminado" },
+    });
+  } else {
+    //Se busca el usuario asociado
+    const usuarioAsociado = await Usuario.findOne({
+      cedula: CCABorrar.usuario.cedula,
+    }).exec();
+    //Se elimina el CC del usuario asociado
+    usuarioAsociado.cc.pull({ _id: req.params.id });
+    //Se guarda el usuario asociado
+    await usuarioAsociado.save();
+    //La propiedad activo se cambia a falso
+    await CCABorrar.updateOne({
+      $set: { activo: false },
+      $unset: { usuario: "", situr: "" },
+    });
+    //Exito
+    return res.status(200).json({ id: req.params.id });
+  }
 });
 
 exports.buscarCC = asyncHandler(async function (req, res, next) {
   //Se busca el consejo comunal (por el parametro pasado por url)
-  const nuevoCC = await CC.findById(req.params.id).exec();
+  const miCC = await CC.findById(req.params.id).exec();
   //La funcion anterior no falla cuando no encuentra nada, sino que regresa null
-  if (nuevoCC === null) {
-    //Se verifica si 'nuevoCC' es nulo
+  if (miCC === null) {
+    //Se verifica si 'miCC' es nulo
     return res.status(404).json({ error: { message: "No encontrado" } });
+  } else if (miCC.activo === false) {
+    //Se verifica si 'miCC' esta eliminado
+    return res.status(404).json({
+      error: { message: "El consejo comunal fue eliminado" },
+    });
   } else {
     //Si no es nulo, se envia el CC
-    return res.status(200).json(nuevoCC);
+    return res.status(200).json(miCC);
   }
 });
 
 exports.estadisticas = asyncHandler(async function (req, res, next) {
   const fechaDeAhora = new Date();
   const conteoCC = await CC.aggregate()
+    .match({ activo: true })
     .group({
       _id: "$municipios",
       ccs: { $count: {} },
@@ -274,7 +307,9 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
 exports.listarCC = asyncHandler(async function (req, res, next) {
   const fechaDeAhora = new Date();
   const { comuna, estatus, municipios, p, parroquias, situr, tipo } = req.query; //se extraen los parametros de la consulta
-  let parametros = {};
+  let parametros = {
+    activo: true,
+  };
 
   if (comuna) {
     parametros.comuna = comuna;
@@ -437,6 +472,7 @@ exports.nuevoCC =
       const errores = validationResult(req);
       //Se crea un objeto con los datos del CC
       const nuevoCC = {
+        activo: true,
         comuna: req.body.comuna,
         estados: req.body.estados,
         localidad: req.body.localidad,
