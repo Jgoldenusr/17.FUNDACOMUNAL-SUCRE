@@ -20,7 +20,7 @@ const funcionDeVerificacion = async function (datosDelJWT, autenticado) {
     _id: datosDelJWT._id,
     clave: datosDelJWT.clave,
   }).exec();
-  if (usuarioAutenticado) {
+  if (usuarioAutenticado && usuarioAutenticado.activo) {
     //Si el usuario existe
     return autenticado(null, usuarioAutenticado);
   } else {
