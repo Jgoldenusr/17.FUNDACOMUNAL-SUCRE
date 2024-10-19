@@ -11,14 +11,15 @@ const opcionesDeEsquema = {
 
 const EsquemaUsuario = new Esquema(
   {
+    activo: { type: Boolean, default: true },
     apellido: { type: String, required: true },
-    cedula: { type: String, required: true, unique: true },
+    cedula: { type: String, required: true },
     clave: { type: String, required: true },
     email: { type: String, required: true },
     nombre: { type: String, required: true },
     rol: { type: String, required: true },
     tlf: { type: String, required: true },
-    usuario: { type: String, required: true, unique: true },
+    usuario: { type: String, required: true },
     cc: [
       new Esquema({
         _id: { type: Esquema.Types.ObjectId },
