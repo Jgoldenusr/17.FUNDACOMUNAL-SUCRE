@@ -121,32 +121,45 @@ exports.actualizarCC =
         //Si no hubieron errores
         //Se busca el CC que se va a editar
         const miCC = await CC.findById(req.params.id).exec();
-        //Este if se ejecuta si se va a cambiar la comuna asociada
-        if (miCC.comuna.nombre != req.body.comuna.nombre) {
+        let consulta;
+
+        //Si la comuna es diferente de la comuna que tenia antes de la edicion
+        if (miCC.comuna && miCC.comuna.nombre != req.body.comuna.nombre) {
           //Se saca el CC de la comuna anteriormente asociada
           await Comuna.findOneAndUpdate(
             {
               situr: miCC.comuna.situr,
             },
-            { $pull: { "cc._id": req.params.id } }
+            { $pull: { cc: { _id: req.params.id } } }
           ).exec();
         }
-        //Se busca la comuna asociada
-        const comunaAsociada = await Comuna.findOne({
-          estados: req.body.estados,
-          municipios: req.body.municipios,
-          nombre: req.body.comuna.nombre,
-          parroquias: req.body.parroquias,
-        }).exec();
-        //Se actualiza el usuario asociado con los datos del nuevo CC
-        comunaAsociada.cc.pull({ _id: req.params.id });
-        comunaAsociada.cc.push(nuevoCC);
-        //Se asocia al objeto del nuevo CC
-        nuevoCC.comuna = comunaAsociada;
-        //Se guarda la comuna asociada
-        await comunaAsociada.save();
-        //Se actualiza el CC
-        await miCC.updateOne({ $set: nuevoCC }).exec();
+
+        //Si se le va a asignar una nueva comuna
+        if (req.body.comuna.nombre) {
+          //Se busca la comuna asociada
+          const comunaAsociada = await Comuna.findOne({
+            estados: req.body.estados,
+            municipios: req.body.municipios,
+            nombre: req.body.comuna.nombre,
+            parroquias: req.body.parroquias,
+          }).exec();
+          //Se actualiza la comuna asociada con los datos del nuevo CC
+          comunaAsociada.cc.pull({ _id: req.params.id });
+          comunaAsociada.cc.push(nuevoCC);
+          //Se asocia al objeto del nuevo CC
+          nuevoCC.comuna = comunaAsociada;
+          //Se guarda la comuna asociada
+          await comunaAsociada.save();
+        }
+
+        //Si ahora no se le va a asignar
+        if (!req.body.comuna.nombre) {
+          consulta = miCC.updateOne({ $set: nuevoCC, $unset: { comuna: "" } });
+        } else {
+          consulta = miCC.updateOne({ $set: nuevoCC });
+        }
+        //Se realiza la consulta
+        await consulta.exec();
         //Si todo tuvo exito se retorna la id del CC actualizado
         return res.status(200).json({ id: req.params.id });
       }
@@ -166,12 +179,14 @@ exports.borrarCC = asyncHandler(async function (req, res, next) {
     });
   } else {
     //Se busca la comuna asociada y se elimina la referencia al CC
-    await Comuna.findOneAndUpdate(
-      {
-        situr: CCABorrar.comuna.situr,
-      },
-      { $pull: { "cc._id": req.params.id } }
-    ).exec();
+    if (CCABorrar.comuna) {
+      await Comuna.findOneAndUpdate(
+        {
+          situr: CCABorrar.comuna.situr,
+        },
+        { $pull: { cc: { _id: req.params.id } } }
+      ).exec();
+    }
     //La propiedad activo se cambia a falso
     await CCABorrar.updateOne({
       $set: { activo: false },
@@ -455,21 +470,23 @@ exports.nuevoCC =
           },
         });
       } else {
-        //Si no hubieron errores se busca la comuna asociada
-        const comunaAsociada = await Comuna.findOne({
-          estados: req.body.estados,
-          municipios: req.body.municipios,
-          nombre: req.body.comuna.nombre,
-          parroquias: req.body.parroquias,
-        }).exec();
-        //Se incluye esta comuna en el objeto del nuevo CC
-        nuevoCC.comuna = comunaAsociada;
         //Se crea el nuevo documento a partir del objeto CC
         const documentoCC = new CC(nuevoCC);
-        //Se añade el CC al array de la comuna
-        comunaAsociada.cc.push(documentoCC);
-        //Se guardan ambos
-        await comunaAsociada.save();
+        //Si no hubieron errores se busca la comuna asociada
+        if (req.body.comuna.nombre) {
+          const comunaAsociada = await Comuna.findOneAndUpdate(
+            {
+              estados: req.body.estados,
+              municipios: req.body.municipios,
+              nombre: req.body.comuna.nombre,
+              parroquias: req.body.parroquias,
+            },
+            { $push: { cc: documentoCC } }
+          ).exec();
+          //Se incluye esta comuna en el objeto del nuevo CC
+          documentoCC.comuna = comunaAsociada;
+        }
+        //Se guarda el documento del CC
         await documentoCC.save();
         //Si todo tuvo exito se regresa la id del nuevo CC
         return res.status(200).json({ id: documentoCC._id });
