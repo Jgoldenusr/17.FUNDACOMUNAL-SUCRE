@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
-const CC = require("../modelos/cc");
+const Comuna = require("../modelos/comuna");
 const Usuario = require("../modelos/usuario");
 const Validar = require("../config/validadores");
 require("dotenv").config();
@@ -130,16 +130,16 @@ exports.actualizarUsuario =
           const claveEncriptada = await bcryptjs.hash(req.body.clave, 10);
           nuevoUsuario.clave = claveEncriptada;
         }
+        //Se actualiza la comuna asociada al usuario
+        await Comuna.findOneAndUpdate(
+          { "usuario._id": req.params.id },
+          { $set: { usuario: nuevoUsuario } }
+        ).exec();
         //Se actualiza el usuario
         await Usuario.findByIdAndUpdate(req.params.id, {
           $set: nuevoUsuario,
         }).exec();
-        //Se actualizan TODOS los consejos comunales asociados al usuario
-        await CC.updateMany(
-          { "usuario._id": req.params.id },
-          { $set: { usuario: nuevoUsuario } }
-        ).exec();
-        //Si todo salio bien se regresa la id del CC actualizado
+        //Si todo salio bien se regresa la id del usuario actualizado
         return res.status(200).json({ id: req.params.id });
       }
     }),
@@ -159,16 +159,16 @@ exports.borrarUsuario = asyncHandler(async function (req, res, next) {
       error: { message: "El usuario fue eliminado" },
     });
   } else {
-    //Se actualizan TODOS los consejos comunales asociados al usuario
-    await CC.updateMany(
+    //Se actualizan TODAS las comunas asociadas al usuario
+    await Comuna.findOneAndUpdate(
       { "usuario._id": req.params.id },
       { $unset: { usuario: "" } }
     ).exec();
     //La propiedad activo se cambia a falso
     await UsuarioABorrar.updateOne({
       $set: { activo: false },
-      $unset: { cc: "", cedula: "", email: "", tlf: "", usuario: "" },
-    });
+      $unset: { comuna: "", cedula: "", email: "", tlf: "", usuario: "" },
+    }).exec();
     //Exito
     return res.status(200).json({ id: req.params.id });
   }
@@ -240,7 +240,6 @@ exports.iniciarSesion = asyncHandler(async function (req, res, next) {
       //Si todo tuvo exito
       return res.status(200).json({
         apellido: usr.apellido,
-        cc: usr.cc,
         cedula: usr.cedula,
         id: usr._id,
         nombre: usr.nombre,
