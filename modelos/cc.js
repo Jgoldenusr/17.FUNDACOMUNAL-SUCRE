@@ -16,7 +16,12 @@ const opcionesDeEsquema = {
 const EsquemaCC = new Esquema(
   {
     activo: { type: Boolean, default: true },
-    comuna: { type: String, default: "" },
+    comuna: new Esquema({
+      _id: { type: Esquema.Types.ObjectId },
+      nombre: { type: String },
+      situr: { type: String },
+      tipo: { type: String },
+    }),
     estados: { type: String, required: true },
     renovado: new Esquema(
       {
@@ -39,15 +44,8 @@ const EsquemaCC = new Esquema(
     nombre: { type: String, required: true },
     parroquias: { type: String, required: true },
     redi: { type: String, required: true },
-    situr: { type: String, required: true},
+    situr: { type: String, required: true },
     tipo: { type: String, required: true },
-    usuario: new Esquema({
-      apellido: { type: String },
-      cedula: { type: String },
-      _id: { type: Esquema.Types.ObjectId },
-      nombre: { type: String },
-      rol: { type: String },
-    }),
   },
   opcionesDeEsquema
 );
