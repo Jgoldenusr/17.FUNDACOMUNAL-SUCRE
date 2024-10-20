@@ -1,27 +1,12 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const CC = require("../modelos/cc");
-const Usuario = require("../modelos/usuario");
+const Comuna = require("../modelos/comuna");
 const Validar = require("../config/validadores");
 
 exports.actualizarCC =
   //Se validan los campos
   [
-    body("usuario.cedula")
-      .trim()
-      .custom(Validar.cedulaTienePatronValido)
-      .bail()
-      .custom(Validar.cedulaExiste),
-    body("comuna")
-      .optional({ values: "falsy" })
-      .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'comuna' no debe estar vacio")
-      .bail()
-      .isLength({ max: 100 })
-      .withMessage("El campo 'comuna' no debe exceder los 100 caracteres")
-      .toUpperCase(),
     body("estados", "El estado es invalido")
       .trim()
       .isIn([
@@ -102,6 +87,7 @@ exports.actualizarCC =
       .custom(Validar.siturTienePatronValido)
       .bail()
       .custom(Validar.siturNoRepetido),
+    body("comuna.nombre").trim().custom(Validar.comunaEsValida),
     body("tipo").trim().custom(Validar.validarCampo("cc/tipo")),
     //Despues de que se chequean los campos, se ejecuta esta funcion
     asyncHandler(async function (req, res, next) {
@@ -111,7 +97,6 @@ exports.actualizarCC =
       const nuevoCC = {
         _id: req.params.id, //Es importante incluir la id original
         activo: true,
-        comuna: req.body.comuna,
         estados: req.body.estados,
         localidad: req.body.localidad,
         municipios: req.body.municipios,
@@ -136,30 +121,32 @@ exports.actualizarCC =
         //Si no hubieron errores
         //Se busca el CC que se va a editar
         const miCC = await CC.findById(req.params.id).exec();
-        //Este if se ejecuta si se va a cambiar el usuario asociado
-        if (miCC.usuario.cedula != req.body.usuario.cedula) {
-          //Se busca el usuario viejo
-          const usuarioViejo = await Usuario.findOne({
-            cedula: miCC.usuario.cedula,
-          }).exec();
-          //Se saca el cc
-          usuarioViejo.cc.pull({ _id: req.params.id });
-          //Se guarda
-          await usuarioViejo.save();
+        //Este if se ejecuta si se va a cambiar la comuna asociada
+        if (miCC.comuna.nombre != req.body.comuna.nombre) {
+          //Se saca el CC de la comuna anteriormente asociada
+          await Comuna.findOneAndUpdate(
+            {
+              situr: miCC.comuna.situr,
+            },
+            { $pull: { "cc._id": req.params.id } }
+          ).exec();
         }
-        //Se busca el usuario asociado
-        const usuarioAsociado = await Usuario.findOne({
-          cedula: req.body.usuario.cedula,
+        //Se busca la comuna asociada
+        const comunaAsociada = await Comuna.findOne({
+          estados: req.body.estados,
+          municipios: req.body.municipios,
+          nombre: req.body.comuna.nombre,
+          parroquias: req.body.parroquias,
         }).exec();
         //Se actualiza el usuario asociado con los datos del nuevo CC
-        usuarioAsociado.cc.pull({ _id: req.params.id });
-        usuarioAsociado.cc.push(nuevoCC);
+        comunaAsociada.cc.pull({ _id: req.params.id });
+        comunaAsociada.cc.push(nuevoCC);
         //Se asocia al objeto del nuevo CC
-        nuevoCC.usuario = usuarioAsociado;
-        //Se guardan el usuario asociado
-        await usuarioAsociado.save();
+        nuevoCC.comuna = comunaAsociada;
+        //Se guarda la comuna asociada
+        await comunaAsociada.save();
         //Se actualiza el CC
-        await miCC.updateOne({ $set: nuevoCC });
+        await miCC.updateOne({ $set: nuevoCC }).exec();
         //Si todo tuvo exito se retorna la id del CC actualizado
         return res.status(200).json({ id: req.params.id });
       }
@@ -169,28 +156,27 @@ exports.actualizarCC =
 exports.borrarCC = asyncHandler(async function (req, res, next) {
   //Se busca el CC a borrar
   const CCABorrar = await CC.findById(req.params.id).exec();
-  //Si es interno
+  //Si no se hallo nada
   if (CCABorrar === null) {
     return res.status(404).json({ error: { message: "No se encontro el CC" } });
   } else if (CCABorrar.activo === false) {
-    //Se verifica si 'CCABorrar' esta eliminado
+    //Si 'CCABorrar' esta eliminado
     return res.status(404).json({
       error: { message: "El consejo comunal fue eliminado" },
     });
   } else {
-    //Se busca el usuario asociado
-    const usuarioAsociado = await Usuario.findOne({
-      cedula: CCABorrar.usuario.cedula,
-    }).exec();
-    //Se elimina el CC del usuario asociado
-    usuarioAsociado.cc.pull({ _id: req.params.id });
-    //Se guarda el usuario asociado
-    await usuarioAsociado.save();
+    //Se busca la comuna asociada y se elimina la referencia al CC
+    await Comuna.findOneAndUpdate(
+      {
+        situr: CCABorrar.comuna.situr,
+      },
+      { $pull: { "cc._id": req.params.id } }
+    ).exec();
     //La propiedad activo se cambia a falso
     await CCABorrar.updateOne({
       $set: { activo: false },
-      $unset: { usuario: "", situr: "" },
-    });
+      $unset: { comuna: "", situr: "" },
+    }).exec();
     //Exito
     return res.status(200).json({ id: req.params.id });
   }
@@ -213,7 +199,7 @@ exports.buscarCC = asyncHandler(async function (req, res, next) {
     return res.status(200).json(miCC);
   }
 });
-
+//SE ROMPE
 exports.estadisticas = asyncHandler(async function (req, res, next) {
   const fechaDeAhora = new Date();
   const conteoCC = await CC.aggregate()
@@ -221,11 +207,6 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
     .group({
       _id: "$municipios",
       ccs: { $count: {} },
-      comunas: {
-        $addToSet: {
-          $cond: [{ $eq: ["$comuna", ""] }, "$$REMOVE", "$comuna"],
-        },
-      },
       noRenovados: {
         $sum: {
           $cond: [
@@ -283,16 +264,10 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
         },
       },
     })
-    .addFields({
-      comunas: {
-        $size: "$comunas",
-      },
-    })
     .project({
       _id: 0,
       municipio: "$_id",
       ccs: 1,
-      comunas: 1,
       noRenovados: 1,
       noVigentes: 1,
       renovados: 1,
@@ -312,7 +287,7 @@ exports.listarCC = asyncHandler(async function (req, res, next) {
   };
 
   if (comuna) {
-    parametros.comuna = comuna;
+    parametros.comuna.nombre = comuna;
   }
   if (estatus === "norenovado") {
     parametros.$or = [
@@ -370,21 +345,6 @@ exports.listarCC = asyncHandler(async function (req, res, next) {
 exports.nuevoCC =
   //Se validan los campos
   [
-    body("usuario.cedula")
-      .trim()
-      .custom(Validar.cedulaTienePatronValido)
-      .bail()
-      .custom(Validar.cedulaExiste),
-    body("comuna")
-      .optional({ values: "falsy" })
-      .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'comuna' no debe estar vacio")
-      .bail()
-      .isLength({ max: 100 })
-      .withMessage("El campo 'comuna' no debe exceder los 100 caracteres")
-      .toUpperCase(),
     body("estados", "El estado es invalido")
       .trim()
       .isIn([
@@ -465,6 +425,7 @@ exports.nuevoCC =
       .custom(Validar.siturTienePatronValido)
       .bail()
       .custom(Validar.siturNuevo),
+    body("comuna.nombre").trim().custom(Validar.comunaEsValida),
     body("tipo").trim().custom(Validar.validarCampo("cc/tipo")),
     //Despues de que se chequean los campos, se ejecuta esta funcion
     asyncHandler(async function (req, res, next) {
@@ -473,7 +434,6 @@ exports.nuevoCC =
       //Se crea un objeto con los datos del CC
       const nuevoCC = {
         activo: true,
-        comuna: req.body.comuna,
         estados: req.body.estados,
         localidad: req.body.localidad,
         municipios: req.body.municipios,
@@ -495,18 +455,21 @@ exports.nuevoCC =
           },
         });
       } else {
-        //Si no hubieron errores se busca el usuario asociado (por su cedula)
-        const usuarioAsociado = await Usuario.findOne({
-          cedula: req.body.usuario.cedula,
+        //Si no hubieron errores se busca la comuna asociada
+        const comunaAsociada = await Comuna.findOne({
+          estados: req.body.estados,
+          municipios: req.body.municipios,
+          nombre: req.body.comuna.nombre,
+          parroquias: req.body.parroquias,
         }).exec();
-        //Se incluye este usuario en el objeto del nuevo CC
-        nuevoCC.usuario = usuarioAsociado;
+        //Se incluye esta comuna en el objeto del nuevo CC
+        nuevoCC.comuna = comunaAsociada;
         //Se crea el nuevo documento a partir del objeto CC
         const documentoCC = new CC(nuevoCC);
-        //Se añade el CC al array del usuario
-        usuarioAsociado.cc.push(documentoCC);
+        //Se añade el CC al array de la comuna
+        comunaAsociada.cc.push(documentoCC);
         //Se guardan ambos
-        await usuarioAsociado.save();
+        await comunaAsociada.save();
         await documentoCC.save();
         //Si todo tuvo exito se regresa la id del nuevo CC
         return res.status(200).json({ id: documentoCC._id });
