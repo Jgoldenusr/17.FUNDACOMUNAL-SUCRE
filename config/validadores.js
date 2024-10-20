@@ -45,16 +45,20 @@ exports.cedulaTienePatronValido = function (valorCedula) {
 };
 
 exports.comunaEsValida = async function (valorComuna, { req }) {
-  const comunaABuscar = await Comuna.findOne({
-    estados: req.body.estados,
-    municipios: req.body.municipios,
-    nombre: valorComuna,
-    parroquias: req.body.parroquias,
-  }).exec();
-  if (!comunaABuscar) {
-    throw new Error("La comuna introducida no es valida");
-  } else {
+  if (!valorComuna) {
     return true;
+  } else {
+    const comunaABuscar = await Comuna.findOne({
+      estados: req.body.estados,
+      municipios: req.body.municipios,
+      nombre: valorComuna,
+      parroquias: req.body.parroquias,
+    }).exec();
+    if (!comunaABuscar) {
+      throw new Error("La comuna introducida no es valida");
+    } else {
+      return true;
+    }
   }
 };
 
