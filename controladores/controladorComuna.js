@@ -113,6 +113,14 @@ exports.actualizarComuna =
             { $unset: { comuna: "" } }
           ).exec();
         }
+        //Se buscan y eliminan referencias a la cedula en otras comunas excepto esta misma
+        await Comuna.updateMany(
+          {
+            "usuario.cedula": req.body.usuario.cedula,
+            _id: { $ne: req.params.id },
+          },
+          { $unset: { usuario: "" } }
+        ).exec();
         //Se busca el usuario asociado y se actualiza su comuna
         const usuarioAsociado = await Usuario.findOneAndUpdate(
           {
@@ -321,7 +329,14 @@ exports.nuevaComuna =
           },
         });
       } else {
-        //Si no hubieron errores se busca el usuario asociado (por su cedula)
+        //Se buscan y eliminan referencias a la cedula en otras comunas
+        await Comuna.updateMany(
+          {
+            "usuario.cedula": req.body.usuario.cedula,
+          },
+          { $unset: { usuario: "" } }
+        ).exec();
+        //Se busca el usuario asociado (por su cedula)
         const usuarioAsociado = await Usuario.findOne({
           cedula: req.body.usuario.cedula,
         }).exec();
