@@ -1,4 +1,5 @@
 const CC = require("../modelos/cc");
+const Comuna = require("../modelos/comuna");
 const Usuario = require("../modelos/usuario");
 const Opcion = require("../modelos/opcion");
 const { DateTime } = require("luxon");
@@ -40,6 +41,20 @@ exports.cedulaTienePatronValido = function (valorCedula) {
     return true;
   } else {
     throw new Error(`La cedula tiene un patron invalido`);
+  }
+};
+
+exports.comunaEsValida = async function (valorComuna, { req }) {
+  const comunaABuscar = await Comuna.findOne({
+    estados: req.body.estados,
+    municipios: req.body.municipios,
+    nombre: valorComuna,
+    parroquias: req.body.parroquias,
+  }).exec();
+  if (!comunaABuscar) {
+    throw new Error("La comuna introducida no es valida");
+  } else {
+    return true;
   }
 };
 
@@ -117,11 +132,32 @@ exports.siturExiste = async function (valorSitur) {
   }
 };
 
+exports.siturComunaNoRepetido = async function (valorSitur, { req }) {
+  const siturExiste = await Comuna.findOne({
+    situr: valorSitur,
+    _id: { $ne: req.params.id },
+  }).exec();
+  if (siturExiste) {
+    throw new Error("El situr ya se encuentra en uso");
+  } else {
+    return true;
+  }
+};
+
 exports.siturNoRepetido = async function (valorSitur, { req }) {
   const siturExiste = await CC.findOne({
     situr: valorSitur,
     _id: { $ne: req.params.id },
   }).exec();
+  if (siturExiste) {
+    throw new Error("El situr ya se encuentra en uso");
+  } else {
+    return true;
+  }
+};
+
+exports.siturComunaNuevo = async function (valorSitur) {
+  const siturExiste = await Comuna.findOne({ situr: valorSitur }).exec();
   if (siturExiste) {
     throw new Error("El situr ya se encuentra en uso");
   } else {
@@ -135,6 +171,29 @@ exports.siturNuevo = async function (valorSitur) {
     throw new Error("El situr ya se encuentra en uso");
   } else {
     return true;
+  }
+};
+
+exports.siturComunaTienePatronValido = function (valorSitur, { req }) {
+  /* jshint ignore:start */
+  const tipoComuna =
+    req.body.tipo === "INDIGENA"
+      ? "IND"
+      : req.body.tipo === "RURAL"
+      ? "RUR"
+      : req.body.tipo === "SUB-URBANO O MIXTO"
+      ? "MIX"
+      : "URB";
+  const expresionRegular = new RegExp(
+    `^C-${tipoComuna}-[0-9]{4}-[0-9]{2}-[0-9]{4}$`
+  );
+  /* jshint ignore:end */
+  if (expresionRegular.test(valorSitur)) {
+    return true;
+  } else {
+    throw new Error(
+      `El situr debe tener el patron C-${tipoComuna}-9999-99-9999`
+    );
   }
 };
 
