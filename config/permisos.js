@@ -4,6 +4,7 @@ const asyncHandler = require("express-async-handler");
 
 const listaNegraPromotor = [
   { ruta: "/ccs", metodos: ["DELETE", "POST", "PUT"] },
+  { ruta: "/comunas", metodos: ["DELETE", "POST", "PUT"] },
   { ruta: "/config", metodos: ["DELETE", "POST", "PUT"] },
   { ruta: "/reportes", metodos: [""] },
   { ruta: "/reportes/interno", metodos: ["POST", "PUT"] },
