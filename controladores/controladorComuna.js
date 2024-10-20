@@ -104,7 +104,10 @@ exports.actualizarComuna =
         //Se busca la comuna que se va a editar
         const miComuna = await Comuna.findById(req.params.id).exec();
         //Este if se ejecuta si se va a cambiar el usuario asociado
-        if (miComuna.usuario.cedula != req.body.usuario.cedula) {
+        if (
+          miComuna.usuario &&
+          miComuna.usuario.cedula != req.body.usuario.cedula
+        ) {
           //Se busca el usuario viejo y se edita
           await Usuario.findOneAndUpdate(
             {
@@ -114,7 +117,7 @@ exports.actualizarComuna =
           ).exec();
         }
         //Se buscan y eliminan referencias a la cedula en otras comunas excepto esta misma
-        await Comuna.updateMany(
+        await Comuna.findOneAndUpdate(
           {
             "usuario.cedula": req.body.usuario.cedula,
             _id: { $ne: req.params.id },
@@ -158,12 +161,14 @@ exports.borrarComuna = asyncHandler(async function (req, res, next) {
     });
   } else {
     //Se busca el usuario asociado y se elimina su comuna
-    await Usuario.findOneAndUpdate(
-      {
-        cedula: ComunaABorrar.usuario.cedula,
-      },
-      { $unset: { comuna: "" } }
-    ).exec();
+    if (ComunaABorrar.usuario) {
+      await Usuario.findOneAndUpdate(
+        {
+          cedula: ComunaABorrar.usuario.cedula,
+        },
+        { $unset: { comuna: "" } }
+      ).exec();
+    }
     //Se buscan los CC asociados y se eliminan sus comunas
     await CC.updateMany(
       { "comuna._id": req.params.id },
@@ -171,8 +176,8 @@ exports.borrarComuna = asyncHandler(async function (req, res, next) {
     ).exec();
     //La propiedad activo se cambia a falso
     await ComunaABorrar.updateOne({
-      $set: { activo: false },
-      $unset: { cc: "", situr: "", usuario: "" },
+      $set: { activo: false, cc: [] },
+      $unset: { situr: "", usuario: "" },
     }).exec();
     //Exito
     return res.status(200).json({ id: req.params.id });
@@ -330,7 +335,7 @@ exports.nuevaComuna =
         });
       } else {
         //Se buscan y eliminan referencias a la cedula en otras comunas
-        await Comuna.updateMany(
+        await Comuna.findOneAndUpdate(
           {
             "usuario.cedula": req.body.usuario.cedula,
           },
