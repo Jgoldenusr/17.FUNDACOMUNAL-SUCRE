@@ -300,9 +300,8 @@ exports.listarCC = asyncHandler(async function (req, res, next) {
   let parametros = {
     activo: true,
   };
-
   if (comuna) {
-    parametros.comuna.nombre = comuna;
+    parametros = { "comuna.nombre": comuna };
   }
   if (estatus === "norenovado") {
     parametros.$or = [
