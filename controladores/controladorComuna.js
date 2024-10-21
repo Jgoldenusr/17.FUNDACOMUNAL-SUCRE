@@ -207,7 +207,8 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
 });
 
 exports.listarComunas = asyncHandler(async function (req, res, next) {
-  const { municipios, p, parroquias, situr, tipo } = req.query; //se extraen los parametros de la consulta
+  const { municipios, p, parroquias, situr, tipo, solonombres } = req.query; //se extraen los parametros de la consulta
+  let listaComunas = [];
   let parametros = {
     activo: true,
   };
@@ -223,13 +224,20 @@ exports.listarComunas = asyncHandler(async function (req, res, next) {
   if (tipo) {
     parametros.tipo = tipo;
   }
-  //Busca todas las comunas segun los parametros y los regresa en un arreglo
-  const listaComunas = await Comuna.paginate(parametros, {
-    limit: 10,
-    page: parseInt(p, 10) || 1,
-  });
+  if (solonombres) {
+    //Si se solicita solo nombres de las comunas para algun select dinamico en el front
+    listaComunas = (
+      await Comuna.find(parametros, "nombre -_id").sort({ nombre: 1 }).exec()
+    ).map((item) => item.nombre);
+  } else {
+    //Busca todas las comunas segun los parametros y los regresa en un arreglo
+    listaComunas = await Comuna.paginate(parametros, {
+      limit: 10,
+      page: parseInt(p, 10) || 1,
+    });
+  }
 
-  if (listaComunas.docs.length > 0) {
+  if (listaComunas?.length > 0 || listaComunas?.docs?.length > 0) {
     //Si el arreglo no esta vacio
     return res.status(200).json(listaComunas);
   } else {
