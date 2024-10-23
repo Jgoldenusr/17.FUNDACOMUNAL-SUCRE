@@ -4,51 +4,32 @@ const Comuna = require("../modelos/comuna");
 const CC = require("../modelos/cc");
 const Usuario = require("../modelos/usuario");
 const Validar = require("../config/validadores");
+const { OpcionesCC } = require("../config/opciones");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.actualizarComuna =
   //Se validan los campos
   [
+    body("estados", "El estado introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.estados),
+    body("municipios", "El municipio introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.municipios),
+    body("tipo", "El tipo introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.tipoComuna),
+    body("parroquias").trim().custom(Validar.validarParroquia),
     body("usuario.cedula")
       .trim()
       .custom(Validar.cedulaTienePatronValido)
       .bail()
       .custom(Validar.cedulaExiste),
-    body("estados", "El estado es invalido")
+    body("situr")
       .trim()
-      .isIn([
-        "AMAZONAS",
-        "ANZOATEGUI",
-        "APURE",
-        "ARAGUA",
-        "BARINAS",
-        "BOLIVAR",
-        "CARABOBO",
-        "COJEDES",
-        "DELTA AMACURO",
-        "FALCON",
-        "GUARICO",
-        "LARA",
-        "MERIDA",
-        "MIRANDA",
-        "MONAGAS",
-        "NUEVA ESPARTA",
-        "PORTUGUESA",
-        "SUCRE",
-        "TACHIRA",
-        "TRUJILLO",
-        "LA GUAIRA",
-        "YARACUY",
-        "ZULIA",
-      ]),
-    body("municipios")
-      .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'municipios' no debe estar vacio")
+      .custom(Validar.siturComunaTienePatronValido)
       .bail()
-      .isLength({ max: 60 })
-      .withMessage("El campo 'municipios' no debe exceder los 60 caracteres")
-      .toUpperCase(),
+      .custom(Validar.siturComunaNoRepetido),
     body("nombre")
       .trim()
       .escape()
@@ -58,21 +39,6 @@ exports.actualizarComuna =
       .isLength({ max: 100 })
       .withMessage("El campo 'nombre' no debe exceder los 100 caracteres")
       .toUpperCase(),
-    body("parroquias")
-      .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'parroquias' no debe estar vacio")
-      .bail()
-      .isLength({ max: 60 })
-      .withMessage("El campo 'parroquias' no debe exceder los 60 caracteres")
-      .toUpperCase(),
-    body("situr")
-      .trim()
-      .custom(Validar.siturComunaTienePatronValido)
-      .bail()
-      .custom(Validar.siturComunaNoRepetido),
-    body("tipo").trim().custom(Validar.validarCampo("comuna/tipo")),
     //Despues de que se chequean los campos, se ejecuta esta funcion
     asyncHandler(async function (req, res, next) {
       //Los errores de la validacion se pasan a esta constante
@@ -185,11 +151,18 @@ exports.borrarComuna = asyncHandler(async function (req, res, next) {
 });
 
 exports.buscarComuna = asyncHandler(async function (req, res, next) {
-  //Se busca la comuna (por el parametro pasado por url)
-  const miComuna = await Comuna.findById(req.params.id).exec();
+  let parametros = (req.params.id = "micomuna"
+    ? {
+        "usuario._id": req.user._id,
+      }
+    : {
+        _id: req.params.id,
+      });
+  //Se busca la comuna (segun los parametros)
+  const miComuna = await Comuna.findOne(parametros).exec();
   //La funcion anterior no falla cuando no encuentra nada, sino que regresa null
-  if (miComuna === null) {
-    //Si el resultado es nulo, se manda el error
+  if (!miComuna) {
+    //Si no se encontro nada se manda el error
     return res.status(404).json({ error: { message: "No encontrado" } });
   } else if (miComuna.activo === false) {
     //Si mi comuna no esta activo, se manda el error
@@ -251,47 +224,26 @@ exports.listarComunas = asyncHandler(async function (req, res, next) {
 exports.nuevaComuna =
   //Se validan los campos
   [
+    body("estados", "El estado introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.estados),
+    body("municipios", "El municipio introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.municipios),
+    body("tipo", "El tipo introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.tipoComuna),
+    body("parroquias").trim().custom(Validar.validarParroquia),
     body("usuario.cedula")
       .trim()
       .custom(Validar.cedulaTienePatronValido)
       .bail()
       .custom(Validar.cedulaExiste),
-    body("estados", "El estado es invalido")
+    body("situr")
       .trim()
-      .isIn([
-        "AMAZONAS",
-        "ANZOATEGUI",
-        "APURE",
-        "ARAGUA",
-        "BARINAS",
-        "BOLIVAR",
-        "CARABOBO",
-        "COJEDES",
-        "DELTA AMACURO",
-        "FALCON",
-        "GUARICO",
-        "LARA",
-        "MERIDA",
-        "MIRANDA",
-        "MONAGAS",
-        "NUEVA ESPARTA",
-        "PORTUGUESA",
-        "SUCRE",
-        "TACHIRA",
-        "TRUJILLO",
-        "LA GUAIRA",
-        "YARACUY",
-        "ZULIA",
-      ]),
-    body("municipios")
-      .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'municipios' no debe estar vacio")
+      .custom(Validar.siturComunaTienePatronValido)
       .bail()
-      .isLength({ max: 60 })
-      .withMessage("El campo 'municipios' no debe exceder los 60 caracteres")
-      .toUpperCase(),
+      .custom(Validar.siturComunaNuevo),
     body("nombre")
       .trim()
       .escape()
@@ -301,21 +253,6 @@ exports.nuevaComuna =
       .isLength({ max: 100 })
       .withMessage("El campo 'nombre' no debe exceder los 100 caracteres")
       .toUpperCase(),
-    body("parroquias")
-      .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'parroquias' no debe estar vacio")
-      .bail()
-      .isLength({ max: 60 })
-      .withMessage("El campo 'parroquias' no debe exceder los 60 caracteres")
-      .toUpperCase(),
-    body("situr")
-      .trim()
-      .custom(Validar.siturComunaTienePatronValido)
-      .bail()
-      .custom(Validar.siturComunaNuevo),
-    body("tipo").trim().custom(Validar.validarCampo("comuna/tipo")), //CONFIG PENDIENTEEEEE
     //Despues de que se chequean los campos, se ejecuta esta funcion
     asyncHandler(async function (req, res, next) {
       //Los errores de la validacion se pasan a esta constante
