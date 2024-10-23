@@ -12,6 +12,7 @@ const ReporteInterno = require("../modelos/reporteInterno");
 const ReporteParticipacion = require("../modelos/reporteParticipacion");
 const Validar = require("../config/validadores");
 const mongoose = require("mongoose");
+const { OpcionesReporte } = require("../config/opciones");
 
 exports.borrarReporte = asyncHandler(async function (req, res, next) {
   //Se busca el reporte a borrar para ver su tipo
@@ -262,9 +263,9 @@ exports.nuevoParticipacion = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("acompanamiento")
+  body("acompanamiento", "Acompanamiento invalido")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/participacion/acompanamiento")),
+    .isIn(OpcionesReporte.participacion.acompanamiento),
   body("familiasBeneficiadas")
     .trim()
     .isInt({ min: 1 })
@@ -334,9 +335,9 @@ exports.actualizarParticipacion = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("acompanamiento")
+  body("acompanamiento", "Acompanamiento invalido")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/participacion/acompanamiento")),
+    .isIn(OpcionesReporte.participacion.acompanamiento),
   body("familiasBeneficiadas")
     .trim()
     .isInt({ min: 1 })
@@ -434,18 +435,18 @@ exports.nuevoFormacion = [
     .bail()
     .isInt({ max: 999999999 })
     .withMessage("El campo 'mujeres' excede la cifra maxima"),
-  body("estrategia")
+  body("estrategia", "Estrategia invalida")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/formacion/estrategia")),
-  body("modalidad")
+    .isIn(OpcionesReporte.formacion.estrategia),
+  body("modalidad", "Modalidad invalida")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/formacion/modalidad")),
-  body("tematica")
+    .isIn(OpcionesReporte.formacion.modalidad),
+  body("tematica", "Tematica invalida")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/formacion/tematica")),
-  body("verificacion")
+    .isIn(OpcionesReporte.formacion.tematica),
+  body("verificacion", "Verificacion invalida")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/formacion/verificacion")),
+    .isIn(OpcionesReporte.formacion.verificacion),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -516,18 +517,18 @@ exports.actualizarFormacion = [
     .bail()
     .isInt({ max: 999999999 })
     .withMessage("El campo 'mujeres' excede la cifra maxima"),
-  body("estrategia")
+  body("estrategia", "Estrategia invalida")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/formacion/estrategia")),
-  body("modalidad")
+    .isIn(OpcionesReporte.formacion.estrategia),
+  body("modalidad", "Modalidad invalida")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/formacion/modalidad")),
-  body("tematica")
+    .isIn(OpcionesReporte.formacion.modalidad),
+  body("tematica", "Tematica invalida")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/formacion/tematica")),
-  body("verificacion")
+    .isIn(OpcionesReporte.formacion.tematica),
+  body("verificacion", "Verificacion invalida")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/formacion/verificacion")),
+    .isIn(OpcionesReporte.formacion.verificacion),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -585,11 +586,9 @@ exports.nuevoFortalecimiento = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("acompanamiento")
+  body("acompanamiento", "Acompanamiento invalido")
     .trim()
-    .custom(
-      Validar.validarCampo("reporte/tipo/fortalecimiento/acompanamiento")
-    ),
+    .isIn(OpcionesReporte.fortalecimiento.acompanamiento),
   body("nombreOSP")
     .trim()
     .escape()
@@ -599,24 +598,20 @@ exports.nuevoFortalecimiento = [
     .isLength({ max: 100 })
     .withMessage("El campo 'nombreOSP' no debe exceder los 100 caracteres")
     .toUpperCase(),
-  body("tipoActividad")
+  body("tipoActividad", "Tipo de actividad invalido")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/fortalecimiento/tipoActividad")),
-  body("tipoOSP")
+    .isIn(OpcionesReporte.fortalecimiento.tipoActividad),
+  body("tipoOSP", "Tipo de OSP invalido")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/fortalecimiento/tipoOSP")),
-  body("proyectoCFG.tipo")
+    .isIn(OpcionesReporte.fortalecimiento.tipoOSP),
+  body("proyectoCFG.tipo", "Tipo de proyecto CFG invalido")
     .optional({ values: "falsy" })
     .trim()
-    .custom(
-      Validar.validarCampo("reporte/tipo/fortalecimiento/proyectoCFG/tipo")
-    ),
-  body("proyectoCFG.etapa")
+    .isIn(OpcionesReporte.fortalecimiento.proyectoCFG.tipo),
+  body("proyectoCFG.etapa", "Etapa del proyecto CFG invalida")
     .optional({ values: "falsy" })
     .trim()
-    .custom(
-      Validar.validarCampo("reporte/tipo/fortalecimiento/proyectoCFG/etapa")
-    ),
+    .isIn(OpcionesReporte.fortalecimiento.proyectoCFG.etapa),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -673,11 +668,10 @@ exports.actualizarFortalecimiento = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("acompanamiento")
+
+  body("acompanamiento", "Acompanamiento invalido")
     .trim()
-    .custom(
-      Validar.validarCampo("reporte/tipo/fortalecimiento/acompanamiento")
-    ),
+    .isIn(OpcionesReporte.fortalecimiento.acompanamiento),
   body("nombreOSP")
     .trim()
     .escape()
@@ -687,24 +681,20 @@ exports.actualizarFortalecimiento = [
     .isLength({ max: 100 })
     .withMessage("El campo 'nombreOSP' no debe exceder los 100 caracteres")
     .toUpperCase(),
-  body("tipoActividad")
+  body("tipoActividad", "Tipo de actividad invalido")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/fortalecimiento/tipoActividad")),
-  body("tipoOSP")
+    .isIn(OpcionesReporte.fortalecimiento.tipoActividad),
+  body("tipoOSP", "Tipo de OSP invalido")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/fortalecimiento/tipoOSP")),
-  body("proyectoCFG.tipo")
+    .isIn(OpcionesReporte.fortalecimiento.tipoOSP),
+  body("proyectoCFG.tipo", "Tipo de proyecto CFG invalido")
     .optional({ values: "falsy" })
     .trim()
-    .custom(
-      Validar.validarCampo("reporte/tipo/fortalecimiento/proyectoCFG/tipo")
-    ),
-  body("proyectoCFG.etapa")
+    .isIn(OpcionesReporte.fortalecimiento.proyectoCFG.tipo),
+  body("proyectoCFG.etapa", "Etapa del proyecto CFG invalida")
     .optional({ values: "falsy" })
     .trim()
-    .custom(
-      Validar.validarCampo("reporte/tipo/fortalecimiento/proyectoCFG/etapa")
-    ),
+    .isIn(OpcionesReporte.fortalecimiento.proyectoCFG.etapa),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -762,9 +752,9 @@ exports.nuevoIncidencias = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("areaSustantiva")
+  body("areaSustantiva", "Area sustantiva invalida")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/incidencias/areaSustantiva")),
+    .isIn(OpcionesReporte.incidencias.areaSustantiva),
   body("tipoIncidencia")
     .trim()
     .escape()
@@ -826,9 +816,9 @@ exports.actualizarIncidencias = [
     .isLength({ max: 30 })
     .withMessage("El campo 'organos adscritos' debe ser menor a 30 caracteres")
     .toUpperCase(),
-  body("areaSustantiva")
+  body("areaSustantiva", "Area sustantiva invalida")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/incidencias/areaSustantiva")),
+    .isIn(OpcionesReporte.incidencias.areaSustantiva),
   body("tipoIncidencia")
     .trim()
     .escape()
@@ -900,10 +890,9 @@ exports.nuevoCasoAdmin = [
     .isLength({ max: 100 })
     .withMessage("El campo 'caso' debe ser menor a 100 caracteres")
     .toUpperCase(),
-  body("tipoCaso")
+  body("tipoCaso", "Tipo de caso invalido")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/casoadmin/tipoCaso")),
-
+    .isIn(OpcionesReporte.casoadmin.tipoCaso),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
@@ -963,9 +952,9 @@ exports.actualizarCasoAdmin = [
     .isLength({ max: 100 })
     .withMessage("El campo 'caso' debe ser menor a 100 caracteres")
     .toUpperCase(),
-  body("tipoCaso")
+  body("tipoCaso", "Tipo de caso invalido")
     .trim()
-    .custom(Validar.validarCampo("reporte/tipo/casoadmin/tipoCaso")),
+    .isIn(OpcionesReporte.casoadmin.tipoCaso),
   //Se ejecuta despues de validados los campos
   asyncHandler(async function (req, res, next) {
     //Los errores de la validacion se pasan a esta constante
