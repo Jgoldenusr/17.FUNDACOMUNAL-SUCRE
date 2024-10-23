@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const { DateTime } = require("luxon");
 const CC = require("../modelos/cc");
+const Comuna = require("../modelos/comuna");
 const Reporte = require("../modelos/reporte");
 const ReporteCasoAdmin = require("../modelos/reporteCasoAdmin");
 const ReporteComunicaciones = require("../modelos/reporteComunicaciones");
@@ -54,11 +55,24 @@ exports.buscarReporte = asyncHandler(async function (req, res, next) {
 });
 
 exports.estadisticas = asyncHandler(async function (req, res, next) {
-  const { usuario, cc, periodo } = req.query; //se extraen los parametros de la CONSULTA
+  const { cc, comuna, periodo, usuario } = req.query; //se extraen los parametros de la CONSULTA
   let parametros = {};
   //Se va agregando los parametros de la agregacion si aplican
   if (cc) {
     parametros.cc = { $eq: new mongoose.Types.ObjectId(cc) };
+  }
+  if (comuna) {
+    //Se busca primero la comuna por la id en el la consulta
+    const comunaAsociada = await Comuna.findById(comuna).exec();
+    if (comunaAsociada) {
+      //Si se encontro, sacamos las id de los cc asociados a la comuna
+      const ids = comunaAsociada.cc.map(
+        (cc) => (cc._id = new mongoose.Types.ObjectId(cc))
+      );
+      parametros.cc = { $in: ids };
+    } else {
+      return res.status(200).json([]);
+    }
   }
   if (periodo) {
     const inicioPeriodo = DateTime.fromFormat(periodo, "y").toJSDate();
@@ -183,12 +197,27 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
 });
 
 exports.listarReportes = asyncHandler(async function (req, res, next) {
-  const { cc, desde, dia, hasta, usuario, p, periodo, tipo } = req.query; //se extraen los parametros de la consulta
+  const { cc, comuna, desde, dia, hasta, usuario, p, periodo, tipo } =
+    req.query; //se extraen los parametros de la consulta
   let parametros = {};
 
   if (cc) {
     //Se agrega el filtro de tipo
     parametros.cc = cc;
+  }
+  if (comuna) {
+    //Se busca primero la comuna por la id en el la consulta
+    const comunaAsociada = await Comuna.findById(comuna).exec();
+    if (comunaAsociada) {
+      //Si se encontro, sacamos las id de los cc asociados a la comuna
+      const ids = comunaAsociada.cc.map((cc) => cc._id.toString());
+      //Se buscan solo los reportes que pertenezcan a los cc de la comuna
+      parametros.cc = { $in: ids };
+    } else {
+      return res
+        .status(502)
+        .json({ error: { message: "No se encontro ningun resultado" } });
+    }
   }
   if (desde && hasta) {
     //Se agrega el filtro de fecha
