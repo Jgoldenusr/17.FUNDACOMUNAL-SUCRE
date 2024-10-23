@@ -1,6 +1,5 @@
 const formularioVacioCC = {
-  usuario: { cedula: "" },
-  comuna: "",
+  comuna: { nombre: "" },
   estados: "SUCRE",
   localidad: "",
   municipios: "",
