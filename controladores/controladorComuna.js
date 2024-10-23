@@ -150,16 +150,17 @@ exports.borrarComuna = asyncHandler(async function (req, res, next) {
 });
 
 exports.buscarComuna = asyncHandler(async function (req, res, next) {
-  let parametros = (req.params.id = "micomuna"
-    ? {
-        "usuario._id": req.user._id,
-      }
-    : {
-        _id: req.params.id,
-      });
+  let parametros =
+    req.params.id === "micomuna"
+      ? {
+          "usuario._id": req.user._id,
+        }
+      : {
+          _id: req.params.id,
+        };
   //Se busca la comuna (segun los parametros)
   const miComuna = await Comuna.findOne(parametros).exec();
-  //La funcion anterior no falla cuando no encuentra nada, sino que regresa null
+  //Si no se encontro nada
   if (!miComuna) {
     //Si no se encontro nada se manda el error
     return res.status(404).json({ error: { message: "No encontrado" } });
