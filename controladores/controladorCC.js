@@ -3,37 +3,30 @@ const { body, validationResult } = require("express-validator");
 const CC = require("../modelos/cc");
 const Comuna = require("../modelos/comuna");
 const Validar = require("../config/validadores");
+const { OpcionesCC } = require("../config/opciones");
 
 exports.actualizarCC =
   //Se validan los campos
   [
-    body("estados", "El estado es invalido")
+    body("estados", "El estado introducido es invalido")
       .trim()
-      .isIn([
-        "AMAZONAS",
-        "ANZOATEGUI",
-        "APURE",
-        "ARAGUA",
-        "BARINAS",
-        "BOLIVAR",
-        "CARABOBO",
-        "COJEDES",
-        "DELTA AMACURO",
-        "FALCON",
-        "GUARICO",
-        "LARA",
-        "MERIDA",
-        "MIRANDA",
-        "MONAGAS",
-        "NUEVA ESPARTA",
-        "PORTUGUESA",
-        "SUCRE",
-        "TACHIRA",
-        "TRUJILLO",
-        "LA GUAIRA",
-        "YARACUY",
-        "ZULIA",
-      ]),
+      .isIn(OpcionesCC.estados),
+    body("municipios", "El municipio introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.municipios),
+    body("redi", "El redi introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.redi),
+    body("tipo", "El tipo introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.tipo),
+    body("situr")
+      .trim()
+      .custom(Validar.siturTienePatronValido)
+      .bail()
+      .custom(Validar.siturNoRepetido),
+    body("parroquias").trim().custom(Validar.validarParroquia),
+    body("comuna.nombre").trim().custom(Validar.comunaEsValida),
     body("localidad")
       .trim()
       .escape()
@@ -42,15 +35,6 @@ exports.actualizarCC =
       .bail()
       .isLength({ max: 100 })
       .withMessage("El campo 'localidad' no debe exceder los 100 caracteres")
-      .toUpperCase(),
-    body("municipios")
-      .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'municipios' no debe estar vacio")
-      .bail()
-      .isLength({ max: 60 })
-      .withMessage("El campo 'municipios' no debe exceder los 60 caracteres")
       .toUpperCase(),
     body("nombre")
       .trim()
@@ -61,34 +45,6 @@ exports.actualizarCC =
       .isLength({ max: 100 })
       .withMessage("El campo 'nombre' no debe exceder los 100 caracteres")
       .toUpperCase(),
-    body("parroquias")
-      .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'parroquias' no debe estar vacio")
-      .bail()
-      .isLength({ max: 60 })
-      .withMessage("El campo 'parroquias' no debe exceder los 60 caracteres")
-      .toUpperCase(),
-    body("redi", "Redi invalido")
-      .trim()
-      .isIn([
-        "ANDES",
-        "CAPITAL",
-        "CENTRAL",
-        "GUAYANA",
-        "INSULAR",
-        "LLANOS",
-        "OCCIDENTAL",
-        "ORIENTAL",
-      ]),
-    body("situr")
-      .trim()
-      .custom(Validar.siturTienePatronValido)
-      .bail()
-      .custom(Validar.siturNoRepetido),
-    body("comuna.nombre").trim().custom(Validar.comunaEsValida),
-    body("tipo").trim().custom(Validar.validarCampo("cc/tipo")),
     //Despues de que se chequean los campos, se ejecuta esta funcion
     asyncHandler(async function (req, res, next) {
       //Los errores de la validacion se pasan a esta constante
@@ -359,33 +315,25 @@ exports.listarCC = asyncHandler(async function (req, res, next) {
 exports.nuevoCC =
   //Se validan los campos
   [
-    body("estados", "El estado es invalido")
+    body("estados", "El estado introducido es invalido")
       .trim()
-      .isIn([
-        "AMAZONAS",
-        "ANZOATEGUI",
-        "APURE",
-        "ARAGUA",
-        "BARINAS",
-        "BOLIVAR",
-        "CARABOBO",
-        "COJEDES",
-        "DELTA AMACURO",
-        "FALCON",
-        "GUARICO",
-        "LARA",
-        "MERIDA",
-        "MIRANDA",
-        "MONAGAS",
-        "NUEVA ESPARTA",
-        "PORTUGUESA",
-        "SUCRE",
-        "TACHIRA",
-        "TRUJILLO",
-        "LA GUAIRA",
-        "YARACUY",
-        "ZULIA",
-      ]),
+      .isIn(OpcionesCC.estados),
+    body("municipios", "El municipio introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.municipios),
+    body("redi", "El redi introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.redi),
+    body("tipo", "El tipo introducido es invalido")
+      .trim()
+      .isIn(OpcionesCC.tipo),
+    body("situr")
+      .trim()
+      .custom(Validar.siturTienePatronValido)
+      .bail()
+      .custom(Validar.siturNuevo),
+    body("parroquias").trim().custom(Validar.validarParroquia),
+    body("comuna.nombre").trim().custom(Validar.comunaEsValida),
     body("localidad")
       .trim()
       .escape()
@@ -394,15 +342,6 @@ exports.nuevoCC =
       .bail()
       .isLength({ max: 100 })
       .withMessage("El campo 'localidad' no debe exceder los 100 caracteres")
-      .toUpperCase(),
-    body("municipios")
-      .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'municipios' no debe estar vacio")
-      .bail()
-      .isLength({ max: 60 })
-      .withMessage("El campo 'municipios' no debe exceder los 60 caracteres")
       .toUpperCase(),
     body("nombre")
       .trim()
@@ -413,34 +352,6 @@ exports.nuevoCC =
       .isLength({ max: 100 })
       .withMessage("El campo 'nombre' no debe exceder los 100 caracteres")
       .toUpperCase(),
-    body("parroquias")
-      .trim()
-      .escape()
-      .isLength({ min: 1 })
-      .withMessage("El campo 'parroquias' no debe estar vacio")
-      .bail()
-      .isLength({ max: 60 })
-      .withMessage("El campo 'parroquias' no debe exceder los 60 caracteres")
-      .toUpperCase(),
-    body("redi", "Redi invalido")
-      .trim()
-      .isIn([
-        "ANDES",
-        "CAPITAL",
-        "CENTRAL",
-        "GUAYANA",
-        "INSULAR",
-        "LLANOS",
-        "OCCIDENTAL",
-        "ORIENTAL",
-      ]),
-    body("situr")
-      .trim()
-      .custom(Validar.siturTienePatronValido)
-      .bail()
-      .custom(Validar.siturNuevo),
-    body("comuna.nombre").trim().custom(Validar.comunaEsValida),
-    body("tipo").trim().custom(Validar.validarCampo("cc/tipo")),
     //Despues de que se chequean los campos, se ejecuta esta funcion
     asyncHandler(async function (req, res, next) {
       //Los errores de la validacion se pasan a esta constante
