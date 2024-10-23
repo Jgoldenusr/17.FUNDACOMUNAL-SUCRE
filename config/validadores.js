@@ -1,7 +1,7 @@
 const CC = require("../modelos/cc");
 const Comuna = require("../modelos/comuna");
 const Usuario = require("../modelos/usuario");
-const Opcion = require("../modelos/opcion");
+const { OpcionesCC } = require("./opciones");
 const { DateTime } = require("luxon");
 
 exports.cedulaExiste = async function (valorCedula) {
@@ -242,9 +242,12 @@ exports.tlfNuevo = async function (valorTlf) {
 
 exports.usuarioReportaCC = async function (idCC, { req }) {
   //Revisar esto
-  const usuarioReportaCC = req.user.cc.find(
-    (usrCC) => usrCC._id.toString() === idCC.toString()
-  );
+  const usuarioReportaCC = await Comuna.findOne({
+    activo: true,
+    "usuario._id": req.user._id,
+    "cc._id": idCC,
+  }).exec();
+
   const esAdmin = req.user.rol === "ADMINISTRADOR";
 
   if (usuarioReportaCC || esAdmin) {
@@ -254,18 +257,12 @@ exports.usuarioReportaCC = async function (idCC, { req }) {
   }
 };
 
-exports.validarCampo = function (uri) {
-  return async function (valorCampo) {
-    //Revisar esto
-    const campoValido = await Opcion.findOne({
-      campo: uri,
-      array: { $in: [valorCampo] },
-    }).exec();
-
-    if (campoValido) {
-      return true;
-    } else {
-      throw new Error("Valor invalido");
-    }
-  };
+exports.validarParroquia = function (valorParroquia, { req }) {
+  if (
+    OpcionesCC.parroquias[`${req.body.municipios}`]?.includes(valorParroquia)
+  ) {
+    return true;
+  } else {
+    throw new Error("La parroquia introducida es invalida");
+  }
 };
