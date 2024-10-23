@@ -141,9 +141,9 @@ function EstadisticasGenerales() {
           color="#ef5350"
           Icono={FlagRoundedIcon}
           titulo="Comunas"
-          url="/ccs"
+          url="/comunas"
         >
-          {dataCCS.reduce((acc, item) => acc + item.comunas, 0)}
+          {358}
         </Tarjeta>
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
