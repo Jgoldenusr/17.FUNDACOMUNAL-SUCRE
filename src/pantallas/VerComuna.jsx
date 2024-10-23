@@ -236,7 +236,7 @@ function VerComuna() {
                         <ListItemIcon>
                           <LocationOnRoundedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="UBICACIONES" />
+                        <ListItemText primary="CONSEJOS COMUNALES" />
                       </ListItem>
                     </AccordionSummary>
                     <AccordionDetails sx={{ p: 0 }}>
@@ -293,7 +293,10 @@ function VerComuna() {
                   <ListItemIcon>
                     <FlagRoundedIcon />
                   </ListItemIcon>
-                  <ListItemText primary="UBICACIONES" secondary="SIN ASOCIAR" />
+                  <ListItemText
+                    primary="CONSEJOS COMUNALES"
+                    secondary="SIN ASOCIAR"
+                  />
                 </ListItem>
               )}
             </List>

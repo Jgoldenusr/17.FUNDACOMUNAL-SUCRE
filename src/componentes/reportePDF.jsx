@@ -124,7 +124,7 @@ function ReportePDF({ reporte }) {
           </View>
           <View style={[styles.item]}>
             <Text style={[styles.negrita]}>
-              {`UBICACION: `}
+              {`CONSEJO COMUNAL: `}
               <Text
                 style={[styles.italic]}
               >{`${reporte.cc.nombre} (${reporte.cc.situr})`}</Text>

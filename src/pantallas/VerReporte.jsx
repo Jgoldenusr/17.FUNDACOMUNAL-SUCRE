@@ -174,7 +174,7 @@ function VerReporte() {
                   <LocationOnRoundedIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="UBICACION"
+                  primary="CONSEJO COMUNAL"
                   secondary={reporte.cc.nombre}
                 />
               </ListItem>
