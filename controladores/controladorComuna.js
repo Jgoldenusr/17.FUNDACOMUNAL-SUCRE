@@ -5,7 +5,6 @@ const CC = require("../modelos/cc");
 const Usuario = require("../modelos/usuario");
 const Validar = require("../config/validadores");
 const { OpcionesCC } = require("../config/opciones");
-const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.actualizarComuna =
   //Se validan los campos
