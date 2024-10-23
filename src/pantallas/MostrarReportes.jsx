@@ -51,6 +51,9 @@ function MostrarReportes() {
     if (parametros.get("cc")) {
       nuevaURL += `cc=${parametros.get("cc")}&`;
     }
+    if (parametros.get("comuna")) {
+      nuevaURL += `comuna=${parametros.get("comuna")}&`;
+    }
     if (parametros.get("desde") && parametros.get("hasta")) {
       nuevaURL += `desde=${parametros.get("desde")}&hasta=${parametros.get(
         "hasta"

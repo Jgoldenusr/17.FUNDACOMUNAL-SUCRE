@@ -10,6 +10,16 @@ const formularioVacioCC = {
   tipo: "URBANO",
 };
 
+const formularioVacioComuna = {
+  usuario: { cedula: "" },
+  estados: "SUCRE",
+  municipios: "",
+  nombre: "",
+  parroquias: "",
+  situr: "",
+  tipo: "URBANO",
+};
+
 const formularioVacioOpcion = {
   array: [""],
   campo: "",
@@ -99,6 +109,7 @@ const formularioParticipacion = {
 
 export {
   formularioVacioCC,
+  formularioVacioComuna,
   formularioVacioOpcion,
   formularioVacioUsuario,
   formularioReporteBase,

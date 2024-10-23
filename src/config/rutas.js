@@ -2,9 +2,11 @@ import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import AddLocationAltRoundedIcon from "@mui/icons-material/AddLocationAltRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
+import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import NoteAddRoundedIcon from "@mui/icons-material/NoteAddRounded";
+import OutlinedFlagRoundedIcon from "@mui/icons-material/OutlinedFlagRounded";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
@@ -15,6 +17,12 @@ const rutas = [
     nombre: "Inicio",
     icono: HomeRoundedIcon,
     listaNegra: [],
+  },
+  {
+    ruta: "comunas",
+    nombre: "Comunas",
+    icono: FlagRoundedIcon,
+    listaNegra: [""],
   },
   {
     ruta: "ccs",
@@ -35,6 +43,12 @@ const rutas = [
     listaNegra: [],
   },
   {
+    ruta: "comunas/nuevo",
+    nombre: "Nueva comuna",
+    icono: OutlinedFlagRoundedIcon,
+    listaNegra: ["PROMOTOR"],
+  },
+  {
     ruta: "ccs/nuevo",
     nombre: "Nueva ubicacion",
     icono: AddLocationAltRoundedIcon,
@@ -52,12 +66,14 @@ const rutas = [
     icono: NoteAddRoundedIcon,
     listaNegra: [],
   },
+  /*
   {
     ruta: "/config",
     nombre: "Configuraciones",
     icono: SettingsRoundedIcon,
     listaNegra: ["PROMOTOR"],
-  },
+  }
+  */
   {
     ruta: "/cuenta",
     nombre: "Mi cuenta",

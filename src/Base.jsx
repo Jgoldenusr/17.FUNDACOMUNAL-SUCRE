@@ -6,15 +6,18 @@ import Error from "./componentes/Error.jsx";
 import Envoltorio from "./pantallas/Envoltorio.jsx";
 import EstadisticasGenerales from "./pantallas/EstadisticasGenerales.jsx";
 import FormularioCC from "./pantallas/FormularioCC.jsx";
+import FormularioComuna from "./pantallas/FormularioComuna.jsx";
 import FormularioIngreso from "./pantallas/FormularioIngreso.jsx";
 import FormularioOpcion from "./pantallas/FormularioOpcion.jsx";
 import FormularioReporte from "./pantallas/FormularioReporte.jsx";
 import FormularioUsuario from "./pantallas/FormularioUsuario.jsx";
 import MostrarCCS from "./pantallas/MostrarCCS.jsx";
+import MostrarComunas from "./pantallas/MostrarComunas.jsx";
 import MostrarOpciones from "./pantallas/MostrarOpciones.jsx";
 import MostrarReportes from "./pantallas/MostrarReportes.jsx";
 import MostrarUsuarios from "./pantallas/MostrarUsuarios.jsx";
 import VerCC from "./pantallas/VerCC.jsx";
+import VerComuna from "./pantallas/VerComuna.jsx";
 import VerReporte from "./pantallas/VerReporte.jsx";
 import VerUsuario from "./pantallas/VerUsuario.jsx";
 import { createTheme, ThemeProvider } from "@mui/material";
@@ -61,6 +64,8 @@ function Base() {
                 <Route element={<Envoltorio />}>
                   <Route path="ccs/nuevo" element={<FormularioCC />} />
                   <Route path="ccs/:id/editar" element={<FormularioCC />} />
+                  <Route path="comunas/nuevo" element={<FormularioComuna />} />
+                  <Route path="comunas/:id/editar" element={<FormularioComuna />} />
                   <Route path="config" element={<MostrarOpciones />} />
                   <Route path="config/:id/editar" element={<FormularioOpcion />} />
                   <Route path="usuarios" element={<MostrarUsuarios />} />
@@ -74,6 +79,8 @@ function Base() {
                   <Route path="/" element={<EstadisticasGenerales />} />
                   <Route path="ccs" element={<MostrarCCS />} />
                   <Route path="ccs/:id" element={<VerCC />} />
+                  <Route path="comunas" element={<MostrarComunas />} />
+                  <Route path="comunas/:id" element={<VerComuna />} />
                   <Route path="cuenta" element={<VerUsuario miCuenta={true} />} />
                   <Route path="reportes" element={<MostrarReportes />} />
                   <Route path="reportes/nuevo" element={<FormularioReporte />} />

@@ -63,7 +63,7 @@ function BarraLateral({ movil, mostrarBarra }) {
           {rutas.map((unaRuta, i) => {
             if (!unaRuta.listaNegra.includes(miUsuario.rol)) {
               return (
-                <ListItem sx={{ py: "2px" }} key={`RUT-${i}`}>
+                <ListItem sx={{ py: "0px" }} key={`RUT-${i}`}>
                   <ListItemButton
                     onClick={
                       unaRuta.ruta
