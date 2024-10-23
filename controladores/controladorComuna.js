@@ -20,6 +20,7 @@ exports.actualizarComuna =
       .isIn(OpcionesCC.tipoComuna),
     body("parroquias").trim().custom(Validar.validarParroquia),
     body("usuario.cedula")
+      .optional({ values: "falsy" })
       .trim()
       .custom(Validar.cedulaTienePatronValido)
       .bail()
@@ -235,6 +236,7 @@ exports.nuevaComuna =
       .isIn(OpcionesCC.tipoComuna),
     body("parroquias").trim().custom(Validar.validarParroquia),
     body("usuario.cedula")
+      .optional({ values: "falsy" })
       .trim()
       .custom(Validar.cedulaTienePatronValido)
       .bail()
@@ -279,28 +281,38 @@ exports.nuevaComuna =
           },
         });
       } else {
-        //Se buscan y eliminan referencias a la cedula en otras comunas
-        await Comuna.findOneAndUpdate(
-          {
-            "usuario.cedula": req.body.usuario.cedula,
-          },
-          { $unset: { usuario: "" } }
-        ).exec();
-        //Se busca el usuario asociado (por su cedula)
-        const usuarioAsociado = await Usuario.findOne({
-          cedula: req.body.usuario.cedula,
-        }).exec();
-        //Se incluye este usuario en el objeto de la nueva comuna
-        nuevaComuna.usuario = usuarioAsociado;
-        //Se crea el nuevo documento a partir del objeto comuna
-        const documentoComuna = new Comuna(nuevaComuna);
-        //Se asocia la comuna al usuario
-        usuarioAsociado.comuna = documentoComuna;
-        //Se guardan ambos
-        await usuarioAsociado.save();
-        await documentoComuna.save();
-        //Si todo tuvo exito se regresa la id de la nueva comuna
-        return res.status(200).json({ id: documentoComuna._id });
+        //Si se proporciono una cedula
+        if (req.body.usuario.cedula) {
+          //Se buscan y eliminan referencias a la cedula en otras comunas
+          await Comuna.findOneAndUpdate(
+            {
+              "usuario.cedula": req.body.usuario.cedula,
+            },
+            { $unset: { usuario: "" } }
+          ).exec();
+          //Se busca el usuario asociado (por su cedula)
+          const usuarioAsociado = await Usuario.findOne({
+            cedula: req.body.usuario.cedula,
+          }).exec();
+          //Se incluye este usuario en el objeto de la nueva comuna
+          nuevaComuna.usuario = usuarioAsociado;
+          //Se crea el nuevo documento a partir del objeto comuna
+          const documentoComuna = new Comuna(nuevaComuna);
+          //Se asocia la comuna al usuario
+          usuarioAsociado.comuna = documentoComuna;
+          //Se guardan ambos
+          await usuarioAsociado.save();
+          await documentoComuna.save();
+          //Si todo tuvo exito se regresa la id de la nueva comuna
+          return res.status(200).json({ id: documentoComuna._id });
+        } else {
+          //Se crea el nuevo documento a partir del objeto comuna
+          const documentoComuna = new Comuna(nuevaComuna);
+          //Se guarda el nuevo documento
+          await documentoComuna.save();
+          //Si todo tuvo exito se regresa la id de la nueva comuna
+          return res.status(200).json({ id: documentoComuna._id });
+        }
       }
     }),
   ];
