@@ -145,15 +145,6 @@ function VerCC() {
               </ListItem>
               <ListItem divider>
                 <ListItemIcon>
-                  <FlagRoundedIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="COMUNA"
-                  secondary={`${cc.comuna || "SIN COMUNA"}`}
-                />
-              </ListItem>
-              <ListItem divider>
-                <ListItemIcon>
                   <MapsHomeWorkRoundedIcon />
                 </ListItemIcon>
                 <ListItemText primary="TIPO" secondary={cc.tipo} />
@@ -188,58 +179,67 @@ function VerCC() {
                 </ListItemIcon>
                 <ListItemText primary="LOCALIDAD" secondary={cc.localidad} />
               </ListItem>
-              <ListItem disablePadding divider>
-                <Accordion square elevation={0} sx={{ width: "100%" }}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    sx={{ pr: 2, pl: 0 }}
-                  >
-                    <ListItem dense component="div">
-                      <ListItemIcon>
-                        <PersonRoundedIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="USUARIO ASOCIADO" />
-                    </ListItem>
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ p: 0 }}>
-                    <Link
-                      className="no-deco"
-                      to={`/usuarios/${cc.usuario._id}`}
+              {cc.comuna ? (
+                <ListItem disablePadding divider>
+                  <Accordion square elevation={0} sx={{ width: "100%" }}>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{ pr: 2, pl: 0 }}
                     >
-                      <List dense disablePadding>
-                        <Divider />
-                        <ListItem divider>
-                          <ListItemIcon>
-                            <DriveFileRenameOutlineRoundedIcon />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary="APELLIDO Y NOMBRE"
-                            secondary={`${cc.usuario.apellido} ${cc.usuario.nombre}`}
-                          />
-                        </ListItem>
-                        <ListItem divider>
-                          <ListItemIcon>
-                            <LockRoundedIcon />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary="ROL"
-                            secondary={cc.usuario.rol}
-                          />
-                        </ListItem>
-                        <ListItem>
-                          <ListItemIcon>
-                            <BadgeRoundedIcon />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary="CEDULA"
-                            secondary={cc.usuario.cedula}
-                          />
-                        </ListItem>
-                      </List>
-                    </Link>
-                  </AccordionDetails>
-                </Accordion>
-              </ListItem>
+                      <ListItem dense component="div">
+                        <ListItemIcon>
+                          <FlagRoundedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="COMUNA" />
+                      </ListItem>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ p: 0 }}>
+                      <Link
+                        className="no-deco"
+                        to={`/comunas/${cc.comuna._id}`}
+                      >
+                        <List dense disablePadding>
+                          <Divider />
+                          <ListItem divider>
+                            <ListItemIcon>
+                              <DriveFileRenameOutlineRoundedIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary="NOMBRE"
+                              secondary={cc.comuna.nombre}
+                            />
+                          </ListItem>
+                          <ListItem divider>
+                            <ListItemIcon>
+                              <MapsHomeWorkRoundedIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary="TIPO"
+                              secondary={cc.comuna.tipo}
+                            />
+                          </ListItem>
+                          <ListItem>
+                            <ListItemIcon>
+                              <FingerprintRoundedIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary="SITUR"
+                              secondary={cc.comuna.situr}
+                            />
+                          </ListItem>
+                        </List>
+                      </Link>
+                    </AccordionDetails>
+                  </Accordion>
+                </ListItem>
+              ) : (
+                <ListItem sx={{ bgcolor: "#f5f5f5" }} divider>
+                  <ListItemIcon>
+                    <FlagRoundedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="COMUNA" secondary="SIN ASOCIAR" />
+                </ListItem>
+              )}
             </List>
           </CardContent>
         </Card>

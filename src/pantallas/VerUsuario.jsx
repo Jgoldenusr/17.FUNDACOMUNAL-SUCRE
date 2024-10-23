@@ -24,8 +24,8 @@ import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
 import DriveFileRenameOutlineRoundedIcon from "@mui/icons-material/DriveFileRenameOutlineRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
 import FingerprintRoundedIcon from "@mui/icons-material/FingerprintRounded";
-import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import MapsHomeWorkRoundedIcon from "@mui/icons-material/MapsHomeWorkRounded";
 import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
@@ -170,68 +170,67 @@ function VerUsuario({ miCuenta }) {
                   secondary={usuario.email}
                 />
               </ListItem>
-              <ListItem disablePadding divider>
-                <Accordion square elevation={0} sx={{ width: "100%" }}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    sx={{ pr: 2, pl: 0 }}
-                  >
-                    <ListItem dense component="div">
-                      <ListItemIcon>
-                        <LocationOnRoundedIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="UBICACIONES ASOCIADAS" />
-                    </ListItem>
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ p: 0 }}>
-                    {usuario.cc.map((cc, i) => {
-                      let par = i % 2 === 0;
-                      return (
-                        <Link
-                          className="no-deco"
-                          key={cc._id}
-                          to={`/ccs/${cc._id}`}
-                        >
-                          <List
-                            dense
-                            disablePadding
-                            sx={{ bgcolor: par ? "#f5f5f5" : "white" }}
-                          >
-                            <Divider />
-                            <ListItem divider>
-                              <ListItemIcon>
-                                <DriveFileRenameOutlineRoundedIcon />
-                              </ListItemIcon>
-                              <ListItemText
-                                primary="NOMBRE DE LA UBICACION"
-                                secondary={cc.nombre}
-                              />
-                            </ListItem>
-                            <ListItem divider>
-                              <ListItemIcon>
-                                <MapsHomeWorkRoundedIcon />
-                              </ListItemIcon>
-                              <ListItemText
-                                primary="TIPO"
-                                secondary={cc.tipo}
-                              />
-                            </ListItem>
-                            <ListItem>
-                              <ListItemIcon>
-                                <FingerprintRoundedIcon />
-                              </ListItemIcon>
-                              <ListItemText
-                                primary="SITUR"
-                                secondary={cc.situr}
-                              />
-                            </ListItem>
-                          </List>
-                        </Link>
-                      );
-                    })}
-                  </AccordionDetails>
-                </Accordion>
-              </ListItem>
+              {usuario.comuna ? (
+                <ListItem disablePadding divider>
+                  <Accordion square elevation={0} sx={{ width: "100%" }}>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{ pr: 2, pl: 0 }}
+                    >
+                      <ListItem dense component="div">
+                        <ListItemIcon>
+                          <FlagRoundedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="COMUNA" />
+                      </ListItem>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ p: 0 }}>
+                      <Link
+                        className="no-deco"
+                        to={`/comunas/${usuario.comuna._id}`}
+                      >
+                        <List dense disablePadding>
+                          <Divider />
+                          <ListItem divider>
+                            <ListItemIcon>
+                              <DriveFileRenameOutlineRoundedIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary="NOMBRE"
+                              secondary={usuario.comuna.nombre}
+                            />
+                          </ListItem>
+                          <ListItem divider>
+                            <ListItemIcon>
+                              <MapsHomeWorkRoundedIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary="TIPO"
+                              secondary={usuario.comuna.tipo}
+                            />
+                          </ListItem>
+                          <ListItem>
+                            <ListItemIcon>
+                              <FingerprintRoundedIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary="SITUR"
+                              secondary={usuario.comuna.situr}
+                            />
+                          </ListItem>
+                        </List>
+                      </Link>
+                    </AccordionDetails>
+                  </Accordion>
+                </ListItem>
+              ) : (
+                <ListItem sx={{ bgcolor: "#f5f5f5" }} divider>
+                  <ListItemIcon>
+                    <FlagRoundedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="COMUNA" secondary="SIN ASOCIAR" />
+                </ListItem>
+              )}
             </List>
           </CardContent>
         </Card>

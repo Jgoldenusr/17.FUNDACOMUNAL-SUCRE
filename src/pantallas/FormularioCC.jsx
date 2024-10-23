@@ -26,41 +26,27 @@ import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Error from "../componentes/Error";
 import Spinner from "../componentes/Spinner";
 import { formularioVacioCC } from "../config/plantillas";
+//Etc
+import { OpcionesCC } from "../config/opciones";
 
 function FormularioCC() {
   const navegarHasta = useNavigate();
   const { id } = useParams();
-  const [borrar, setBorrar] = useState(false);
   const { miUsuario } = useContext(ContextoAutenticado);
+  const [borrar, setBorrar] = useState(false);
   const [cargando, setCargando] = useState(id ? true : false);
+  const [comunas, setComunas] = useState([]);
   const [error, setError] = useState(null);
   const [erroresValidacion, setErroresValidacion] = useState(null);
   const [formulario, setFormulario] = useState({ ...formularioVacioCC });
-  const [opciones, setOpciones] = useState({});
   const [subiendo, setSubiendo] = useState(false);
 
   useEffect(() => {
-    async function cargarSelectsBasicos() {
-      const tempOpciones = {};
-      tempOpciones.tipo = await buscarOpcion("cc/tipo");
-      tempOpciones.municipios = await buscarOpcion(
-        "cc/estados/SUCRE/municipios"
+    async function cargarComunas(cc) {
+      const arrayComunas = await buscarComunas(
+        `municipios=${cc.municipios}&parroquias=${cc.parroquias}&solonombres=true`
       );
-      setOpciones(tempOpciones);
-    }
-    async function cargarTodosLosSelects(cc) {
-      const tempOpciones = {};
-      tempOpciones.tipo = await buscarOpcion("cc/tipo");
-      tempOpciones.municipios = await buscarOpcion(
-        "cc/estados/SUCRE/municipios"
-      );
-      tempOpciones.parroquias = await buscarOpcion(
-        `cc/estados/SUCRE/municipios/${cc.municipios}/parroquias`
-      );
-      tempOpciones.comuna = await buscarOpcion(
-        `cc/estados/SUCRE/municipios/${cc.municipios}/parroquias/${cc.parroquias}/comuna`
-      );
-      setOpciones(tempOpciones);
+      setComunas(arrayComunas);
     }
     async function buscarCCParaEditar() {
       const url = "http://localhost:4000/ccs/" + id;
@@ -75,7 +61,7 @@ function FormularioCC() {
         const respuesta = await fetch(url, peticion);
         if (respuesta.ok) {
           const recibido = await respuesta.json();
-          cargarTodosLosSelects(recibido);
+          cargarComunas(recibido);
           setFormulario(recibido);
         } else {
           const recibido = await respuesta.json();
@@ -92,7 +78,6 @@ function FormularioCC() {
       buscarCCParaEditar();
     } else {
       setFormulario({ ...formularioVacioCC });
-      cargarSelectsBasicos();
     }
   }, [id]);
 
@@ -105,33 +90,22 @@ function FormularioCC() {
         });
       } else {
         if (campo === "municipios") {
-          const arrayParroquias = await buscarOpcion(
-            `cc/estados/SUCRE/municipios/${evento.target.value}/parroquias`
-          );
           setFormulario({
             ...formulario,
             comuna: "",
             parroquias: "",
             [campo]: evento.target.value,
           });
-          setOpciones({
-            ...opciones,
-            comuna: [],
-            parroquias: arrayParroquias,
-          });
         } else if (campo === "parroquias") {
-          const arrayComunas = await buscarOpcion(
-            `cc/estados/SUCRE/municipios/${formulario.municipios}/parroquias/${evento.target.value}/comuna`
+          const arrayComunas = await buscarComunas(
+            `municipios=${formulario.municipios}&parroquias=${evento.target.value}&solonombres=true`
           );
           setFormulario({
             ...formulario,
             comuna: "",
             [campo]: evento.target.value,
           });
-          setOpciones({
-            ...opciones,
-            comuna: arrayComunas,
-          });
+          setComunas(arrayComunas);
         } else {
           setFormulario({
             ...formulario,
@@ -142,8 +116,8 @@ function FormularioCC() {
     };
   };
 
-  const buscarOpcion = async function (uri) {
-    const url = `http://localhost:4000/config?campo=${uri}`;
+  const buscarComunas = async function (parametros) {
+    const url = `http://localhost:4000/comunas?${parametros}`;
     const peticion = {
       headers: new Headers({
         Authorization: `Bearer ${miUsuario.token}`,
@@ -155,7 +129,7 @@ function FormularioCC() {
       const respuesta = await fetch(url, peticion);
       if (respuesta.ok) {
         const recibido = await respuesta.json();
-        arrayDeOpciones = recibido[0].array;
+        arrayDeOpciones = recibido;
       } else {
         arrayDeOpciones = [];
       }
@@ -181,6 +155,7 @@ function FormularioCC() {
     setErroresValidacion(null);
     setBorrar(true);
   };
+
   const mostrarMsjInvalido = function (campo) {
     let msj = "";
     if (erroresValidacion && erroresValidacion.array) {
@@ -315,7 +290,7 @@ function FormularioCC() {
                     onChange={actualizarFormulario("tipo")}
                     value={formulario.tipo}
                   >
-                    {opciones.tipo?.map((opcion) => (
+                    {OpcionesCC.tipo.map((opcion) => (
                       <MenuItem key={opcion} value={opcion}>
                         {opcion}
                       </MenuItem>
@@ -334,7 +309,7 @@ function FormularioCC() {
                     onChange={actualizarFormulario("municipios")}
                     value={formulario.municipios}
                   >
-                    {opciones.municipios?.map((opcion) => (
+                    {OpcionesCC.municipios.map((opcion) => (
                       <MenuItem key={opcion} value={opcion}>
                         {opcion}
                       </MenuItem>
@@ -353,36 +328,39 @@ function FormularioCC() {
                     onChange={actualizarFormulario("parroquias")}
                     value={formulario.parroquias}
                   >
-                    {opciones.parroquias?.map((opcion) => (
-                      <MenuItem key={opcion} value={opcion}>
-                        {opcion}
-                      </MenuItem>
-                    ))}
+                    {formulario.municipios &&
+                      OpcionesCC.parroquias[`${formulario.municipios}`].map(
+                        (opcion) => (
+                          <MenuItem key={opcion} value={opcion}>
+                            {opcion}
+                          </MenuItem>
+                        )
+                      )}
                   </Select>
                   <FormHelperText error>
                     {mostrarMsjInvalido("parroquias")}
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid size={12}>
+              <Grid size={6}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>
                     Comuna donde se incluye el C.C. (Opcional)
                   </InputLabel>
                   <Select
-                    error={esInvalido("comuna")}
-                    onChange={actualizarFormulario("comuna")}
-                    value={formulario.comuna}
+                    error={esInvalido("comuna.nombre")}
+                    onChange={actualizarFormulario("nombre", "comuna")}
+                    value={formulario.comuna?.nombre || ""}
                   >
                     <MenuItem value="">SIN COMUNA</MenuItem>
-                    {opciones.comuna?.map((opcion) => (
+                    {comunas.map((opcion) => (
                       <MenuItem key={opcion} value={opcion}>
                         {opcion}
                       </MenuItem>
                     ))}
                   </Select>
                   <FormHelperText error>
-                    {mostrarMsjInvalido("comuna")}
+                    {mostrarMsjInvalido("comuna.nombre")}
                   </FormHelperText>
                 </FormControl>
               </Grid>
@@ -411,20 +389,6 @@ function FormularioCC() {
                   />
                   <FormHelperText error>
                     {mostrarMsjInvalido("nombre")}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormControl fullWidth variant="filled">
-                  <InputLabel>Cedula del usuario asociado</InputLabel>
-                  <FilledInput
-                    error={esInvalido("usuario.cedula")}
-                    inputProps={{ maxLength: 11 }}
-                    onChange={actualizarFormulario("cedula", "usuario")}
-                    value={formulario.usuario.cedula}
-                  />
-                  <FormHelperText error>
-                    {mostrarMsjInvalido("usuario.cedula")}
                   </FormHelperText>
                 </FormControl>
               </Grid>

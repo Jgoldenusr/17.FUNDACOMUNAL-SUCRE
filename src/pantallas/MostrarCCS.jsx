@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 //Componentes MUI
 import {
   Avatar,
+  Badge,
   Box,
   Button,
   Card,
@@ -29,13 +30,15 @@ import ForestRoundedIcon from "@mui/icons-material/ForestRounded";
 import HomeWorkRoundedIcon from "@mui/icons-material/HomeWorkRounded";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import TuneIcon from "@mui/icons-material/Tune";
+//Etc
+import { OpcionesCC } from "../config/opciones";
 
 function MostrarCCS() {
   const { miUsuario } = useContext(ContextoAutenticado);
   const [cargando, setCargando] = useState(true);
   const [ccs, setCCS] = useState(null);
+  const [comunas, setComunas] = useState([]);
   const [error, setError] = useState(null);
-  const [opciones, setOpciones] = useState({});
   const [parametros, setParametros] = useSearchParams();
   const [realizarConsulta, setRealizarConsulta] = useState(true);
 
@@ -73,28 +76,17 @@ function MostrarCCS() {
       let valorCampo = campo === "p" ? valorPag : evento.target.value;
       //Logica de algunos campos
       if (campo === "municipios") {
-        const arrayParroquias = await buscarOpcion(
-          `cc/estados/SUCRE/municipios/${evento.target.value}/parroquias`
-        );
         parametros.delete("parroquias");
         parametros.delete("comuna");
-        setOpciones({
-          ...opciones,
-          comuna: [],
-          parroquias: arrayParroquias,
-        });
       }
       if (campo === "parroquias") {
-        const arrayComunas = await buscarOpcion(
-          `cc/estados/SUCRE/municipios/${parametros.get(
-            "municipios"
-          )}/parroquias/${evento.target.value}/comuna`
+        const arrayComunas = await buscarComunas(
+          `municipios=${parametros.get("municipios")}&parroquias=${
+            evento.target.value
+          }&solonombres=true`
         );
         parametros.delete("comuna");
-        setOpciones({
-          ...opciones,
-          comuna: arrayComunas,
-        });
+        setComunas(arrayComunas);
       }
       if (campo !== "p") {
         parametros.delete("p");
@@ -111,8 +103,8 @@ function MostrarCCS() {
     };
   };
 
-  const buscarOpcion = async function (uri) {
-    const url = `http://localhost:4000/config?campo=${uri}`;
+  const buscarComunas = async function (parametros) {
+    const url = `http://localhost:4000/comunas?${parametros}`;
     const peticion = {
       headers: new Headers({
         Authorization: `Bearer ${miUsuario.token}`,
@@ -124,7 +116,7 @@ function MostrarCCS() {
       const respuesta = await fetch(url, peticion);
       if (respuesta.ok) {
         const recibido = await respuesta.json();
-        arrayDeOpciones = recibido[0].array;
+        arrayDeOpciones = recibido;
       } else {
         arrayDeOpciones = [];
       }
@@ -140,14 +132,6 @@ function MostrarCCS() {
   };
 
   useEffect(() => {
-    async function cargarSelectsBasicos() {
-      const tempOpciones = { ...opciones };
-      tempOpciones.tipo = await buscarOpcion("cc/tipo");
-      tempOpciones.municipios = await buscarOpcion(
-        "cc/estados/SUCRE/municipios"
-      );
-      setOpciones(tempOpciones);
-    }
     async function realizarPeticion() {
       setCargando(true);
       setError(null);
@@ -180,8 +164,6 @@ function MostrarCCS() {
     }
     if (realizarConsulta) {
       realizarPeticion();
-    } else {
-      cargarSelectsBasicos();
     }
   }, [realizarConsulta]);
 
@@ -201,7 +183,7 @@ function MostrarCCS() {
                     value={parametros.get("municipios") || ""}
                   >
                     <MenuItem value="">CUALQUIERA</MenuItem>
-                    {opciones.municipios?.map((opcion) => {
+                    {OpcionesCC.municipios?.map((opcion) => {
                       return (
                         <MenuItem key={opcion} value={opcion}>
                           {opcion}
@@ -219,7 +201,9 @@ function MostrarCCS() {
                     value={parametros.get("parroquias") || ""}
                   >
                     <MenuItem value="">CUALQUIERA</MenuItem>
-                    {opciones.parroquias?.map((opcion) => {
+                    {OpcionesCC.parroquias[
+                      `${parametros.get("municipios") || "VACIO"}`
+                    ].map((opcion) => {
                       return (
                         <MenuItem key={opcion} value={opcion}>
                           {opcion}
@@ -237,7 +221,7 @@ function MostrarCCS() {
                     value={parametros.get("comuna") || ""}
                   >
                     <MenuItem value="">SIN COMUNA</MenuItem>
-                    {opciones.comuna?.map((opcion) => {
+                    {comunas.map((opcion) => {
                       return (
                         <MenuItem key={opcion} value={opcion}>
                           {opcion}
@@ -270,7 +254,7 @@ function MostrarCCS() {
                     value={parametros.get("tipo") || ""}
                   >
                     <MenuItem value="">CUALQUIERA</MenuItem>
-                    {opciones.tipo?.map((opcion) => {
+                    {OpcionesCC.tipo?.map((opcion) => {
                       return (
                         <MenuItem key={opcion} value={opcion}>
                           {opcion}
@@ -334,28 +318,35 @@ function MostrarCCS() {
                       />
                     }
                     avatar={
-                      <Avatar
-                        sx={{
-                          bgcolor:
-                            cc.estaRenovado &&
-                            !cc.estaRenovado.vencido &&
-                            cc.estaVigente &&
-                            !cc.estaVigente.vencido
-                              ? "#2e7d32"
-                              : (!cc.estaRenovado || cc.estaRenovado.vencido) &&
-                                (!cc.estaVigente || cc.estaVigente.vencido)
-                              ? "#d32f2f"
-                              : "#ff9800",
-                        }}
+                      <Badge
+                        color="error"
+                        invisible={!!cc.comuna}
+                        variant="dot"
                       >
-                        {cc.tipo === "URBANO" ? (
-                          <HomeWorkRoundedIcon />
-                        ) : cc.tipo === "RURAL" ? (
-                          <CabinRoundedIcon />
-                        ) : (
-                          <ForestRoundedIcon />
-                        )}
-                      </Avatar>
+                        <Avatar
+                          sx={{
+                            bgcolor:
+                              cc.estaRenovado &&
+                              !cc.estaRenovado.vencido &&
+                              cc.estaVigente &&
+                              !cc.estaVigente.vencido
+                                ? "#2e7d32"
+                                : (!cc.estaRenovado ||
+                                    cc.estaRenovado.vencido) &&
+                                  (!cc.estaVigente || cc.estaVigente.vencido)
+                                ? "#d32f2f"
+                                : "#ff9800",
+                          }}
+                        >
+                          {cc.tipo === "URBANO" ? (
+                            <HomeWorkRoundedIcon />
+                          ) : cc.tipo === "RURAL" ? (
+                            <CabinRoundedIcon />
+                          ) : (
+                            <ForestRoundedIcon />
+                          )}
+                        </Avatar>
+                      </Badge>
                     }
                     sx={{
                       "& .MuiCardHeader-content": {

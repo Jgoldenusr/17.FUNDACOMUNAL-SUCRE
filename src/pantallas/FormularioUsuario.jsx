@@ -221,6 +221,48 @@ function FormularioUsuario() {
           </CardContent>
           <CardContent sx={{ p: 3 }}>
             <Grid container spacing={3}>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <FormControl fullWidth variant="filled">
+                  <InputLabel>Primer nombre</InputLabel>
+                  <FilledInput
+                    error={esInvalido("nombre")}
+                    inputProps={{ maxLength: 20 }}
+                    onChange={actualizarFormulario("nombre")}
+                    value={formulario.nombre}
+                  />
+                  <FormHelperText error>
+                    {mostrarMsjInvalido("nombre")}
+                  </FormHelperText>
+                </FormControl>
+              </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <FormControl fullWidth variant="filled">
+                  <InputLabel>Primer apellido</InputLabel>
+                  <FilledInput
+                    error={esInvalido("apellido")}
+                    inputProps={{ maxLength: 20 }}
+                    onChange={actualizarFormulario("apellido")}
+                    value={formulario.apellido}
+                  />
+                  <FormHelperText error>
+                    {mostrarMsjInvalido("apellido")}
+                  </FormHelperText>
+                </FormControl>
+              </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <FormControl fullWidth variant="filled">
+                  <InputLabel>Cedula</InputLabel>
+                  <FilledInput
+                    error={esInvalido("cedula")}
+                    inputProps={{ maxLength: 11 }}
+                    onChange={actualizarFormulario("cedula")}
+                    value={formulario.cedula}
+                  />
+                  <FormHelperText error>
+                    {mostrarMsjInvalido("cedula")}
+                  </FormHelperText>
+                </FormControl>
+              </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>Nombre de usuario</InputLabel>
@@ -237,43 +279,17 @@ function FormularioUsuario() {
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
-                  <InputLabel>Cedula</InputLabel>
-                  <FilledInput
-                    error={esInvalido("cedula")}
-                    inputProps={{ maxLength: 11 }}
-                    onChange={actualizarFormulario("cedula")}
-                    value={formulario.cedula}
-                  />
+                  <InputLabel>Rol</InputLabel>
+                  <Select
+                    error={esInvalido("rol")}
+                    onChange={actualizarFormulario("rol")}
+                    value={formulario.rol}
+                  >
+                    <MenuItem value="PROMOTOR">PROMOTOR</MenuItem>
+                    <MenuItem value="ADMINISTRADOR">ADMINISTRADOR</MenuItem>
+                  </Select>
                   <FormHelperText error>
-                    {mostrarMsjInvalido("cedula")}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormControl fullWidth variant="filled">
-                  <InputLabel>Primer nombre</InputLabel>
-                  <FilledInput
-                    error={esInvalido("nombre")}
-                    inputProps={{ maxLength: 20 }}
-                    onChange={actualizarFormulario("nombre")}
-                    value={formulario.nombre}
-                  />
-                  <FormHelperText error>
-                    {mostrarMsjInvalido("nombre")}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormControl fullWidth variant="filled">
-                  <InputLabel>Primer apellido</InputLabel>
-                  <FilledInput
-                    error={esInvalido("apellido")}
-                    inputProps={{ maxLength: 20 }}
-                    onChange={actualizarFormulario("apellido")}
-                    value={formulario.apellido}
-                  />
-                  <FormHelperText error>
-                    {mostrarMsjInvalido("apellido")}
+                    {mostrarMsjInvalido("rol")}
                   </FormHelperText>
                 </FormControl>
               </Grid>
@@ -329,22 +345,6 @@ function FormularioUsuario() {
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
-                  <InputLabel>Rol</InputLabel>
-                  <Select
-                    error={esInvalido("rol")}
-                    onChange={actualizarFormulario("rol")}
-                    value={formulario.rol}
-                  >
-                    <MenuItem value="PROMOTOR">PROMOTOR</MenuItem>
-                    <MenuItem value="ADMINISTRADOR">ADMINISTRADOR</MenuItem>
-                  </Select>
-                  <FormHelperText error>
-                    {mostrarMsjInvalido("rol")}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormControl fullWidth variant="filled">
                   <InputLabel>Numero telefonico</InputLabel>
                   <FilledInput
                     error={esInvalido("tlf")}
@@ -357,7 +357,7 @@ function FormularioUsuario() {
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid size={12}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth variant="filled">
                   <InputLabel>E-mail</InputLabel>
                   <FilledInput

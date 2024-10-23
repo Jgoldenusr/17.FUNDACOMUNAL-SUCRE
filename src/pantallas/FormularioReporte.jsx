@@ -37,16 +37,18 @@ import {
   formularioInterno,
   formularioParticipacion,
 } from "../config/plantillas";
+//Etc
+import { OpcionesReporte } from "../config/opciones";
 
 function FormularioReporte() {
   const navegarHasta = useNavigate();
   const { id } = useParams();
   const [borrar, setBorrar] = useState(false);
   const [cargando, setCargando] = useState(id ? true : false);
+  const [ccs, setCCs] = useState([]);
   const [error, setError] = useState(null);
   const [erroresValidacion, setErroresValidacion] = useState(null);
   const [formulario, setFormulario] = useState(formularioParticipacion);
-  const [opciones, setOpciones] = useState({});
   const [parametros, setParametros] = useSearchParams();
   const [subiendo, setSubiendo] = useState(false);
   const [tipo, setTipo] = useState("participacion");
@@ -80,7 +82,7 @@ function FormularioReporte() {
               situr:
                 recibido.tipo === "interno" ? recibido.cc.situr : undefined,
             });
-            ajustarTipo(recibido.tipo);
+            setTipo(recibido.tipo);
           }
         } else {
           const recibido = await respuesta.json();
@@ -92,15 +94,36 @@ function FormularioReporte() {
         setCargando(false);
       }
     }
+
+    async function buscarCCsAsociados() {
+      const url = "http://localhost:4000/comunas/micomuna";
+      const peticion = {
+        headers: new Headers({
+          Authorization: `Bearer ${miUsuario.token}`,
+        }),
+        mode: "cors",
+      };
+
+      try {
+        const respuesta = await fetch(url, peticion);
+        if (respuesta.ok) {
+          const recibido = await respuesta.json();
+          setCCs(recibido.cc);
+        }
+      } catch (errorPeticion) {
+        setCCs([]);
+      }
+    }
     //Ejecucion (cuando se carga el componente)
+    buscarCCsAsociados();
     if (id) {
       buscarReporteParaEditar();
     } else if (parametros.get("situr")) {
       setFormulario({ ...formularioInterno, situr: parametros.get("situr") });
-      ajustarTipo("interno");
+      setTipo("interno");
     } else {
       setFormulario(formularioParticipacion);
-      ajustarTipo("participacion");
+      setTipo("participacion");
     }
   }, [id]);
 
@@ -146,63 +169,6 @@ function FormularioReporte() {
     });
   };
 
-  const ajustarTipo = async function (tipo) {
-    setTipo(tipo);
-    let tempOpciones = {};
-    switch (tipo) {
-      case "participacion":
-        tempOpciones.acompanamiento = await buscarOpcion(
-          "reporte/tipo/participacion/acompanamiento"
-        );
-        break;
-      case "formacion":
-        tempOpciones.estrategia = await buscarOpcion(
-          "reporte/tipo/formacion/estrategia"
-        );
-        tempOpciones.modalidad = await buscarOpcion(
-          "reporte/tipo/formacion/modalidad"
-        );
-        tempOpciones.tematica = await buscarOpcion(
-          "reporte/tipo/formacion/tematica"
-        );
-        tempOpciones.verificacion = await buscarOpcion(
-          "reporte/tipo/formacion/verificacion"
-        );
-        break;
-      case "fortalecimiento":
-        tempOpciones.proyectoCFG = {};
-        tempOpciones.acompanamiento = await buscarOpcion(
-          "reporte/tipo/fortalecimiento/acompanamiento"
-        );
-        tempOpciones.tipoActividad = await buscarOpcion(
-          "reporte/tipo/fortalecimiento/tipoActividad"
-        );
-        tempOpciones.tipoOSP = await buscarOpcion(
-          "reporte/tipo/fortalecimiento/tipoOSP"
-        );
-        tempOpciones.proyectoCFG.etapa = await buscarOpcion(
-          "reporte/tipo/fortalecimiento/proyectoCFG/etapa"
-        );
-        tempOpciones.proyectoCFG.tipo = await buscarOpcion(
-          "reporte/tipo/fortalecimiento/proyectoCFG/tipo"
-        );
-        break;
-      case "incidencias":
-        tempOpciones.areaSustantiva = await buscarOpcion(
-          "reporte/tipo/incidencias/areaSustantiva"
-        );
-        break;
-      case "casoadmin":
-        tempOpciones.tipoCaso = await buscarOpcion(
-          "reporte/tipo/casoadmin/tipoCaso"
-        );
-        break;
-      default:
-        tempOpciones = {};
-    }
-    setOpciones(tempOpciones);
-  };
-
   const borrarRedes = function (i) {
     return function () {
       let misRedes = [...formulario.redes];
@@ -222,29 +188,6 @@ function FormularioReporte() {
       });
       setErroresValidacion(null);
     };
-  };
-
-  const buscarOpcion = async function (uri) {
-    const url = `http://localhost:4000/config?campo=${uri}`;
-    const peticion = {
-      headers: new Headers({
-        Authorization: `Bearer ${miUsuario.token}`,
-      }),
-      mode: "cors",
-    };
-    let arrayDeOpciones;
-    try {
-      const respuesta = await fetch(url, peticion);
-      if (respuesta.ok) {
-        const recibido = await respuesta.json();
-        arrayDeOpciones = recibido[0].array;
-      } else {
-        arrayDeOpciones = [];
-      }
-    } catch (errorPeticion) {
-      arrayDeOpciones = [];
-    }
-    return arrayDeOpciones;
   };
 
   const cambiarTipoFormulario = function (evento) {
@@ -272,7 +215,7 @@ function FormularioReporte() {
         break;
     }
     setErroresValidacion(null);
-    ajustarTipo(evento.target.value);
+    setTipo(evento.target.value);
   };
 
   const esInvalido = function (campo) {
@@ -410,15 +353,19 @@ function FormularioReporte() {
                     onChange={cambiarTipoFormulario}
                     value={tipo}
                   >
-                    <MenuItem value="casoadmin">CASOADMIN</MenuItem>
-                    <MenuItem value="comunicaciones">COMUNICACIONES</MenuItem>
-                    <MenuItem value="formacion">FORMACION</MenuItem>
-                    <MenuItem value="fortalecimiento">FORTALECIMIENTO</MenuItem>
-                    <MenuItem value="incidencias">INCIDENCIAS</MenuItem>
-                    <MenuItem value="participacion">PARTICIPACION</MenuItem>
-                    {miUsuario.rol === "ADMINISTRADOR" && (
-                      <MenuItem value="interno">INTERNO</MenuItem>
-                    )}
+                    {OpcionesReporte.tipo.map((tipo) => {
+                      if (
+                        tipo === "interno" &&
+                        miUsuario.rol !== "ADMINISTRADOR"
+                      ) {
+                        return "";
+                      } else
+                        return (
+                          <MenuItem key={`TIP-${tipo}`} value={tipo}>
+                            {tipo.toLocaleUpperCase()}
+                          </MenuItem>
+                        );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
@@ -450,7 +397,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("_id", "cc")}
                         value={formulario.cc._id}
                       >
-                        {miUsuario.cc.map((elemento) => (
+                        {ccs?.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
                             {elemento.nombre}
                           </MenuItem>
@@ -475,11 +422,13 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("acompanamiento")}
                         value={formulario.acompanamiento}
                       >
-                        {opciones.acompanamiento?.map((opcion) => (
-                          <MenuItem key={opcion} value={opcion}>
-                            {opcion}
-                          </MenuItem>
-                        ))}
+                        {OpcionesReporte.participacion.acompanamiento.map(
+                          (opcion) => (
+                            <MenuItem key={opcion} value={opcion}>
+                              {opcion}
+                            </MenuItem>
+                          )
+                        )}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("acompanamiento")}
@@ -525,7 +474,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("_id", "cc")}
                         value={formulario.cc._id}
                       >
-                        {miUsuario.cc.map((elemento) => (
+                        {ccs?.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
                             {elemento.nombre}
                           </MenuItem>
@@ -550,7 +499,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("estrategia")}
                         value={formulario.estrategia}
                       >
-                        {opciones.estrategia?.map((opcion) => (
+                        {OpcionesReporte.formacion.estrategia.map((opcion) => (
                           <MenuItem key={opcion} value={opcion}>
                             {opcion}
                           </MenuItem>
@@ -569,7 +518,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("modalidad")}
                         value={formulario.modalidad}
                       >
-                        {opciones.modalidad?.map((opcion) => (
+                        {OpcionesReporte.formacion.modalidad.map((opcion) => (
                           <MenuItem key={opcion} value={opcion}>
                             {opcion}
                           </MenuItem>
@@ -588,7 +537,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("tematica")}
                         value={formulario.tematica}
                       >
-                        {opciones.tematica?.map((opcion) => (
+                        {OpcionesReporte.formacion.tematica.map((opcion) => (
                           <MenuItem key={opcion} value={opcion}>
                             {opcion}
                           </MenuItem>
@@ -607,11 +556,13 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("verificacion")}
                         value={formulario.verificacion}
                       >
-                        {opciones.verificacion?.map((opcion) => (
-                          <MenuItem key={opcion} value={opcion}>
-                            {opcion}
-                          </MenuItem>
-                        ))}
+                        {OpcionesReporte.formacion.verificacion.map(
+                          (opcion) => (
+                            <MenuItem key={opcion} value={opcion}>
+                              {opcion}
+                            </MenuItem>
+                          )
+                        )}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("verificacion")}
@@ -677,7 +628,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("_id", "cc")}
                         value={formulario.cc._id}
                       >
-                        {miUsuario.cc.map((elemento) => (
+                        {ccs?.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
                             {elemento.nombre}
                           </MenuItem>
@@ -718,11 +669,13 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("acompanamiento")}
                         value={formulario.acompanamiento}
                       >
-                        {opciones.acompanamiento?.map((opcion) => (
-                          <MenuItem key={opcion} value={opcion}>
-                            {opcion}
-                          </MenuItem>
-                        ))}
+                        {OpcionesReporte.fortalecimiento.acompanamiento.map(
+                          (opcion) => (
+                            <MenuItem key={opcion} value={opcion}>
+                              {opcion}
+                            </MenuItem>
+                          )
+                        )}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("acompanamiento")}
@@ -737,11 +690,13 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("tipoActividad")}
                         value={formulario.tipoActividad}
                       >
-                        {opciones.tipoActividad?.map((opcion) => (
-                          <MenuItem key={opcion} value={opcion}>
-                            {opcion}
-                          </MenuItem>
-                        ))}
+                        {OpcionesReporte.fortalecimiento.tipoActividad.map(
+                          (opcion) => (
+                            <MenuItem key={opcion} value={opcion}>
+                              {opcion}
+                            </MenuItem>
+                          )
+                        )}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("tipoActividad")}
@@ -756,11 +711,13 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("tipoOSP")}
                         value={formulario.tipoOSP}
                       >
-                        {opciones.tipoOSP?.map((opcion) => (
-                          <MenuItem key={opcion} value={opcion}>
-                            {opcion}
-                          </MenuItem>
-                        ))}
+                        {OpcionesReporte.fortalecimiento.tipoOSP.map(
+                          (opcion) => (
+                            <MenuItem key={opcion} value={opcion}>
+                              {opcion}
+                            </MenuItem>
+                          )
+                        )}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("tipoOSP")}
@@ -778,11 +735,13 @@ function FormularioReporte() {
                         value={formulario.proyectoCFG.tipo}
                       >
                         <MenuItem value="">SIN TIPO</MenuItem>
-                        {opciones.proyectoCFG?.tipo?.map((opcion) => (
-                          <MenuItem key={opcion} value={opcion}>
-                            {opcion}
-                          </MenuItem>
-                        ))}
+                        {OpcionesReporte.fortalecimiento.proyectoCFG.tipo.map(
+                          (opcion) => (
+                            <MenuItem key={opcion} value={opcion}>
+                              {opcion}
+                            </MenuItem>
+                          )
+                        )}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("proyectoCFG.tipo")}
@@ -800,11 +759,13 @@ function FormularioReporte() {
                         value={formulario.proyectoCFG.etapa}
                       >
                         <MenuItem value="">NINGUNA</MenuItem>
-                        {opciones.proyectoCFG?.etapa?.map((opcion) => (
-                          <MenuItem key={opcion} value={opcion}>
-                            {opcion}
-                          </MenuItem>
-                        ))}
+                        {OpcionesReporte.fortalecimiento.proyectoCFG.etapa.map(
+                          (opcion) => (
+                            <MenuItem key={opcion} value={opcion}>
+                              {opcion}
+                            </MenuItem>
+                          )
+                        )}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("proyectoCFG.etapa")}
@@ -836,7 +797,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("_id", "cc")}
                         value={formulario.cc._id}
                       >
-                        {miUsuario.cc.map((elemento) => (
+                        {ccs?.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
                             {elemento.nombre}
                           </MenuItem>
@@ -861,11 +822,13 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("areaSustantiva")}
                         value={formulario.areaSustantiva}
                       >
-                        {opciones.areaSustantiva?.map((opcion) => (
-                          <MenuItem key={opcion} value={opcion}>
-                            {opcion}
-                          </MenuItem>
-                        ))}
+                        {OpcionesReporte.incidencias.areaSustantiva.map(
+                          (opcion) => (
+                            <MenuItem key={opcion} value={opcion}>
+                              {opcion}
+                            </MenuItem>
+                          )
+                        )}
                       </Select>
                       <FormHelperText error>
                         {mostrarMsjInvalido("areaSustantiva")}
@@ -911,7 +874,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("_id", "cc")}
                         value={formulario.cc._id}
                       >
-                        {miUsuario.cc.map((elemento) => (
+                        {ccs?.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
                             {elemento.nombre}
                           </MenuItem>
@@ -936,7 +899,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("tipoCaso")}
                         value={formulario.tipoCaso}
                       >
-                        {opciones.tipoCaso?.map((opcion) => (
+                        {OpcionesReporte.casoadmin.tipoCaso.map((opcion) => (
                           <MenuItem key={opcion} value={opcion}>
                             {opcion}
                           </MenuItem>
@@ -986,7 +949,7 @@ function FormularioReporte() {
                         onChange={actualizarFormulario("_id", "cc")}
                         value={formulario.cc._id}
                       >
-                        {miUsuario.cc.map((elemento) => (
+                        {ccs?.map((elemento) => (
                           <MenuItem key={elemento._id} value={elemento._id}>
                             {elemento.nombre}
                           </MenuItem>

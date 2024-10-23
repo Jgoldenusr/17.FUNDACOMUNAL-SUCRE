@@ -31,6 +31,8 @@ import RssFeedRoundedIcon from "@mui/icons-material/RssFeedRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
+//Otros
+import { OpcionesReporte } from "../config/opciones";
 
 function MostrarReportes() {
   const { miUsuario } = useContext(ContextoAutenticado);
@@ -178,14 +180,13 @@ function MostrarReportes() {
                     value={parametros.get("tipo") || ""}
                   >
                     <MenuItem value="">CUALQUIERA</MenuItem>
-                    <MenuItem value="casoadmin">CASOADMIN</MenuItem>
-                    <MenuItem value="comunicaciones">COMUNICACIONES</MenuItem>
-                    <MenuItem value="formacion">FORMACION</MenuItem>
-                    <MenuItem value="fortalecimiento">FORTALECIMIENTO</MenuItem>
-                    <MenuItem value="incidencias">INCIDENCIAS</MenuItem>
-                    <MenuItem value="interno">INTERNO</MenuItem>
-                    <MenuItem value="participacion">PARTICIPACION</MenuItem>
-                    <MenuItem value="renovacion">RENOVACION</MenuItem>
+                    {OpcionesReporte.tipoFiltro.map((tipo) => {
+                      return (
+                        <MenuItem key={`TIP-${tipo}`} value={tipo}>
+                          {tipo.toLocaleUpperCase()}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>

@@ -229,10 +229,9 @@ function MostrarUsuarios() {
                     }
                     avatar={
                       <Badge
-                        badgeContent={usuario.cc.length}
                         color="error"
-                        max={999}
-                        overlap="circular"
+                        invisible={!!usuario.comuna}
+                        variant="dot"
                       >
                         <Avatar sx={{ bgcolor: "#1976d2" }}>
                           {usuario.rol === "ADMINISTRADOR" ? (
