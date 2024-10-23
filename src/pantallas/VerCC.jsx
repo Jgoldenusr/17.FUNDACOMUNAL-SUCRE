@@ -19,7 +19,6 @@ import {
   Typography,
 } from "@mui/material";
 //Iconos MUI
-import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
 import DriveFileRenameOutlineRoundedIcon from "@mui/icons-material/DriveFileRenameOutlineRounded";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 import EventBusyRoundedIcon from "@mui/icons-material/EventBusyRounded";
