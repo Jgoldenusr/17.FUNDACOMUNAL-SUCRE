@@ -37,7 +37,13 @@ function BarraLateral({ movil, mostrarBarra }) {
         onClose={mostrarBarra}
         open={!movil ? true : movil}
         PaperProps={{
-          sx: { backgroundImage: "url('/barra.png')" },
+          sx: {
+            backgroundImage: "url('/barra.png')",
+            bgcolor: "rgba(255,255,255,0.8)",
+            backgroundBlendMode: "lighten",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          },
           elevation: 6,
         }}
         sx={{
