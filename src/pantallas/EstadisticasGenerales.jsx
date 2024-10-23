@@ -147,36 +147,27 @@ function EstadisticasGenerales() {
         </Tarjeta>
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <Card elevation={3}>
-          <CardContent sx={{ height: "45vh" }}>
-            <GraficoDePastel
-              colores={["#54aeff", "#ffc501"]}
-              data={renovadosTotales()}
-              nombre="renovados"
-            />
-          </CardContent>
-        </Card>
+        <GraficoDePastel
+          colores={["#54aeff", "#ffc501"]}
+          data={renovadosTotales()}
+          nombre="renovados"
+          titulo="CONSEJOS COMUNALES RENOVADOS Y NO RENOVADOS"
+        />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <Card elevation={3}>
-          <CardContent sx={{ height: "45vh" }}>
-            <GraficoDePastel
-              colores={["#40c463", "#ff9800"]}
-              data={vigentesTotales()}
-              nombre="vigentes"
-            />
-          </CardContent>
-        </Card>
+        <GraficoDePastel
+          colores={["#40c463", "#ff9800"]}
+          data={vigentesTotales()}
+          nombre="vigentes"
+          titulo="CONSEJOS COMUNALES VIGENTES Y NO VIGENTES"
+        />
       </Grid>
       <Grid size={{ xs: 12 }}>
-        <Card elevation={3}>
-          <CardContent sx={{ height: { xs: "100vh", md: "150vh" } }}>
-            <GraficoDeBarras
-              colores={["#54aeff", "#ffc501", "#40c463", "#ff9800"]}
-              data={dataCCSPorMunicipio()}
-            />
-          </CardContent>
-        </Card>
+        <GraficoDeBarras
+          colores={["#54aeff", "#ffc501", "#40c463", "#ff9800"]}
+          data={dataCCSPorMunicipio()}
+          titulo="CONSEJOS COMUNALES RENOVADOS, NO RENOVADOS, VIGENTES Y NO VIGENTES POR MUNICIPIO"
+        />
       </Grid>
     </Grid>
   );
