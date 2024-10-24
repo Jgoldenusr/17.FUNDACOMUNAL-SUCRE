@@ -82,8 +82,8 @@ exports.estadisticas = asyncHandler(async function (req, res, next) {
     parametros.fecha = { $gte: inicioPeriodo, $lt: finPeriodo };
   }
   if (usuario) {
-    //Si el que las pide no es admin, le mandamos las suyas
-    if (req.user.rol === "ADMINISTRADOR") {
+    //Si el que las pide no es admin o usuario especial, le mandamos las suyas
+    if (req.user.rol === "ADMINISTRADOR" || req.user.rol === "ESPECIAL") {
       parametros.usuario = { $eq: new mongoose.Types.ObjectId(usuario) };
     } else {
       parametros.usuario = { $eq: new mongoose.Types.ObjectId(req.user._id) };
