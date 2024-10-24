@@ -25,10 +25,12 @@ import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Spinner from "../componentes/Spinner";
 //Iconos MUI
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import PersonSearchRoundedIcon from "@mui/icons-material/PersonSearchRounded";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import { ManageAccounts } from "@mui/icons-material";
 
 function MostrarUsuarios() {
   const { miUsuario } = useContext(ContextoAutenticado);
@@ -236,7 +238,9 @@ function MostrarUsuarios() {
                       >
                         <Avatar sx={{ bgcolor: "#1976d2" }}>
                           {usuario.rol === "ADMINISTRADOR" ? (
-                            <AdminPanelSettingsIcon />
+                            <ManageAccountsRoundedIcon />
+                          ) : usuario.rol === "ESPECIAL" ? (
+                            <PersonSearchRoundedIcon />
                           ) : (
                             <PersonRoundedIcon />
                           )}
