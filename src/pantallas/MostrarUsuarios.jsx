@@ -28,7 +28,7 @@ import Spinner from "../componentes/Spinner";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
-import TuneIcon from "@mui/icons-material/Tune";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 function MostrarUsuarios() {
   const { miUsuario } = useContext(ContextoAutenticado);
@@ -196,7 +196,7 @@ function MostrarUsuarios() {
                   type="submit"
                   variant="contained"
                 >
-                  <TuneIcon />
+                  <SearchRoundedIcon />
                 </Button>
               </Grid>
             </Grid>

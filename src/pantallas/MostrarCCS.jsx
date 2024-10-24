@@ -29,7 +29,7 @@ import CabinRoundedIcon from "@mui/icons-material/CabinRounded";
 import ForestRoundedIcon from "@mui/icons-material/ForestRounded";
 import HomeWorkRoundedIcon from "@mui/icons-material/HomeWorkRounded";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
-import TuneIcon from "@mui/icons-material/Tune";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 //Etc
 import { OpcionesCC } from "../config/opciones";
 
@@ -285,7 +285,7 @@ function MostrarCCS() {
                   type="submit"
                   variant="contained"
                 >
-                  <TuneIcon />
+                  <SearchRoundedIcon />
                 </Button>
               </Grid>
             </Grid>

@@ -30,7 +30,7 @@ import ForestRoundedIcon from "@mui/icons-material/ForestRounded";
 import GiteRoundedIcon from "@mui/icons-material/GiteRounded";
 import HomeWorkRoundedIcon from "@mui/icons-material/HomeWorkRounded";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
-import TuneIcon from "@mui/icons-material/Tune";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 //Etc
 import { OpcionesCC } from "../config/opciones";
 
@@ -213,7 +213,7 @@ function MostrarComunas() {
                   type="submit"
                   variant="contained"
                 >
-                  <TuneIcon />
+                  <SearchRoundedIcon />
                 </Button>
               </Grid>
             </Grid>
