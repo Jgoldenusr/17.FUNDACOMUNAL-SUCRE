@@ -110,7 +110,7 @@ function VerComuna() {
                   editar: ["PROMOTOR"],
                   reportes: [],
                 }}
-                ruta="comuna"
+                ruta="comunas"
               />
             }
             avatar={
