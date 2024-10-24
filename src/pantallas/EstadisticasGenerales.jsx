@@ -100,7 +100,7 @@ function EstadisticasGenerales() {
         <Tarjeta
           color="#ed6c02"
           Icono={LocationOnIcon}
-          titulo="Ubicaciones"
+          titulo="Consejos comunales"
           url="/ccs"
         >
           {dataCCS.reduce((acc, item) => acc + item.ccs, 0)}
@@ -110,7 +110,7 @@ function EstadisticasGenerales() {
         <Tarjeta
           color="#03a9f4"
           Icono={AssignmentTurnedInRoundedIcon}
-          titulo="Renovadas"
+          titulo="Renovados"
           url="/ccs?estatus=renovado"
         >
           {Math.round(
