@@ -25,9 +25,9 @@ import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Spinner from "../componentes/Spinner";
 //Iconos MUI
-import CabinRoundedIcon from "@mui/icons-material/CabinRounded";
 import ForestRoundedIcon from "@mui/icons-material/ForestRounded";
 import HomeWorkRoundedIcon from "@mui/icons-material/HomeWorkRounded";
+import LocalFireDepartmentRoundedIcon from "@mui/icons-material/LocalFireDepartmentRounded";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 //Etc
@@ -341,9 +341,9 @@ function MostrarCCS() {
                           {cc.tipo === "URBANO" ? (
                             <HomeWorkRoundedIcon />
                           ) : cc.tipo === "RURAL" ? (
-                            <CabinRoundedIcon />
-                          ) : (
                             <ForestRoundedIcon />
+                          ) : (
+                            <LocalFireDepartmentRoundedIcon />
                           )}
                         </Avatar>
                       </Badge>

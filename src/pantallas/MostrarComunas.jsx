@@ -25,10 +25,10 @@ import BotonMenu from "../componentes/BotonMenu";
 import ContextoAutenticado from "../componentes/ContextoAutenticado";
 import Spinner from "../componentes/Spinner";
 //Iconos MUI
-import CabinRoundedIcon from "@mui/icons-material/CabinRounded";
+import CottageRoundedIcon from "@mui/icons-material/CottageRounded";
 import ForestRoundedIcon from "@mui/icons-material/ForestRounded";
-import GiteRoundedIcon from "@mui/icons-material/GiteRounded";
 import HomeWorkRoundedIcon from "@mui/icons-material/HomeWorkRounded";
+import LocalFireDepartmentRoundedIcon from "@mui/icons-material/LocalFireDepartmentRounded";
 import SearchOffIcon from "@mui/icons-material/SearchOff";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 //Etc
@@ -251,11 +251,11 @@ function MostrarComunas() {
                       >
                         <Avatar sx={{ bgcolor: "#1976d2" }}>
                           {comuna.tipo === "INDIGENA" ? (
-                            <ForestRoundedIcon />
+                            <LocalFireDepartmentRoundedIcon />
                           ) : comuna.tipo === "RURAL" ? (
-                            <CabinRoundedIcon />
+                            <ForestRoundedIcon />
                           ) : comuna.tipo === "SUB-URBANO O MIXTO" ? (
-                            <GiteRoundedIcon />
+                            <CottageRoundedIcon />
                           ) : (
                             <HomeWorkRoundedIcon />
                           )}
