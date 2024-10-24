@@ -69,8 +69,12 @@ exports.actualizarComuna =
         //Si no hubieron errores
         //Se busca la comuna que se va a editar
         const miComuna = await Comuna.findById(req.params.id).exec();
+        let consultaDeEdicion = { $set: nuevaComuna };
         //Este if se ejecuta si se va a cambiar el usuario asociado
-        if (miComuna.usuario?.cedula != req.body.usuario?.cedula) {
+        if (
+          miComuna.usuario &&
+          miComuna.usuario.cedula != req.body.usuario?.cedula
+        ) {
           //Se busca el usuario viejo y se edita
           await Usuario.findOneAndUpdate(
             {
@@ -97,6 +101,9 @@ exports.actualizarComuna =
           ).exec();
           //Se agrega el usuario a la comuna
           nuevaComuna.usuario = usuarioAsociado;
+        } else {
+          //Se agrega el usuario a la comuna
+          consultaDeEdicion = { $set: nuevaComuna, $unset: { usuario: "" } };
         }
         //Se actualizan TODOS los consejos comunales asociados a la comuna
         await CC.updateMany(
@@ -104,7 +111,7 @@ exports.actualizarComuna =
           { $set: { comuna: nuevaComuna } }
         ).exec();
         //Se actualiza la comuna
-        await miComuna.updateOne({ $set: nuevaComuna }).exec();
+        await miComuna.updateOne(consultaDeEdicion).exec();
         //Si todo tuvo exito se retorna la id de la comuna actualizada
         return res.status(200).json({ id: req.params.id });
       }

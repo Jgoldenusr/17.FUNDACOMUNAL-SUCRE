@@ -77,7 +77,7 @@ exports.actualizarCC =
         //Si no hubieron errores
         //Se busca el CC que se va a editar
         const miCC = await CC.findById(req.params.id).exec();
-        let consulta;
+        let consultaDeEdicion = { $set: nuevoCC }; //Consulta por defecto
 
         //Si la comuna es diferente de la comuna que tenia antes de la edicion
         if (miCC.comuna && miCC.comuna.nombre != req.body.comuna?.nombre) {
@@ -106,16 +106,15 @@ exports.actualizarCC =
           nuevoCC.comuna = comunaAsociada;
           //Se guarda la comuna asociada
           await comunaAsociada.save();
-        }
-
-        //Si ahora no se le va a asignar
-        if (!req.body.comuna?.nombre) {
-          consulta = miCC.updateOne({ $set: nuevoCC, $unset: { comuna: "" } });
         } else {
-          consulta = miCC.updateOne({ $set: nuevoCC });
+          //Si no se le va a asignar nueva comuna, le quitamos el campo
+          consultaDeEdicion = {
+            $set: nuevoCC,
+            $unset: { comuna: "" },
+          };
         }
         //Se realiza la consulta
-        await consulta.exec();
+        await miCC.updateOne(consultaDeEdicion).exec();
         //Si todo tuvo exito se retorna la id del CC actualizado
         return res.status(200).json({ id: req.params.id });
       }
