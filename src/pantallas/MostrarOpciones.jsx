@@ -99,7 +99,7 @@ function MostrarOpciones() {
                     <BotonMenu
                       id={opcion._id}
                       opciones={{
-                        editar: ["PROMOTOR"],
+                        editar: ["PROMOTOR", "ESPECIAL"],
                       }}
                     />
                   }

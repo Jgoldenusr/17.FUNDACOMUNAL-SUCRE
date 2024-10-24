@@ -60,7 +60,7 @@ function Base() {
       <ThemeProvider theme={theme}>
         <BrowserRouter>
             <Routes>
-              <Route element={<Bloquear roles={["PROMOTOR"]} />}>
+              <Route element={<Bloquear roles={["PROMOTOR", "ESPECIAL"]} />}>
                 <Route element={<Envoltorio />}>
                   <Route path="ccs/nuevo" element={<FormularioCC />} />
                   <Route path="ccs/:id/editar" element={<FormularioCC />} />
@@ -68,10 +68,20 @@ function Base() {
                   <Route path="comunas/:id/editar" element={<FormularioComuna />} />
                   <Route path="config" element={<MostrarOpciones />} />
                   <Route path="config/:id/editar" element={<FormularioOpcion />} />
-                  <Route path="usuarios" element={<MostrarUsuarios />} />
                   <Route path="usuarios/nuevo" element={<FormularioUsuario />}/>
-                  <Route path="usuarios/:id" element={<VerUsuario />} />
                   <Route path="usuarios/:id/editar" element={<FormularioUsuario />}/>
+                </Route>
+              </Route>
+              <Route element={<Bloquear roles={["PROMOTOR"]} />}>
+                <Route element={<Envoltorio />}>
+                  <Route path="usuarios" element={<MostrarUsuarios />} />
+                  <Route path="usuarios/:id" element={<VerUsuario />} />
+                </Route>
+              </Route>
+              <Route element={<Bloquear roles={["ESPECIAL"]} />}>
+                <Route element={<Envoltorio />}>
+                  <Route path="reportes/nuevo" element={<FormularioReporte />} />
+                  <Route path="reportes/:id/editar" element={<FormularioReporte />} />
                 </Route>
               </Route>
               <Route element={<Bloquear roles={[""]} />}>
@@ -83,9 +93,7 @@ function Base() {
                   <Route path="comunas/:id" element={<VerComuna />} />
                   <Route path="cuenta" element={<VerUsuario miCuenta={true} />} />
                   <Route path="reportes" element={<MostrarReportes />} />
-                  <Route path="reportes/nuevo" element={<FormularioReporte />} />
                   <Route path="reportes/:id" element={<VerReporte />} /> 
-                  <Route path="reportes/:id/editar" element={<FormularioReporte />} />
                   <Route path="*" element={<Error />} />
                 </Route>
               </Route>

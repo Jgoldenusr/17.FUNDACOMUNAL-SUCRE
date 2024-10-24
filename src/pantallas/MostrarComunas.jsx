@@ -236,7 +236,7 @@ function MostrarComunas() {
                       <BotonMenu
                         id={comuna._id}
                         opciones={{
-                          editar: ["PROMOTOR"],
+                          editar: ["PROMOTOR", "ESPECIAL"],
                           reportes: [],
                           verMas: [],
                         }}

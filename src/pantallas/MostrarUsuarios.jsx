@@ -161,6 +161,7 @@ function MostrarUsuarios() {
                   >
                     <MenuItem value="">CUALQUIERA</MenuItem>
                     <MenuItem value="ADMINISTRADOR">ADMINISTRADOR</MenuItem>
+                    <MenuItem value="ESPECIAL">ESPECIAL</MenuItem>
                     <MenuItem value="PROMOTOR">PROMOTOR</MenuItem>
                   </Select>
                 </FormControl>
@@ -219,7 +220,7 @@ function MostrarUsuarios() {
                       <BotonMenu
                         id={usuario._id}
                         opciones={{
-                          editar: [],
+                          editar: ["ESPECIAL"],
                           ocultar: ["PROMOTOR"],
                           reportes: [],
                           verMas: [],

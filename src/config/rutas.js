@@ -46,25 +46,25 @@ const rutas = [
     ruta: "comunas/nuevo",
     nombre: "Nueva comuna",
     icono: OutlinedFlagRoundedIcon,
-    listaNegra: ["PROMOTOR"],
+    listaNegra: ["PROMOTOR", "ESPECIAL"],
   },
   {
     ruta: "ccs/nuevo",
     nombre: "Nueva ubicacion",
     icono: AddLocationAltRoundedIcon,
-    listaNegra: ["PROMOTOR"],
+    listaNegra: ["PROMOTOR", "ESPECIAL"],
   },
   {
     ruta: "usuarios/nuevo",
     nombre: "Nuevo usuario",
     icono: PersonAddAltRoundedIcon,
-    listaNegra: ["PROMOTOR"],
+    listaNegra: ["PROMOTOR", "ESPECIAL"],
   },
   {
     ruta: "reportes/nuevo",
     nombre: "Nuevo reporte",
     icono: NoteAddRoundedIcon,
-    listaNegra: [],
+    listaNegra: ["ESPECIAL"],
   },
   /*
   {

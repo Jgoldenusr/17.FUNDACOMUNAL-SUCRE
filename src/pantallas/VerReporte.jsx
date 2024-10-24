@@ -110,7 +110,7 @@ function VerReporte() {
                 id={reporte._id}
                 etc={reporte}
                 opciones={{
-                  editar: excepcionPromotor ? [] : ["PROMOTOR"],
+                  editar: excepcionPromotor ? [] : ["PROMOTOR", "ESPECIAL"],
                   descargar: [""],
                   ocultar: [""],
                 }}
@@ -140,7 +140,7 @@ function VerReporte() {
                     opciones={{
                       ocultar: ["PROMOTOR"],
                       verMas: [""],
-                      editar: [""],
+                      editar: ["ESPECIAL"],
                     }}
                     ruta="usuarios"
                   />
@@ -163,8 +163,8 @@ function VerReporte() {
                     id={reporte.cc._id}
                     opciones={{
                       verMas: [],
-                      editar: ["PROMOTOR"],
-                      verificar: ["PROMOTOR"],
+                      editar: ["PROMOTOR", "ESPECIAL"],
+                      verificar: ["PROMOTOR", "ESPECIAL"],
                     }}
                     ruta="ccs"
                   />

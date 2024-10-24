@@ -107,7 +107,7 @@ function VerComuna() {
               <BotonMenu
                 id={comuna._id}
                 opciones={{
-                  editar: ["PROMOTOR"],
+                  editar: ["PROMOTOR", "ESPECIAL"],
                   reportes: [],
                 }}
                 ruta="comunas"

@@ -285,8 +285,9 @@ function FormularioUsuario() {
                     onChange={actualizarFormulario("rol")}
                     value={formulario.rol}
                   >
-                    <MenuItem value="PROMOTOR">PROMOTOR</MenuItem>
                     <MenuItem value="ADMINISTRADOR">ADMINISTRADOR</MenuItem>
+                    <MenuItem value="ESPECIAL">ESPECIAL</MenuItem>
+                    <MenuItem value="PROMOTOR">PROMOTOR</MenuItem>
                   </Select>
                   <FormHelperText error>
                     {mostrarMsjInvalido("rol")}

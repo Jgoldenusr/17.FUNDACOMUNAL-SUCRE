@@ -110,7 +110,7 @@ function VerUsuario({ miCuenta }) {
               <BotonMenu
                 id={usuario._id}
                 opciones={{
-                  editar: ["PROMOTOR"],
+                  editar: ["PROMOTOR", "ESPECIAL"],
                   reportes: [],
                 }}
                 ruta="usuarios"

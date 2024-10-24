@@ -262,7 +262,9 @@ function MostrarReportes() {
                         id={reporte._id}
                         opciones={{
                           verMas: [],
-                          editar: excepcionPromotor ? [] : ["PROMOTOR"],
+                          editar: excepcionPromotor
+                            ? []
+                            : ["PROMOTOR", "ESPECIAL"],
                         }}
                       />
                     }
