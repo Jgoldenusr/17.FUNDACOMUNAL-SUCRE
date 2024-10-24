@@ -214,6 +214,7 @@ exports.listarComunas = asyncHandler(async function (req, res, next) {
     listaComunas = await Comuna.paginate(parametros, {
       limit: 10,
       page: parseInt(p, 10) || 1,
+      projection: "municipios nombre parroquias situr tipo cc._id",
     });
   }
 

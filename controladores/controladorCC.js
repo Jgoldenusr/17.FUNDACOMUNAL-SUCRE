@@ -298,6 +298,8 @@ exports.listarCC = asyncHandler(async function (req, res, next) {
   const listaCC = await CC.paginate(parametros, {
     limit: 10,
     page: parseInt(p, 10) || 1,
+    projection:
+      "municipios nombre parroquias situr tipo comuna._id renovado vigente",
   });
 
   if (listaCC.docs.length > 0) {

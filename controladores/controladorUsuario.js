@@ -61,7 +61,7 @@ exports.actualizarUsuario =
       .custom(Validar.emailNoRepetido),
     body("rol", "Rol del usuario invalido")
       .trim()
-      .isIn(["PROMOTOR", "ADMINISTRADOR"]),
+      .isIn(["PROMOTOR", "ADMINISTRADOR", "ESPECIAL"]),
     body("usuario")
       .trim()
       .escape()
@@ -278,7 +278,7 @@ exports.listarUsuarios = asyncHandler(async function (req, res, next) {
   const listaDeUsuarios = await Usuario.paginate(parametros, {
     limit: 15,
     page: parseInt(p, 10) || 1,
-    projection: "-clave",
+    projection: "apellido cedula nombre rol comuna._id",
   });
 
   if (listaDeUsuarios.docs.length > 0) {
@@ -361,7 +361,7 @@ exports.registrarUsuario =
       .custom(Validar.emailNuevo),
     body("rol", "Rol del usuario invalido")
       .trim()
-      .isIn(["PROMOTOR", "ADMINISTRADOR"]),
+      .isIn(["PROMOTOR", "ADMINISTRADOR", "ESPECIAL"]),
     body("usuario")
       .trim()
       .escape()
