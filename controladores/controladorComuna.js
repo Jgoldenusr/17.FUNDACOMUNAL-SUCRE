@@ -70,10 +70,7 @@ exports.actualizarComuna =
         //Se busca la comuna que se va a editar
         const miComuna = await Comuna.findById(req.params.id).exec();
         //Este if se ejecuta si se va a cambiar el usuario asociado
-        if (
-          miComuna.usuario &&
-          miComuna.usuario.cedula != req.body.usuario.cedula
-        ) {
+        if (miComuna.usuario?.cedula != req.body.usuario?.cedula) {
           //Se busca el usuario viejo y se edita
           await Usuario.findOneAndUpdate(
             {
@@ -83,27 +80,29 @@ exports.actualizarComuna =
           ).exec();
         }
         //Se buscan y eliminan referencias a la cedula en otras comunas excepto esta misma
-        await Comuna.findOneAndUpdate(
-          {
-            "usuario.cedula": req.body.usuario.cedula,
-            _id: { $ne: req.params.id },
-          },
-          { $unset: { usuario: "" } }
-        ).exec();
-        //Se busca el usuario asociado y se actualiza su comuna
-        const usuarioAsociado = await Usuario.findOneAndUpdate(
-          {
-            cedula: req.body.usuario.cedula,
-          },
-          { $set: { comuna: nuevaComuna } }
-        ).exec();
+        if (req.body.usuario?.cedula) {
+          await Comuna.findOneAndUpdate(
+            {
+              "usuario.cedula": req.body.usuario.cedula,
+              _id: { $ne: req.params.id },
+            },
+            { $unset: { usuario: "" } }
+          ).exec();
+          //Se busca el usuario asociado y se actualiza su comuna
+          const usuarioAsociado = await Usuario.findOneAndUpdate(
+            {
+              cedula: req.body.usuario.cedula,
+            },
+            { $set: { comuna: nuevaComuna } }
+          ).exec();
+          //Se agrega el usuario a la comuna
+          nuevaComuna.usuario = usuarioAsociado;
+        }
         //Se actualizan TODOS los consejos comunales asociados a la comuna
         await CC.updateMany(
           { "comuna._id": req.params.id },
           { $set: { comuna: nuevaComuna } }
         ).exec();
-        //Se agrega el usuario a la comuna
-        nuevaComuna.usuario = usuarioAsociado;
         //Se actualiza la comuna
         await miComuna.updateOne({ $set: nuevaComuna }).exec();
         //Si todo tuvo exito se retorna la id de la comuna actualizada

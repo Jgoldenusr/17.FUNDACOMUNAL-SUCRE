@@ -80,7 +80,7 @@ exports.actualizarCC =
         let consulta;
 
         //Si la comuna es diferente de la comuna que tenia antes de la edicion
-        if (miCC.comuna && miCC.comuna.nombre != req.body.comuna.nombre) {
+        if (miCC.comuna && miCC.comuna.nombre != req.body.comuna?.nombre) {
           //Se saca el CC de la comuna anteriormente asociada
           await Comuna.findOneAndUpdate(
             {
@@ -91,7 +91,7 @@ exports.actualizarCC =
         }
 
         //Si se le va a asignar una nueva comuna
-        if (req.body.comuna.nombre) {
+        if (req.body.comuna?.nombre) {
           //Se busca la comuna asociada
           const comunaAsociada = await Comuna.findOne({
             estados: req.body.estados,
@@ -109,7 +109,7 @@ exports.actualizarCC =
         }
 
         //Si ahora no se le va a asignar
-        if (!req.body.comuna.nombre) {
+        if (!req.body.comuna?.nombre) {
           consulta = miCC.updateOne({ $set: nuevoCC, $unset: { comuna: "" } });
         } else {
           consulta = miCC.updateOne({ $set: nuevoCC });
