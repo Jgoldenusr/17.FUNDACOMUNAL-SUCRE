@@ -2,13 +2,21 @@ const passport = require("passport");
 const Reporte = require("../modelos/reporte");
 const asyncHandler = require("express-async-handler");
 
-const listaNegraPromotor = [
+const listaNegraRolPromotor = [
   { ruta: "/ccs", metodos: ["DELETE", "POST", "PUT"] },
   { ruta: "/comunas", metodos: ["DELETE", "POST", "PUT"] },
-  { ruta: "/config", metodos: ["DELETE", "POST", "PUT"] },
+  { ruta: "/config", metodos: ["DELETE", "GET", "POST", "PUT"] },
   { ruta: "/reportes", metodos: [""] },
   { ruta: "/reportes/interno", metodos: ["POST", "PUT"] },
   { ruta: "/usuarios", metodos: ["DELETE", "GET", "POST", "PUT"] },
+];
+
+const listaNegraRolEspecial = [
+  { ruta: "/ccs", metodos: ["DELETE", "POST", "PUT"] },
+  { ruta: "/comunas", metodos: ["DELETE", "POST", "PUT"] },
+  { ruta: "/config", metodos: ["DELETE", "GET", "POST", "PUT"] },
+  { ruta: "/reportes", metodos: ["DELETE", "POST", "PUT"] },
+  { ruta: "/usuarios", metodos: ["DELETE", "POST", "PUT"] },
 ];
 
 exports.autenticarToken = passport.authenticate("jwt", {
@@ -58,7 +66,17 @@ exports.autorizarRol = function (req, res, next) {
   let valido = true;
 
   if (req.user.rol === "PROMOTOR") {
-    listaNegraPromotor.forEach((permiso) => {
+    listaNegraRolPromotor.forEach((permiso) => {
+      let expresionRegular = new RegExp(permiso.ruta);
+      if (expresionRegular.test(req.originalUrl)) {
+        if (permiso.metodos.includes(req.method)) {
+          valido = false;
+        }
+      }
+    });
+  }
+  if (req.user.rol === "ESPECIAL") {
+    listaNegraRolEspecial.forEach((permiso) => {
       let expresionRegular = new RegExp(permiso.ruta);
       if (expresionRegular.test(req.originalUrl)) {
         if (permiso.metodos.includes(req.method)) {
